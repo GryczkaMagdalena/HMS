@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using HotelManagementSystem.Models.Infrastructure;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -11,5 +12,6 @@ namespace HotelManagementSystem.Controllers
     [Route("api/Auth")]
     public class AuthController : Controller
     {
+        private StorageContext db = new StorageContext();
     }
 }
