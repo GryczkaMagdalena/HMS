@@ -33,7 +33,7 @@ namespace HotelManagementSystem
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<StorageContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+               options.UseSqlServer(Configuration.GetConnectionString("Storage")));
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<StorageContext>()
@@ -57,6 +57,7 @@ namespace HotelManagementSystem
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseStaticFiles();
             app.UseIdentity();
 
             app.UseMvc();

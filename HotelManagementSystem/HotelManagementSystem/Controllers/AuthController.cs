@@ -13,5 +13,11 @@ namespace HotelManagementSystem.Controllers
     public class AuthController : Controller
     {
         private StorageContext db = new StorageContext();
+        private IdentityContext idb = new IdentityContext();
+        public  ActionResult GetUsers()
+        {
+            var users = idb.Users.ToArray();
+            return Json(new { users } );
+        }
     }
 }
