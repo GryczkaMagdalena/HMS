@@ -1,4 +1,5 @@
 ﻿using HotelManagementSystem.Models.Entities.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,13 +8,14 @@ using System.Threading.Tasks;
 
 namespace HotelManagementSystem.Models.Infrastructure
 {
-    public class IdentityContext : DbContext
+    public class IdentityContext : IdentityDbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
+        public new DbSet<User> Users { get; set; }
+        public new  DbSet<Role> Roles { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=hotelmanagementsystem.database.windows.net;" +
+            optionsBuilder.UseSqlServer("Data Source=hotelmanagementsystem.database.windows.net;" +
                 "Initial Catalog=HotelManagementSystem;" +
                 "Persist Security Info=True;" +
                 "User ID=hmsuser;" +
