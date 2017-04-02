@@ -8,27 +8,15 @@ using HotelManagementSystem.Models.Infrastructure;
 namespace HotelManagementSystem.Migrations
 {
     [DbContext(typeof(StorageContext))]
-    partial class StorageContextModelSnapshot : ModelSnapshot
+    [Migration("20170402132133_AddTask")]
+    partial class AddTask
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Rule", b =>
-                {
-                    b.Property<Guid>("RuleID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("RuleID");
-
-                    b.ToTable("Rules");
-                 });
             modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Room", b =>
                 {
                     b.Property<Guid>("RoomID")
