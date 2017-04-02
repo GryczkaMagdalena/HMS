@@ -1,4 +1,5 @@
 ﻿using HotelManagementSystem.Models.Entities.Identity;
+using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace HotelManagementSystem.Models.Infrastructure
 {
     public class StorageContext : DbContext
     {
+        public DbSet<Rule> Rules { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=hotelmanagementsystem.database.windows.net;" +
