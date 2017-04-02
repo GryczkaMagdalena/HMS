@@ -8,9 +8,10 @@ using HotelManagementSystem.Models.Infrastructure;
 namespace HotelManagementSystem.Migrations
 {
     [DbContext(typeof(StorageContext))]
-    partial class StorageContextModelSnapshot : ModelSnapshot
+    [Migration("20170402120417_AddRoom")]
+    partial class AddRoom
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -30,30 +31,6 @@ namespace HotelManagementSystem.Migrations
                     b.HasKey("RoomID");
 
                     b.ToTable("Rooms");
-                });
-
-            modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Task", b =>
-                {
-                    b.Property<Guid>("TaskID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Describe");
-
-                    b.Property<Guid>("RoomID");
-
-                    b.HasKey("TaskID");
-
-                    b.HasIndex("RoomID");
-
-                    b.ToTable("Tasks");
-                });
-
-            modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Task", b =>
-                {
-                    b.HasOne("HotelManagementSystem.Models.Entities.Storage.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomID")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
         }
     }
