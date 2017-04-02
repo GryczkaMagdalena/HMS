@@ -16,6 +16,19 @@ namespace HotelManagementSystem.Migrations
                 .HasAnnotation("ProductVersion", "1.1.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Rule", b =>
+                {
+                    b.Property<Guid>("RuleID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("RuleID");
+
+                    b.ToTable("Rules");
+                 });
             modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Room", b =>
                 {
                     b.Property<Guid>("RoomID")
