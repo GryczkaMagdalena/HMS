@@ -8,9 +8,10 @@ using HotelManagementSystem.Models.Infrastructure;
 namespace HotelManagementSystem.Migrations
 {
     [DbContext(typeof(StorageContext))]
-    partial class StorageContextModelSnapshot : ModelSnapshot
+    [Migration("20170402131316_RulesAdded")]
+    partial class RulesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
