@@ -1,6 +1,8 @@
 ﻿using HotelManagementSystem.Models.Entities.Identity;
 using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 
 namespace HotelManagementSystem.Models.Infrastructure
 {
