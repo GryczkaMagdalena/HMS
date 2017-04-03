@@ -7,9 +7,11 @@ using HotelManagementSystem.Models.Infrastructure;
 using HotelManagementSystem.Models.Entities.Storage;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelManagementSystem.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/[action]")]
     public class HomeController : Controller
     {
@@ -48,15 +50,21 @@ namespace HotelManagementSystem.Controllers
         }
         // POST api/values
         [HttpPost]
-        public async Task<object> Rule([FromBody]string value)
+        public async Task<object> Rule([FromBody]Rule value)
         {
-            Rule result = null;
             try
             {
-                result = JsonConvert.DeserializeObject<Rule>(value);
-                result.RuleID = Guid.NewGuid();
-                await storage.Rules.AddAsync(result);
-                return Json(new { status = "created" });
+                if (ModelState.IsValid)
+                {
+                    value.RuleID = Guid.NewGuid();
+                    await storage.Rules.AddAsync(value);
+                    await storage.SaveChangesAsync();
+                    return Json(new { status = "created" });
+                }
+                else
+                {
+                    return Json(new {status="failure" });
+                }
             }
             catch (Exception ex)
             {
@@ -66,15 +74,22 @@ namespace HotelManagementSystem.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public async Task<object> Rule(Guid id, [FromBody]string value)
+        public async Task<object> Rule([FromRoute] Guid id, [FromBody]Rule value)
         {
             try
             {
-                Rule received = JsonConvert.DeserializeObject<Rule>(value);
-                storage.Rules.Attach(received);
-                storage.Entry(received).State = EntityState.Modified;
-                await storage.SaveChangesAsync();
-                return Json(new { status = "updated" });
+                if (ModelState.IsValid)
+                {
+                    value.RuleID = id;
+                    storage.Rules.Attach(value);
+                    storage.Entry(value).State = EntityState.Modified;
+                    await storage.SaveChangesAsync();
+                    return Json(new { status = "updated" });
+                }
+                else
+                {
+                    return Json(new { status = "failure" });
+                }
             }catch(Exception ex)
             {
                 return ex;

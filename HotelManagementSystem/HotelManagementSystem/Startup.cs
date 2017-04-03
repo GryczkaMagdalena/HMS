@@ -35,15 +35,18 @@ namespace HotelManagementSystem
             services.AddDbContext<StorageContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("Storage")));
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<StorageContext>()
+            services.AddDbContext<IdentityContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("Storage")));
+
+            services.AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
             // Add framework services.
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, StorageContext context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, StorageContext context, IdentityContext iContext)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -62,6 +65,7 @@ namespace HotelManagementSystem
 
             app.UseMvc();
             DbInitializer.Initialize(context);
+            DbInitializer.Initialize(iContext);
         }
     }
 }

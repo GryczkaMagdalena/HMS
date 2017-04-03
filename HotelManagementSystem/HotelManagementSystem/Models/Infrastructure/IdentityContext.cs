@@ -11,7 +11,7 @@ namespace HotelManagementSystem.Models.Infrastructure
     public class IdentityContext : IdentityDbContext
     {
         public new DbSet<User> Users { get; set; }
-        public new  DbSet<Role> Roles { get; set; }
+        public new DbSet<Role> Roles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -22,5 +22,7 @@ namespace HotelManagementSystem.Models.Infrastructure
                 "Password=Al315t3r<r0wl3y");
         }
 
+
     }
+
 }
