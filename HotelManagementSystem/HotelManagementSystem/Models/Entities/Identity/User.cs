@@ -1,3 +1,4 @@
+using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,9 @@ namespace HotelManagementSystem.Models.Entities.Identity
         public override string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        [ForeignKey("RoomID")]
+        public Guid? RoomID { get; set; }
+        public virtual Room Room { get; set; }
+
     }
 }
