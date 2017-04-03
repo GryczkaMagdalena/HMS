@@ -18,9 +18,9 @@ namespace HotelManagementSystem.Controllers
         private StorageContext storage = new StorageContext();
         // GET api/values
         [HttpGet]
-        public IEnumerable<object> Rule()
+        public async Task<IActionResult> Rule()
         {
-            List<Rule> rules = storage.Rules.ToList();
+            List<Rule> rules = await storage.Rules.ToListAsync();
             //Alokacja anonimowego obiektu przechowującego dane z obiektu klasy
             //jest to przykład, normalnie zwrócenie samej listy spowoduje auto-parsowanie
             // jednakże czasami chcemy wyłączyć tylko kilka pól
@@ -30,12 +30,12 @@ namespace HotelManagementSystem.Controllers
                 Name = q.Name,
                 Description = q.Description
             });
-            return rulesObjectified;
+            return Json(rulesObjectified);
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public async Task<object> GetRule(Guid id)
+        public async Task<IActionResult> GetRule(Guid id)
         {
             Rule rule = null;
             try
@@ -44,13 +44,13 @@ namespace HotelManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                return ex;
+                return Json(ex);
             }
-            return rule;
+            return Json(rule);
         }
         // POST api/values
         [HttpPost]
-        public async Task<object> Rule([FromBody]Rule value)
+        public async Task<IActionResult> Rule([FromBody]Rule value)
         {
             try
             {
@@ -68,13 +68,13 @@ namespace HotelManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                return ex;
+                return Json(ex);
             }
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public async Task<object> Rule([FromRoute] Guid id, [FromBody]Rule value)
+        public async Task<IActionResult> Rule([FromRoute] Guid id, [FromBody]Rule value)
         {
             try
             {
@@ -92,13 +92,13 @@ namespace HotelManagementSystem.Controllers
                 }
             }catch(Exception ex)
             {
-                return ex;
+                return Json(ex);
             }
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public async Task<object> Rule(Guid id)
+        public async Task<IActionResult> Rule(Guid id)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace HotelManagementSystem.Controllers
                 }
             }catch(Exception ex)
             {
-                return ex;
+                return Json(ex);
             }
         }
     }

@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
 using HotelManagementSystem.Models.Concrete;
 using Newtonsoft.Json;
+using HotelManagementSystem.Models.Entities.Storage;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -43,7 +45,7 @@ namespace HotelManagementSystem.Controllers
         public async Task<IActionResult> Login()
         {
             await HttpContext.Authentication.SignOutAsync(externalCookieScheme);
-            return Json(new { status="clear" });
+            return Json(new { status = "clear" });
         }
 
         [HttpPost]
@@ -70,22 +72,132 @@ namespace HotelManagementSystem.Controllers
         }
 
         [HttpPost]
-        public  async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
-            return Json(new {status="logout" });
+            return Json(new { status = "logout" });
         }
 
-        [HttpPut]
+        [HttpPost]
+        public async Task<IActionResult> CheckOut([FromBody] string emailOrLogin, string roomNumber)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Room room = db.Rooms.First(q => q.Number == roomNumber);
+                    User guestAccount = idb.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
+
+                    if (!(await userManager.IsInRoleAsync(guestAccount, "Customer")))
+                    {
+                        return Json(new { status = "invalidRole" });
+                    }
+
+                    if (guestAccount.Room == null)
+                    {
+                        return Json(new { status = "userAlreadyCheckedOut" });
+                    }
+
+                    if (!room.Occupied)
+                    {
+                        return Json(new { status = "roomNotOccupied" });
+                    }
+
+                    guestAccount.Room = null;
+                    guestAccount.RoomID = null;
+                    room.GuestFirstName = string.Empty;
+                    room.GuestLastName = string.Empty;
+                    room.Occupied = false;
+
+                    db.Rooms.Attach(room);
+                    db.Entry(room).State = EntityState.Modified;
+
+                    await db.SaveChangesAsync();
+
+                    idb.Users.Attach(guestAccount);
+                    idb.Entry(guestAccount).State = EntityState.Modified;
+
+                    await idb.SaveChangesAsync();
+
+                    return Json(new { status = "checkedIn" });
+                }
+                return Json(new { status = "invalidInput" });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(ex);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CheckIn([FromBody] string emailOrLogin, string roomNumber)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Room room = db.Rooms.First(q => q.Number == roomNumber);
+                    User guestAccount = idb.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
+
+                    if (!(await userManager.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
+                    {
+                        return Json(new { status = "invalidRole" });
+                    }
+
+                    if (guestAccount.Room != null)
+                    {
+                        return Json(new { status = "userAlreadyCheckedIn" });
+                    }
+
+                    if (room.Occupied)
+                    {
+                        return Json(new { status = "roomAlreadyOccupied" });
+                    }
+
+                    guestAccount.RoomID = room.RoomID;
+                    guestAccount.Room = room;
+                    room.GuestFirstName = guestAccount.FirstName;
+                    room.GuestLastName = guestAccount.LastName;
+                    room.Occupied = true;
+
+                    db.Rooms.Attach(room);
+                    db.Entry(room).State = EntityState.Modified;
+
+                    await db.SaveChangesAsync();
+
+                    idb.Users.Attach(guestAccount);
+                    idb.Entry(guestAccount).State = EntityState.Modified;
+
+                    await idb.SaveChangesAsync();
+
+                    return Json(new { status = "checkedIn" });
+                }
+                return Json(new { status = "invalidInput" });
+            }
+            catch (Exception ex)
+            {
+                return Json(ex);
+            }
+        }
+
+
+        [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterViewModel registerModel) 
+        public async Task<IActionResult> Register([FromBody] RegisterViewModel registerModel)
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = registerModel.Login,
-                    PhoneNumber =registerModel.PhoneNumber,
-                    LastName =registerModel.LastName,
-                    FirstName =registerModel.FirstName};
+                var user = new User
+                {
+                    UserName = registerModel.Login,
+                    PhoneNumber = registerModel.PhoneNumber,
+                    LastName = registerModel.LastName,
+                    FirstName = registerModel.FirstName,
+                    Email = registerModel.Email,
+                    NormalizedEmail = registerModel.Email,
+                };
                 var result = await userManager.CreateAsync(user, registerModel.Password);
                 if (result.Succeeded)
                 {

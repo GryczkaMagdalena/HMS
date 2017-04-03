@@ -1,0 +1,169 @@
+﻿{
+  "Customers": [
+    {
+      "Login": "guest1",
+      "Password": "Gue$t1",
+      "FirstName": "Tom",
+      "LastName": "Postman",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "guest1@hms.com"
+    },
+    {
+      "Login": "guest2",
+      "Password": "Gue$t2",
+      "FirstName": "Han",
+      "LastName": "Solo",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "guest2@hms.com"
+    },
+    {
+      "Login": "guest3",
+      "Password": "Gue$t3",
+      "FirstName": "Khal",
+      "LastName": "Drogo",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "guest3@hms.com"
+    },
+    {
+      "Login": "guest4",
+      "Password": "Gue$t4",
+      "FirstName": "Amber",
+      "LastName": "Gold",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "guest4@hms.com"
+    },
+    {
+      "Login": "guest5",
+      "Password": "Gue$t5",
+      "FirstName": "Lana",
+      "LastName": "Lama",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "guest5@hms.com"
+    },
+    {
+      "Login": "guest6",
+      "Password": "Gue$t6",
+      "FirstName": "Adolf",
+      "LastName": "Hitler",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "guest6@hms.com"
+    },
+    {
+      "Login": "guest7",
+      "Password": "Gue$t7",
+      "FirstName": "Joseph",
+      "LastName": "Stallone",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "guest7@hms.com"
+    },
+    {
+      "Login": "guest8",
+      "Password": "Gue$t8",
+      "FirstName": "Rocky",
+      "LastName": "Vallboa",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "guest8@hms.com"
+    },
+    {
+      "Login": "guest9",
+      "Password": "Gue$t9",
+      "FirstName": "Benito",
+      "LastName": "Maccaroni",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "guest9@hms.com"
+    },
+    {
+      "Login": "guest10",
+      "Password": "Gue$t10",
+      "FirstName": "Spoder",
+      "LastName": "Man",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "guest10@hms.com"
+    }
+  ]
+  "Workers": [
+    {
+      "Login": "worker1",
+      "Password": "Wor<er1",
+      "FirstName": "Grażyna",
+      "LastName": "Malina",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "worker1@hms.com"
+    },
+    {
+      "Login": "worker2",
+      "Password": "Wor<er2",
+      "FirstName": "Halina",
+      "LastName": "Stalina",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "worker2@hms.com"
+    },
+    {
+      "Login": "worker3",
+      "Password": "Wor<er3",
+      "FirstName": "Alina",
+      "LastName": "Stalina",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "worker3@hms.com"
+    },
+    {
+      "Login": "worker4",
+      "Password": "Wor<er4",
+      "FirstName": "Anna",
+      "LastName": "Wanna",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "worker4@hms.com"
+    },
+    {
+      "Login": "worker5",
+      "Password": "Wor<er5",
+      "FirstName": "Zdzisław",
+      "LastName": "Wanna",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "worker5@hms.com"
+    },
+    {
+      "Login": "worker6",
+      "Password": "Wor<er6",
+      "FirstName": "Bronisław",
+      "LastName": "Pomorowski",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "worker6@hms.com"
+    },
+    {
+      "Login": "worker7",
+      "Password": "Wor<er7",
+      "FirstName": "Zdzisław",
+      "LastName": "Krecina",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "worker7@hms.com"
+    },
+    {
+      "Login": "worker8",
+      "Password": "Wor<er8",
+      "FirstName": "Alfons",
+      "LastName": "Padlina",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Customer",
+      "Email": "worker8@hms.com"
+    }
+
+  ]
+}
