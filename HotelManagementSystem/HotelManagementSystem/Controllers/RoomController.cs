@@ -1,89 +1,88 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using HotelManagementSystem.Models.Infrastructure;
 using HotelManagementSystem.Models.Entities.Storage;
-using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 
 namespace HotelManagementSystem.Controllers
 {
     [Authorize]
-    [Route("api/[controller]/[action]")]
-    public class HomeController : Controller
+    [Produces("application/json")]
+    [Route("api/Room")]
+    public class RoomController : Controller
     {
         private StorageContext storage = new StorageContext();
-        // GET api/values
+        
+        // GET api/Room
         [HttpGet]
-        public async Task<IActionResult> Rule()
+        public async Task<IActionResult> List()
         {
-            List<Rule> rules = await storage.Rules.ToListAsync();
-            //Alokacja anonimowego obiektu przechowującego dane z obiektu klasy
-            //jest to przykład, normalnie zwrócenie samej listy spowoduje auto-parsowanie
-            // jednakże czasami chcemy wyłączyć tylko kilka pól
-            var rulesObjectified = rules.Select(q => new
+            List<Room> rooms = await storage.Rooms.ToListAsync();
+            var roomsObjectified = rooms.Select(q => new
             {
-                RuleID = q.RuleID,
-                Name = q.Name,
-                Description = q.Description
+                RoomID = q.RoomID,
+                GuestFirstName = q.GuestFirstName,
+                GuestLastName = q.GuestLastName,
+                Number = q.Number,
+                Occupied = q.Occupied
             });
-            return Json(rulesObjectified);
+            return Json(roomsObjectified);
         }
 
-        // GET api/values/5
+        //GET /api/Room/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRule(Guid id)
+        public async Task<IActionResult> Read(Guid id)
         {
-            Rule rule = null;
+            Room room = null;
             try
             {
-                rule = await storage.Rules.FindAsync(id);
-            }
-            catch (Exception ex)
+                room = await storage.Rooms.FindAsync(id);
+            }catch(Exception ex)
             {
                 return Json(ex);
             }
-            return Json(rule);
+            return Json(room);
         }
-        // POST api/values
+
+
+        // POST api/Room
         [HttpPost]
-        public async Task<IActionResult> Rule([FromBody]Rule value)
+        public async Task<IActionResult> Create ([FromBody] Room room)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    value.RuleID = Guid.NewGuid();
-                    await storage.Rules.AddAsync(value);
+                    room.RoomID = Guid.NewGuid();
+                    await storage.Rooms.AddAsync(room);
                     await storage.SaveChangesAsync();
                     return Json(new { status = "created" });
                 }
                 else
                 {
-                    return Json(new {status="failure" });
+                    return Json(new { status = "failure" });
                 }
-            }
-            catch (Exception ex)
+            }catch(Exception ex)
             {
                 return Json(ex);
             }
         }
 
-        // PUT api/values/5
+        // PUT api/Room/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Rule([FromRoute] Guid id, [FromBody]Rule value)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] Room room)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-
-                    value.RuleID = id;
-                    storage.Rules.Attach(value);
-                    storage.Entry(value).State = EntityState.Modified;
+                    room.RoomID = id;
+                    storage.Rooms.Attach(room);
+                    storage.Entry(room).State = EntityState.Modified;
                     await storage.SaveChangesAsync();
                     return Json(new { status = "updated" });
                 }
@@ -97,16 +96,17 @@ namespace HotelManagementSystem.Controllers
             }
         }
 
-        // DELETE api/values/5
+        // DELETE api/Room/{id}
+
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Rule(Guid id)
+        public async Task<IActionResult> Delete (Guid id)
         {
             try
             {
-                Rule toDelete = await storage.Rules.FindAsync(id);
+                Room toDelete = await storage.Rooms.FindAsync(id);
                 if (toDelete != null)
                 {
-                    storage.Rules.Attach(toDelete);
+                    storage.Rooms.Attach(toDelete);
                     storage.Entry(toDelete).State = EntityState.Deleted;
                     await storage.SaveChangesAsync();
                     return Json(new { status = "removed" });

@@ -50,7 +50,7 @@ namespace HotelManagementSystem.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody]UserViewModel user)
+        public async Task<IActionResult> Login([FromBody] UserViewModel user)
         {
             if (ModelState.IsValid)
             {
