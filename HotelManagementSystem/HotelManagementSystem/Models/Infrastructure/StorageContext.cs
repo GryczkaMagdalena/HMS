@@ -12,6 +12,7 @@ namespace HotelManagementSystem.Models.Infrastructure
         public DbSet<Rule> Rules { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Task> Tasks { get; set; }
+        public DbSet<Case> Cases { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Data Source=hotelmanagementsystem.database.windows.net;" +

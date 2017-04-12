@@ -9,9 +9,10 @@ using HotelManagementSystem.Models.Entities.Identity;
 namespace HotelManagementSystem.Migrations
 {
     [DbContext(typeof(StorageContext))]
-    partial class StorageContextModelSnapshot : ModelSnapshot
+    [Migration("20170412214204_AddedCases")]
+    partial class AddedCases
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
