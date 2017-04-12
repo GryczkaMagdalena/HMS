@@ -7,10 +7,8 @@
 
   <ItemGroup>
     <Content Include="wwwroot\index.html" />
-    <Content Include="wwwroot\js\jquery-3.1.1.intellisense.js" />
     <Content Include="wwwroot\js\jquery-3.1.1.min.js" />
     <Content Include="wwwroot\js\jquery-3.1.1.min.map" />
-    <Content Include="wwwroot\js\jquery-3.1.1.slim.js" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="jQuery" Version="3.1.1" />
