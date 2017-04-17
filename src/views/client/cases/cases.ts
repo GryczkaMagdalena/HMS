@@ -10,14 +10,14 @@ export class Cases {
         route: ['room-service', ''],
         name: 'roomService',
         title: 'Room Service',
-        moduleId: 'client/cases/room-service/room-service',
+        moduleId: 'views/client/cases/room-service/room-service',
         nav: true
       },
       {
         route: 'technical-issue',
         name: 'technicalIssue',
         title: 'Technical Issue',
-        moduleId: 'client/cases/technical-issue/technical-issue',
+        moduleId: 'views/client/cases/technical-issue/technical-issue',
         nav: true
       }
     ]);
