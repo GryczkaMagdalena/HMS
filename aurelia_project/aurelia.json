@@ -132,6 +132,11 @@
             "main": "aurelia-templating-router"
           },
           {
+            "name": "aurelia-fetch-client",
+            "path": "../node_modules/aurelia-fetch-client/dist/amd",
+            "main": "aurelia-fetch-client"
+          },
+          {
             "name": "aurelia-testing",
             "path": "../node_modules/aurelia-testing/dist/amd",
             "main": "aurelia-testing",
