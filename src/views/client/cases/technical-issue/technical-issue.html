@@ -1,0 +1,25 @@
+<template>
+  <div class="row">
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+
+      <div class="issues-list">
+        <div class="list-group">
+          <button type="button"
+                  repeat.for="case of cases"
+                  class="list-group-item ${case.id === $parent.selectedId ? 'active' : ''}"
+                  click.delegate="$parent.selectCase(case)">
+            ${case.text}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-info btn-large pull-right">SEND</button>
+    </div>
+  </div>
+
+</template>

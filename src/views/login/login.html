@@ -1,0 +1,28 @@
+<template>
+
+  <require from="../../components/jumbotron/jumbotron-component.html"></require>
+  <div class="row" as-element="jumbotron-component"></div>
+
+    <div class="row">
+      <div class="col-xs-8 col-xs-offset-2 col-sm-4 col-sm-offset-4">
+        <form submit.delegate="logIn()">
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text"
+                   class="form-control"
+                   id="username"
+                   value.bind="userInfo.username">
+          </div>
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input id="password"
+                   type="password"
+                   class="form-control"
+                   value.bind="userInfo.password">
+          </div>
+          <button type="submit" class="btn btn-default pull-right">Log In</button>
+        </form>
+      </div>
+    </div>
+
+</template>
