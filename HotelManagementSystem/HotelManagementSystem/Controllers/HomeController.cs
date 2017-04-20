@@ -8,9 +8,11 @@ using HotelManagementSystem.Models.Entities.Storage;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace HotelManagementSystem.Controllers
 {
+    [EnableCors("HotelCorsPolicy")]
     [Authorize]
     [Route("api/[controller]/[action]")]
     public class HomeController : Controller

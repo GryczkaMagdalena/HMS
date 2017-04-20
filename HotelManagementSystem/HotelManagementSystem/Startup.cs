@@ -13,6 +13,7 @@ using HotelManagementSystem.Models.Infrastructure;
 using HotelManagementSystem.Models.Entities.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Cors.Internal;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace HotelManagementSystem
 {
@@ -44,7 +45,16 @@ namespace HotelManagementSystem
                 .AddDefaultTokenProviders();
             // Add framework services.
             services.AddMvc();
-         
+            var corsBuilder = new CorsPolicyBuilder();
+            corsBuilder.AllowAnyHeader();
+            corsBuilder.AllowAnyMethod();
+            corsBuilder.AllowAnyOrigin();
+            corsBuilder.AllowCredentials();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("HotelCorsPolicy", corsBuilder.Build());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,13 +76,7 @@ namespace HotelManagementSystem
             app.UseIdentity();
 
             app.UseMvc();
-            app.UseCors(builder =>
-            {
-                builder.AllowAnyHeader();
-                builder.AllowAnyMethod();
-                builder.AllowAnyOrigin();
-                builder.AllowCredentials();
-            });
+            app.UseCors("HotelCorsPolicy");
             DbInitializer.Initialize(context);
             DbInitializer.Initialize(iContext);
         }

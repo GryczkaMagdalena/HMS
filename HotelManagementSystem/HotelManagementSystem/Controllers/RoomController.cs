@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Authorization;
 using HotelManagementSystem.Models.Infrastructure;
 using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors;
 
 namespace HotelManagementSystem.Controllers
 {
+    [EnableCors("HotelCorsPolicy")]
     [Authorize]
     [Produces("application/json")]
     [Route("api/Room")]
