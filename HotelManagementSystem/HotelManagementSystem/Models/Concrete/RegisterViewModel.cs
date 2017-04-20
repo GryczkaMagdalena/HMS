@@ -19,5 +19,6 @@ namespace HotelManagementSystem.Models.Concrete
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+        public string WorkerType { get; set; }
     }
 }
