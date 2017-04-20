@@ -11,7 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using HotelManagementSystem.Models.Infrastructure;
 using HotelManagementSystem.Models.Entities.Identity;
-
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 namespace HotelManagementSystem
 {
@@ -43,6 +44,7 @@ namespace HotelManagementSystem
                 .AddDefaultTokenProviders();
             // Add framework services.
             services.AddMvc();
+         
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +66,13 @@ namespace HotelManagementSystem
             app.UseIdentity();
 
             app.UseMvc();
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+                builder.AllowAnyOrigin();
+                builder.AllowCredentials();
+            });
             DbInitializer.Initialize(context);
             DbInitializer.Initialize(iContext);
         }

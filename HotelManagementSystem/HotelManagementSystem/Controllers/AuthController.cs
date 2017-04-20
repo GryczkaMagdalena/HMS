@@ -119,7 +119,7 @@ namespace HotelManagementSystem.Controllers
 
                     await idb.SaveChangesAsync();
 
-                    return Json(new { status = "checkedIn" });
+                    return Json(new { status = "checkedOut" });
                 }
                 return Json(new { status = "invalidInput" });
 
@@ -197,6 +197,7 @@ namespace HotelManagementSystem.Controllers
                     FirstName = registerModel.FirstName,
                     Email = registerModel.Email,
                     NormalizedEmail = registerModel.Email,
+                    WorkerType = (WorkerType)System.Enum.Parse(typeof(WorkerType), registerModel.WorkerType, true)
                 };
                 var result = await userManager.CreateAsync(user, registerModel.Password);
                 if (result.Succeeded)
