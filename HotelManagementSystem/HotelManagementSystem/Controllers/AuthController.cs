@@ -13,9 +13,11 @@ using HotelManagementSystem.Models.Concrete;
 using Newtonsoft.Json;
 using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors;
 
 namespace HotelManagementSystem.Controllers
 {
+    [EnableCors("HotelCorsPolicy")]
     [Authorize]
     [Produces("application/json")]
     [Route("api/Auth/[action]")]
