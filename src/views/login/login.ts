@@ -18,12 +18,12 @@ export class LoginView {
     console.log("dupadupa", this.userInfo);
 
     this.loginService.logIn(this.userInfo)
-      .then(res => {
-        this.loggedIn = true;
-        this.eventAggregator.publish('login::loggedIn', {loggedIn: this.loggedIn});
-        this.router.navigateToRoute('base');
-      })
-      .catch(err => console.log(err));
+      // .then(res => {
+      //   this.loggedIn = true;
+      //   this.eventAggregator.publish('login::loggedIn', {loggedIn: this.loggedIn});
+      //   this.router.navigateToRoute('base');
+      // })
+      // .catch(err => console.log(err));
   }
 }
 
