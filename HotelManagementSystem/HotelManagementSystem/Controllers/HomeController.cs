@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Cors;
 namespace HotelManagementSystem.Controllers
 {
     [EnableCors("HotelCorsPolicy")]
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]/[action]")]
     public class HomeController : Controller
     {
