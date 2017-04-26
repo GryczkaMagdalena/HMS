@@ -1,7 +1,7 @@
 import {inject} from 'aurelia-framework';
 import {HttpClient as HttpFetch, json} from 'aurelia-fetch-client';
 import {EventAggregator} from 'aurelia-event-aggregator';
-
+import {AureliaCookie} from 'aurelia-cookie';
 
 @inject(HttpFetch, EventAggregator)
 export class LoginService {
@@ -10,9 +10,14 @@ export class LoginService {
   }
 
   logIn(userInfo) {
+    // let userObj = {
+    //   Login: "draggie",
+    //   Password: "R@yman12"
+    // };
+
     let userObj = {
-      Login: "draggie",
-      Password: "R@yman12"
+      Login: userInfo.username,
+      Password: userInfo.password
     };
 
     console.log("TO WYSYŁAM: ", userObj);
@@ -28,6 +33,7 @@ export class LoginService {
         })
         .then(data => {
           console.log('data',data);
+          // console.log(getCookie('io'));
           // let tmpResponse = JSON.parse(JSON.stringify(data));
           //
           // let token = tmpResponse.token.tokenType + ' ' + tmpResponse.token.token;

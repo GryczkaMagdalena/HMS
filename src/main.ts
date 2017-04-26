@@ -14,6 +14,7 @@ export function configure(aurelia: Aurelia) {
 
   aurelia.use
     .standardConfiguration()
+    .plugin('aurelia-cookie')
     .feature('resources');
 
   if (environment.debug) {
