@@ -1,7 +1,11 @@
+import {inject} from 'aurelia-framework';
 import {RouterConfiguration, Router} from 'aurelia-router';
+import {CasesService} from '../../../services/cases-service';
 
+@inject(CasesService)
 export class Cases {
 
+  cases: {}[];
   router: Router;
 
   configureRouter(config: RouterConfiguration, router: Router) {
@@ -24,7 +28,9 @@ export class Cases {
     this.router = router;
   }
 
-  constructor() {
-
+  constructor(private casesService: CasesService) {
+    casesService.getCases();
   }
+
+
 }
