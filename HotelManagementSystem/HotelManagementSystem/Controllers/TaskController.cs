@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HotelManagementSystem.Models.Infrastructure;
+using Microsoft.AspNetCore.Cors;
 
 namespace HotelManagementSystem.Controllers
 {
+    [EnableCors("HotelCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Task/[action]")]
     public class TaskController : Controller
