@@ -202,7 +202,7 @@ namespace HotelManagementSystem.Controllers
         }
 
         // DELETE api/Room/{id}
-          /**
+      /**
       * @api {delete} /Room?RoomID Delete
       * @apiVersion 0.1.0
       * @apiName Delete
