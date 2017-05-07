@@ -69,8 +69,7 @@ export class App {
 class AuthorizeStep {
 
   static auth = {
-    isAuthenticated: false
-    // isAuthenticated: !!sessionStorage.getItem('session_token')
+    isAuthenticated: !!sessionStorage.getItem('session_token')
   };
 
   run(navigationInstruction: NavigationInstruction, next: Next) {
