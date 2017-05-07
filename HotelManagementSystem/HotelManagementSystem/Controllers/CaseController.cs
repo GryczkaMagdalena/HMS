@@ -9,11 +9,13 @@ using HotelManagementSystem.Models.Infrastructure;
 using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.EntityFrameworkCore;
 using HotelManagementSystem.Models.Entities.Identity;
+using Microsoft.AspNetCore.Cors;
 
 namespace HotelManagementSystem.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Produces("application/json")]
+    [EnableCors("HotelCorsPolicy")]
     [Route("api/Case")]
     public class CaseController : Controller
     {

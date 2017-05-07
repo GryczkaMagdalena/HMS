@@ -14,6 +14,9 @@ using HotelManagementSystem.Models.Entities.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace HotelManagementSystem
 {
@@ -41,8 +44,7 @@ namespace HotelManagementSystem
              options.UseSqlServer(Configuration.GetConnectionString("Storage")));
 
             services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<IdentityContext>()
-                .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<IdentityContext>();
             // Add framework services.
             services.AddMvc();
             var corsBuilder = new CorsPolicyBuilder();
@@ -54,6 +56,28 @@ namespace HotelManagementSystem
             services.AddCors(options =>
             {
                 options.AddPolicy("HotelCorsPolicy", corsBuilder.Build());
+            });
+            services.Configure<IdentityOptions>(cfg =>
+            {
+                cfg.Cookies.ApplicationCookie.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = (ctx) =>
+                      {
+                          if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                          {
+                              ctx.Response.StatusCode = 401;
+                          }
+                          return Task.CompletedTask;
+                      },
+                    OnRedirectToAccessDenied = (ctx) =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 403;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
         }
 
@@ -73,10 +97,22 @@ namespace HotelManagementSystem
             }
 
             app.UseStaticFiles();
-            app.UseIdentity();
-
-            app.UseMvc();
             app.UseCors("HotelCorsPolicy");
+            app.UseIdentity();
+            app.UseJwtBearerAuthentication(new JwtBearerOptions()
+            {
+                AutomaticAuthenticate=true,
+                AutomaticChallenge=true,
+                TokenValidationParameters= new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey=true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("HotelowaMuffinka")),
+                    ValidateLifetime=true,
+                    ValidIssuer= "http://hotelmanagementsystem.azurewebsites.net/",
+                    ValidAudience= "http://hotelmanagementsystem.azurewebsites.net/"
+                }
+            });
+            app.UseMvc();
             DbInitializer.Initialize(context);
             DbInitializer.Initialize(iContext);
         }

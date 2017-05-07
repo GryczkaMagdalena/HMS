@@ -204,10 +204,13 @@
     "groupTitle": "Auth"
   },
   {
+    "deprecated": {
+      "content": "do not use it."
+    },
     "type": "get",
     "url": "/Auth/Login",
     "title": "Login - clear cookie",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "name": "GetLogin",
     "group": "Auth",
     "success": {
@@ -264,10 +267,13 @@
     "groupTitle": "Auth"
   },
   {
+    "deprecated": {
+      "content": "use now (#Auth:Token)."
+    },
     "type": "post",
     "url": "/Auth/Login",
     "title": "Login",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "name": "PostLogin",
     "group": "Auth",
     "parameter": {
@@ -372,12 +378,12 @@
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n\"status\":\"fail\"\n}",
+          "content": "HTTP/1.1 200 OK\n{\n \"status\":\"fail\"\n}",
           "type": "json"
         },
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n\"status\":\"unauthorized\"\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"status\":\"unauthorized\"\n}",
           "type": "json"
         }
       ]
@@ -517,6 +523,163 @@
     },
     "filename": "HotelManagementSystem/Controllers/AuthController.cs",
     "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
+    "url": "/Auth/Token",
+    "title": "Token",
+    "version": "0.1.1",
+    "name": "TokenLogin",
+    "group": "Auth",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "Login",
+            "description": "<p>Email or login of user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "Password",
+            "description": "<p>User's password</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "FirstName",
+            "description": "<p>First name of user.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "LastName",
+            "description": "<p>Last name of user.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Email",
+            "description": "<p>Optional email address of user</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "WorkerType",
+            "description": "<p>One of available types (Cleaner,Technician,None).</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "Role",
+            "description": "<p>All roles that particular user have</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "GUID",
+            "optional": false,
+            "field": "RoomID",
+            "description": "<p>Optional parameter - only guests have this not-null</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Token",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Authentication token that should be send in every response as header (headerKey:Authenticate, headerValue: &quot;bearer &quot; + token)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "expiration",
+            "description": "<p>Date when token expires</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n\"firstName\":\"Abraham\",\n\"lastName\":\"Lincoln\",\n\"email\":\"president@usa.pl\",\n\"workerType\":\"Technician\",\n\"role\":[\"Worker\"]\n\"token\":\"blablabla121212\",\n\"expiration\":\"2017-05-07T20:49:48Z\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "LoginFailed",
+            "description": "<p>Password is invalid.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InternalError",
+            "description": "<p>This User does not exist.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n \"status\":\"failedToLogin\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 BadRequest\n{\n    \"status\":\"failed\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "groupTitle": "Auth"
+  },
+  {
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "varname1",
+            "description": "<p>No type.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "varname2",
+            "description": "<p>With type.</p>"
+          }
+        ]
+      }
+    },
+    "type": "",
+    "url": "",
+    "version": "0.0.0",
+    "filename": "HotelManagementSystem/wwwroot/doc/main.js",
+    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "name": ""
   },
   {
     "type": "post",

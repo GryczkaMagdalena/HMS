@@ -14,6 +14,10 @@ using Newtonsoft.Json;
 using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cors;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -24,28 +28,23 @@ namespace HotelManagementSystem.Controllers
     [Route("api/Auth/[action]")]
     public class AuthController : Controller
     {
-        private readonly UserManager<User> userManager;
-        private readonly RoleManager<Role> roleManager;
-        private readonly SignInManager<User> signInManager;
+        private UserService userService;
         private StorageContext db = new StorageContext();
         private IdentityContext idb = new IdentityContext();
-        private readonly string externalCookieScheme;
 
         public AuthController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            IOptions<IdentityCookieOptions> identityCookieOptions,
+            IPasswordHasher<User> hash,
             RoleManager<Role> roleManager
             )
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-            externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
-            this.roleManager = roleManager;
+            userService = new UserService(idb,userManager,signInManager,hash,roleManager);
         }
         /**
+            * @apiDeprecated do not use it.  
             * @api {get} /Auth/Login Login - clear cookie
-            * @apiVersion 0.1.0
+            * @apiVersion 0.1.1
             * @apiName GetLogin
             * @apiGroup Auth
             *
@@ -60,15 +59,15 @@ namespace HotelManagementSystem.Controllers
         */
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Login()
+        public IActionResult Login()
         {
-            await HttpContext.Authentication.SignOutAsync(externalCookieScheme);
             return Json(new { status = "clear" });
         }
 
         /**
+          * @apiDeprecated use now (#Auth:Token). 
           * @api {post} /Auth/Login Login
-          * @apiVersion 0.1.0
+          * @apiVersion 0.1.1
           * @apiName PostLogin
           * @apiGroup Auth
           *
@@ -93,18 +92,18 @@ namespace HotelManagementSystem.Controllers
           *     "workerType":"Technician",
           *     "role":["Worker"]
           *     }
-          *@apiError MissingData Login or Password are missing.
+          * @apiError MissingData Login or Password are missing.
           * @apiErrorExample Error-Response:
           * HTTP/1.1 200 OK
           * {
-          * "status":"fail"
+          *  "status":"fail"
           * }
           * 
           * @apiError Unathorized This User does not exist or password is invalid.
           * @apiErrorExample Error-Response:
           * HTTP/1.1 200 OK
           * {
-          * "status":"unauthorized"
+          *     "status":"unauthorized"
           * }
       */
         [HttpPost]
@@ -113,11 +112,11 @@ namespace HotelManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await signInManager.PasswordSignInAsync(user.Login, user.Password, true, false);
+                var result = await userService.PasswordSignInAsync(user,user.Password);
                 if (result.Succeeded)
                 {
                     var entity = idb.Users.First(q => q.UserName == user.Login);
-                    var roles = await userManager.GetRolesAsync(entity);
+                    var roles = await userService.GetUserRoles(entity);
 
                     var output = new
                     {
@@ -157,7 +156,7 @@ namespace HotelManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await signInManager.SignOutAsync();
+            await userService.SignOut();
             return Json(new { status = "logout" });
         }
         /**
@@ -212,7 +211,7 @@ namespace HotelManagementSystem.Controllers
                     Room room = db.Rooms.First(q => q.Number == roomNumber);
                     User guestAccount = idb.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
 
-                    if (!(await userManager.IsInRoleAsync(guestAccount, "Customer")))
+                    if (!(await userService.IsInRoleAsync(guestAccount, "Customer")))
                     {
                         return Json(new { status = "invalidRole" });
                     }
@@ -306,7 +305,7 @@ namespace HotelManagementSystem.Controllers
                     Room room = db.Rooms.First(q => q.Number == roomNumber);
                     User guestAccount = idb.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
 
-                    if (!(await userManager.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
+                    if (!(await userService.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
                     {
                         return Json(new { status = "invalidRole" });
                     }
@@ -404,10 +403,10 @@ namespace HotelManagementSystem.Controllers
                     NormalizedEmail = registerModel.Email,
                     WorkerType = (WorkerType)System.Enum.Parse(typeof(WorkerType), registerModel.WorkerType, true)
                 };
-                var result = await userManager.CreateAsync(user, registerModel.Password);
+                var result = await userService.CreateUser(user, registerModel.Password);
                 if (result.Succeeded)
                 {
-                    var roleResult = await userManager.AddToRoleAsync(user, registerModel.RoleName);
+                    var roleResult = await userService.AddUserToRole(registerModel.RoleName, user);
                     if (roleResult.Succeeded)
                     {
                         return Json(new { status = "registered" });
@@ -423,6 +422,101 @@ namespace HotelManagementSystem.Controllers
                 }
             }
             return Json(new { status = "failure" });
+        }
+
+        /**
+         * @api {post} /Auth/Token Token
+         * @apiVersion 0.1.1
+         * @apiName TokenLogin
+         * @apiGroup Auth
+         *
+         * @apiParam {String} Login Email or login of user
+         * @apiParam {String} Password User's password
+         *
+         * @apiSuccess {String} FirstName First name of user.
+         * @apiSuccess {String} LastName Last name of user.
+         * @apiSuccess {String} Email Optional email address of user
+         * @apiSuccess {String} WorkerType One of available types (Cleaner,Technician,None).
+         * @apiSuccess {Array} Role All roles that particular user have 
+         * @apiSuccess {GUID} RoomID Optional parameter - only guests have this not-null 
+         * @apiSuccess {Token} token Authentication token that should be send in every response as header (headerKey:Authenticate, headerValue: "bearer " + token)
+          *@apiSuccess {DateTime} expiration Date when token expires
+         * @apiSuccessExample Success-Response:
+         *     HTTP/1.1 200 OK
+         *     {
+         *     "firstName":"Abraham",
+         *     "lastName":"Lincoln",
+         *     "email":"president@usa.pl",
+         *     "workerType":"Technician",
+         *     "role":["Worker"]
+         *     "token":"blablabla121212",
+         *     "expiration":"2017-05-07T20:49:48Z"
+         *     }
+         * @apiError LoginFailed Password is invalid.
+         * @apiErrorExample Error-Response:
+         * HTTP/1.1 400 BadRequest
+         * {
+         *  "status":"failedToLogin"
+         * }
+         * 
+         * @apiError InternalError This User does not exist.
+         * @apiErrorExample Error-Response:
+         * HTTP/1.1 404 BadRequest
+         * {
+         *     "status":"failed"
+         * }
+     */
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> Token([FromBody] UserViewModel userModel)
+        {
+            try
+            {
+                var user = await userService.GetUserByUsername(userModel.Login);
+                if (user != null)
+                {
+                    if (userService.VerifyHashedPassword(user, userModel.Password)==PasswordVerificationResult.Success){
+                        var userClaims = await userService.GetClaims(user);
+                        var claims = new[]
+                           {
+                                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                                new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
+                                new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
+                                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+                            }.Union(userClaims);
+
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("HotelowaMuffinka"));
+                        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                        var token = new JwtSecurityToken(
+                            claims: claims,
+                            expires: DateTime.UtcNow.AddHours(8),
+                            signingCredentials:creds,
+                            issuer: "http://hotelmanagementsystem.azurewebsites.net/",
+                            audience: "http://hotelmanagementsystem.azurewebsites.net/"
+                            );
+                        return Ok(new
+                        {
+                            token = new JwtSecurityTokenHandler().WriteToken(token),
+                            expiration = token.ValidTo,
+                            user= new
+                            {
+                                FirstName= user.FirstName,
+                                LastName = user.LastName,
+                                Email = user.Email,
+                                WorkerType= Enum.GetName(typeof(WorkerType),user.WorkerType),
+                                Roles = user.Roles,
+                                RoomID = user.RoomID
+                            }
+                        });
+                    }
+                }
+            }catch(Exception ex)
+            {
+                return NotFound(new { status="failed" });
+            }
+            return BadRequest(new { status = "failedToLogin" });
         }
     }
 }
