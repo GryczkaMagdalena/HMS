@@ -42,8 +42,9 @@ namespace HotelManagementSystem.Controllers
             userService = new UserService(idb,userManager,signInManager,hash,roleManager);
         }
         /**
+            * @apiDeprecated do not use it.  
             * @api {get} /Auth/Login Login - clear cookie
-            * @apiVersion 0.1.0
+            * @apiVersion 0.1.1
             * @apiName GetLogin
             * @apiGroup Auth
             *
@@ -64,8 +65,9 @@ namespace HotelManagementSystem.Controllers
         }
 
         /**
+          * @apiDeprecated use now (#Auth:Token). 
           * @api {post} /Auth/Login Login
-          * @apiVersion 0.1.0
+          * @apiVersion 0.1.1
           * @apiName PostLogin
           * @apiGroup Auth
           *
@@ -90,18 +92,18 @@ namespace HotelManagementSystem.Controllers
           *     "workerType":"Technician",
           *     "role":["Worker"]
           *     }
-          *@apiError MissingData Login or Password are missing.
+          * @apiError MissingData Login or Password are missing.
           * @apiErrorExample Error-Response:
           * HTTP/1.1 200 OK
           * {
-          * "status":"fail"
+          *  "status":"fail"
           * }
           * 
           * @apiError Unathorized This User does not exist or password is invalid.
           * @apiErrorExample Error-Response:
           * HTTP/1.1 200 OK
           * {
-          * "status":"unauthorized"
+          *     "status":"unauthorized"
           * }
       */
         [HttpPost]
@@ -421,6 +423,50 @@ namespace HotelManagementSystem.Controllers
             }
             return Json(new { status = "failure" });
         }
+
+        /**
+         * @api {post} /Auth/Token Token
+         * @apiVersion 0.1.1
+         * @apiName TokenLogin
+         * @apiGroup Auth
+         *
+         * @apiParam {String} Login Email or login of user
+         * @apiParam {String} Password User's password
+         *
+         * @apiSuccess {String} FirstName First name of user.
+         * @apiSuccess {String} LastName Last name of user.
+         * @apiSuccess {String} Email Optional email address of user
+         * @apiSuccess {String} WorkerType One of available types (Cleaner,Technician,None).
+         * @apiSuccess {Array} Role All roles that particular user have 
+         * @apiSuccess {GUID} RoomID Optional parameter - only guests have this not-null 
+         * @apiSuccess {Token} token Authentication token that should be send in every response as header (headerKey:Authenticate, headerValue: "bearer " + token)
+          *@apiSuccess {DateTime} expiration Date when token expires
+         * @apiSuccessExample Success-Response:
+         *     HTTP/1.1 200 OK
+         *     {
+         *     "firstName":"Abraham",
+         *     "lastName":"Lincoln",
+         *     "email":"president@usa.pl",
+         *     "workerType":"Technician",
+         *     "role":["Worker"]
+         *     "token":"blablabla121212",
+         *     "expiration":"2017-05-07T20:49:48Z"
+         *     }
+         * @apiError LoginFailed Password is invalid.
+         * @apiErrorExample Error-Response:
+         * HTTP/1.1 400 BadRequest
+         * {
+         *  "status":"failedToLogin"
+         * }
+         * 
+         * @apiError InternalError This User does not exist.
+         * @apiErrorExample Error-Response:
+         * HTTP/1.1 404 BadRequest
+         * {
+         *     "status":"failed"
+         * }
+     */
+
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Token([FromBody] UserViewModel userModel)
@@ -453,13 +499,22 @@ namespace HotelManagementSystem.Controllers
                         return Ok(new
                         {
                             token = new JwtSecurityTokenHandler().WriteToken(token),
-                            expiration = token.ValidTo
+                            expiration = token.ValidTo,
+                            user= new
+                            {
+                                FirstName= user.FirstName,
+                                LastName = user.LastName,
+                                Email = user.Email,
+                                WorkerType= Enum.GetName(typeof(WorkerType),user.WorkerType),
+                                Roles = user.Roles,
+                                RoomID = user.RoomID
+                            }
                         });
                     }
                 }
             }catch(Exception ex)
             {
-                return BadRequest(new { status="failed" });
+                return NotFound(new { status="failed" });
             }
             return BadRequest(new { status = "failedToLogin" });
         }
