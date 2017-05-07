@@ -1,5 +1,6 @@
 ﻿using HotelManagementSystem.Models.Entities.Identity;
 using HotelManagementSystem.Models.Entities.Storage;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,12 +38,12 @@ namespace HotelManagementSystem.Models.Infrastructure
                 return;
             }
 
-            var roles = new Role[]
+            var roles = new IdentityRole[]
             {
-                new Role{Id=Guid.NewGuid().ToString(),Name="admin",NormalizedName="Administrator"},
-                new Role{Id=Guid.NewGuid().ToString(),Name="manager",NormalizedName="Manager"},
-                new Role{Id=Guid.NewGuid().ToString(),Name="worker",NormalizedName="Worker"},
-                new Role{Id=Guid.NewGuid().ToString(),Name="customer",NormalizedName="Customer"}
+                new IdentityRole{Id=Guid.NewGuid().ToString(),Name="admin",NormalizedName="Administrator"},
+                new IdentityRole{Id=Guid.NewGuid().ToString(),Name="manager",NormalizedName="Manager"},
+                new IdentityRole{Id=Guid.NewGuid().ToString(),Name="worker",NormalizedName="Worker"},
+                new IdentityRole{Id=Guid.NewGuid().ToString(),Name="customer",NormalizedName="Customer"}
             };
             foreach(var role in roles)
             {

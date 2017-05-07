@@ -1,6 +1,97 @@
 [
   {
     "type": "post",
+    "url": "/Auth/AddToRole",
+    "title": "AddToRole",
+    "version": "0.1.1",
+    "name": "AddToRole",
+    "group": "Auth",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "GUID",
+            "optional": false,
+            "field": "UserID",
+            "description": "<p>ID of user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "roleName",
+            "description": "<p>Name of role</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>Status of successful response</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\":\"User added to role Customer\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "RoleNotFound",
+            "description": "<p>Role name is invalid.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "UserError",
+            "description": "<p>User cannot be added to role.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "UserNotExists",
+            "description": "<p>User cannot be found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n \"status\":\"Role does not exists\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n     \"status\":User cannot be added to role Customer\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n     \"status\":User does not exists\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
     "url": "/Auth/CheckIn",
     "title": "CheckIn",
     "version": "0.1.0",
@@ -229,6 +320,61 @@
         {
           "title": "Success-Response:",
           "content": "HTTP/1.1 200 OK\n{\n  \"status\": \"clear\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
+    "url": "/Auth/GetUserRoles",
+    "title": "GetUserRoles",
+    "version": "0.1.1",
+    "name": "GetUserRoles",
+    "group": "Auth",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "GUID",
+            "optional": false,
+            "field": "UserID",
+            "description": "<p>ID of user</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": false,
+            "field": "roles",
+            "description": "<p>Roles of user</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "UserNotExists",
+            "description": "<p>User cannot be found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n     \"status\":User does not exists\"\n}",
           "type": "json"
         }
       ]

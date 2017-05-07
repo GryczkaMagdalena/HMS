@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace HotelManagementSystem.Models.Infrastructure
 {
-    public class IdentityContext : IdentityDbContext
+    public class IdentityContext : IdentityDbContext<User>
     {
         public new DbSet<User> Users { get; set; }
-        public new DbSet<Role> Roles { get; set; }
+       // public new DbSet<Role> Roles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

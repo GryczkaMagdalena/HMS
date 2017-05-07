@@ -8,9 +8,10 @@ using HotelManagementSystem.Models.Infrastructure;
 namespace HotelManagementSystem.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    partial class IdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20170507155259_IdentityUp")]
+    partial class IdentityUp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")

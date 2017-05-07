@@ -18,6 +18,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -36,7 +37,7 @@ namespace HotelManagementSystem.Controllers
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IPasswordHasher<User> hash,
-            RoleManager<Role> roleManager
+            RoleManager<IdentityRole> roleManager
             )
         {
             userService = new UserService(idb,userManager,signInManager,hash,roleManager);
@@ -604,6 +605,9 @@ namespace HotelManagementSystem.Controllers
             try
             {
                 var user = await idb.Users.FindAsync(UserID.ToString());
+                var roles2 = user.Roles.ToList();
+                var tmp = idb.UserRoles.First(q => q.UserId == UserID.ToString());
+                var inRole = await userService.IsInRoleAsync(user, "Administrator");
                 var roles = await userService.GetUserRoles(user);
                 return Ok(new { roles });
             }
