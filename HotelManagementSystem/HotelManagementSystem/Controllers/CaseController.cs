@@ -100,8 +100,33 @@ namespace HotelManagementSystem.Controllers
                 Title = value.Title,
                 Description = value.Description,
                 WorkerType = Enum.GetName(typeof(WorkerType),value.WorkerType) 
-        });
+            });
         }
+
+
+        // GET api/Case/{type}
+        [HttpGet("{type}")]
+        public async Task<IActionResult> Read(WorkerType Type) {
+            List<Case> cases = null;
+            try 
+            {
+                cases = await storage.Cases.Where(x => x.WorkerType == Type).ToListAsync();
+            } 
+            catch (Exception) 
+            {
+                return Json(new {status="notFound"});
+            }
+            return Json(new {
+                cases = cases.Select(q => new
+                {
+                    CaseID = q.CaseID,
+                    Description = q.Description,
+                    Title = q.Title,
+                    WorkerType = Enum.GetName(typeof(WorkerType), q.WorkerType)
+                })
+            });
+        }
+
         /**
          * @api {post} /Case Create
          * @apiVersion 0.1.0
