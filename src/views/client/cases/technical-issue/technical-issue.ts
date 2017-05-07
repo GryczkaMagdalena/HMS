@@ -1,13 +1,19 @@
 import {inject} from 'aurelia-framework';
 import {DialogService} from 'aurelia-dialog';
 import {ConfirmDialog} from '../confirmDialog';
+import {CasesService} from '../../../../services/cases-service';
 
-@inject(DialogService)
+
+@inject(DialogService, CasesService)
 export class TechnicalIssue {
   cases: {}[];
   selectedId: number;
 
-  constructor(private dialogService = DialogService) {
+  constructor(private dialogService = DialogService, private casesService: CasesService) {
+    casesService.getTechnicianCases().then(res => {
+      this.cases = JSON.parse(JSON.stringify(res));
+    });
+
     this.cases = [
       {
         id: 1,
@@ -25,11 +31,11 @@ export class TechnicalIssue {
         id: 4,
         text: 'Inne'
       }
-    ]
+    ];
   }
 
   selectCase(selectedCase) {
-    this.selectedId = selectedCase.id;
+    this.selectedId = selectedCase.CaseID;
     console.log(selectedCase);
     // return true;
   }
