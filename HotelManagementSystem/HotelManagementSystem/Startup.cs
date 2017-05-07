@@ -43,7 +43,7 @@ namespace HotelManagementSystem
             services.AddDbContext<IdentityContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("Storage")));
 
-            services.AddIdentity<User, Role>()
+            services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityContext>();
             // Add framework services.
             services.AddMvc();

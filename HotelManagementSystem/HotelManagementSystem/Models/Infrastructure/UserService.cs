@@ -1,6 +1,7 @@
 ﻿using HotelManagementSystem.Models.Concrete;
 using HotelManagementSystem.Models.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace HotelManagementSystem.Models.Infrastructure
         private UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
         private IPasswordHasher<User> _passwordHasher;
-        private RoleManager<Role> _roleManager;
+        private RoleManager<IdentityRole> _roleManager;
 
         public async Task<bool> RoleExists(string roleName)
         {
@@ -24,7 +25,7 @@ namespace HotelManagementSystem.Models.Infrastructure
         {
             return await _signInManager.PasswordSignInAsync(user.Login, password, true, false);
         }
-        public UserService(IdentityContext context,UserManager<User> userManager, SignInManager<User> signInManager, IPasswordHasher<User> hasher,RoleManager<Role> roleManager)
+        public UserService(IdentityContext context,UserManager<User> userManager, SignInManager<User> signInManager, IPasswordHasher<User> hasher,RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
