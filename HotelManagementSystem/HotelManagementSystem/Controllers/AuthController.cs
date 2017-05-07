@@ -512,11 +512,105 @@ namespace HotelManagementSystem.Controllers
                         });
                     }
                 }
-            }catch(Exception ex)
+            }catch(Exception)
             {
                 return NotFound(new { status="failed" });
             }
             return BadRequest(new { status = "failedToLogin" });
+        }
+        /**
+        * @api {post} /Auth/AddToRole AddToRole
+        * @apiVersion 0.1.1
+        * @apiName AddToRole
+        * @apiGroup Auth
+        *
+        * @apiParam {GUID} UserID ID of user
+        * @apiParam {String} roleName Name of role
+        * 
+        * @apiSuccess {String} status Status of successful response
+        * @apiSuccessExample Success-Response:
+        *     HTTP/1.1 200 OK
+        *     {
+        *       "status":"User added to role Customer"
+        *     }
+        *@apiError RoleNotFound Role name is invalid.
+         * @apiErrorExample Error-Response:
+         * HTTP/1.1 400 BadRequest
+         * {
+         *  "status":"Role does not exists"
+         * }  
+         * @apiError UserError User cannot be added to role.
+         * @apiErrorExample Error-Response:
+         * HTTP/1.1 400 BadRequest
+         * {
+         *      "status":User cannot be added to role Customer"
+         * }
+         * 
+         * @apiError UserNotExists User cannot be found.
+         * @apiErrorExample Error-Response:
+         * HTTP/1.1 400 BadRequest
+         * {
+         *      "status":User does not exists"
+         * }
+        */
+        [HttpPost("{UserID}")]
+        public async Task<IActionResult> AddToRole([FromRoute]Guid UserID,[FromBody] String roleName)
+        {
+            try
+            {
+                var user = await idb.Users.FindAsync(UserID.ToString());
+                if(await userService.RoleExists(roleName))
+                {
+                   var result = await userService.AddUserToRole(roleName, user);
+                    if (result.Succeeded)
+                    {
+                        return Ok(new { status = "User added to role " + roleName });
+                    }
+                    else
+                    {
+                        return BadRequest(new { status = "User cannot be added to role" + roleName });
+                    }
+                }
+                else
+                {
+                    return NotFound(new { status = "Role does not exists" });
+                }
+            }
+            catch (Exception)
+            {
+                return NotFound(new { status = "User does not exists" });
+            }
+        }
+        /**
+      * @api {post} /Auth/GetUserRoles GetUserRoles
+      * @apiVersion 0.1.1
+      * @apiName GetUserRoles
+      * @apiGroup Auth
+      *
+      * @apiParam {GUID} UserID ID of user
+      * 
+      *  @apiSuccess {List} roles Roles of user
+      * 
+      * @apiError UserNotExists User cannot be found.
+       * @apiErrorExample Error-Response:
+       * HTTP/1.1 400 BadRequest
+       * {
+       *      "status":User does not exists"
+       * }
+      */
+        [HttpGet("{UserID}")]
+        public async Task<IActionResult> GetUserRoles([FromRoute] Guid UserID)
+        {
+            try
+            {
+                var user = await idb.Users.FindAsync(UserID.ToString());
+                var roles = await userService.GetUserRoles(user);
+                return Ok(new { roles });
+            }
+            catch (Exception)
+            {
+                return NotFound(new { status = "User does not exists" });
+            }
         }
     }
 }
