@@ -137,11 +137,6 @@
             "main": "aurelia-fetch-client"
           },
           {
-            "name": "aurelia-cookie",
-            "path": "../node_modules/aurelia-cookie/dist/amd",
-            "main": "index"
-          },
-          {
             "name": "aurelia-testing",
             "path": "../node_modules/aurelia-testing/dist/amd",
             "main": "aurelia-testing",

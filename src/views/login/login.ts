@@ -15,15 +15,14 @@ export class LoginView {
   }
 
   logIn() {
-    console.log("dupadupa", this.userInfo);
-
     this.loginService.logIn(this.userInfo)
-      // .then(res => {
-      //   this.loggedIn = true;
-      //   this.eventAggregator.publish('login::loggedIn', {loggedIn: this.loggedIn});
-      //   this.router.navigateToRoute('base');
-      // })
-      // .catch(err => console.log(err));
+      .then(res => {
+        console.log('login.ts -> logIn() -> res: ', res);
+        this.loggedIn = true;
+        this.eventAggregator.publish('login::loggedIn', {loggedIn: this.loggedIn});
+        this.router.navigateToRoute('base');
+      })
+      .catch(err => console.log(err));
   }
 }
 

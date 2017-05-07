@@ -14,7 +14,6 @@ export function configure(aurelia: Aurelia) {
 
   aurelia.use
     .standardConfiguration()
-    .plugin('aurelia-cookie')
     .feature('resources');
 
   if (environment.debug) {
@@ -37,16 +36,16 @@ export function configure(aurelia: Aurelia) {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         }
-      });
-    // .withInterceptor({
-    //   request(request) {
-    //     request.headers.append('Authorization', sessionStorage.getItem('session_token'));
-    //     return request;
-    //   },
-    //   response(response) {
-    //     return response;
-    //   }
-    // });
+      })
+    .withInterceptor({
+      request(request) {
+        request.headers.append('Authorization', sessionStorage.getItem('session_token'));
+        return request;
+      },
+      response(response) {
+        return response;
+      }
+    });
   });
 
   container.registerInstance(HttpFetch, http);
