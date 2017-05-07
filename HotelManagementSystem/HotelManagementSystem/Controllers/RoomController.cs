@@ -87,7 +87,7 @@ namespace HotelManagementSystem.Controllers
     * }
    */
         //GET /api/Room/{id}
-        [HttpGet("{id}")]
+        [HttpGet("{RoomID}")]
         public async Task<IActionResult> Read(Guid RoomID)
         {
             Room room = null;
@@ -175,7 +175,7 @@ namespace HotelManagementSystem.Controllers
        * }
   */
         // PUT api/Room/{id}
-        [HttpPut("{id}")]
+        [HttpPut("{RoomID}")]
         public async Task<IActionResult> Update([FromRoute] Guid RoomID, [FromBody] Room room)
         {
             try
@@ -225,7 +225,7 @@ namespace HotelManagementSystem.Controllers
        *  "status":"notFound"
        * }
   */
-        [HttpDelete("{id}")]
+        [HttpDelete("{RoomID}")]
         public async Task<IActionResult> Delete (Guid RoomID)
         {
             try

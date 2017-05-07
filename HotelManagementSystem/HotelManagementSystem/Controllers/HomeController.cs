@@ -80,7 +80,7 @@ namespace HotelManagementSystem.Controllers
         * }
        */
         // GET api/values/5
-        [HttpGet("{id}")]
+        [HttpGet("{RuleID}")]
         public async Task<IActionResult> GetRule(Guid RuleID)
         {
             Rule rule = null;
@@ -172,7 +172,7 @@ namespace HotelManagementSystem.Controllers
         * }
    */
         // PUT api/values/5
-        [HttpPut("{id}")]
+        [HttpPut("{RuleID}")]
         public async Task<IActionResult> Rule([FromRoute] Guid RuleID, [FromBody]Rule value)
         {
             try
@@ -221,7 +221,7 @@ namespace HotelManagementSystem.Controllers
        * }
   */
         // DELETE api/values/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{RuleID}")]
         public async Task<IActionResult> Rule(Guid RuleID)
         {
             try

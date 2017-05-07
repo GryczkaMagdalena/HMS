@@ -85,7 +85,7 @@ namespace HotelManagementSystem.Controllers
         * }
        */
         // GET api/Case/{id}
-        [HttpGet("{id}")]
+        [HttpGet("{CaseID}")]
         public async Task<IActionResult> Read(Guid CaseID)
         {
             Case value = null;
@@ -183,7 +183,7 @@ namespace HotelManagementSystem.Controllers
          * }
     */
         // PUT api/Case/{id}
-        [HttpPut("{id}")]
+        [HttpPut("{CaseID}")]
         public async Task<IActionResult> Update([FromRoute] Guid CaseID,[FromBody] Case value)
         {
             try
@@ -232,12 +232,12 @@ namespace HotelManagementSystem.Controllers
         * }
    */
         // DELETE api/Case/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete (Guid id)
+        [HttpDelete("{CaseID}")]
+        public async Task<IActionResult> Delete (Guid CaseID)
         {
             try
             {
-                Case toDelete = await storage.Cases.FindAsync(id);
+                Case toDelete = await storage.Cases.FindAsync(CaseID);
                 if (toDelete != null)
                 {
                     storage.Cases.Attach(toDelete);

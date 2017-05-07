@@ -16,6 +16,10 @@ namespace HotelManagementSystem.Models.Infrastructure
         private IPasswordHasher<User> _passwordHasher;
         private RoleManager<Role> _roleManager;
 
+        public async Task<bool> RoleExists(string roleName)
+        {
+            return await _roleManager.RoleExistsAsync(roleName);
+        }
         public async Task<SignInResult> PasswordSignInAsync(UserViewModel user, string password)
         {
             return await _signInManager.PasswordSignInAsync(user.Login, password, true, false);
