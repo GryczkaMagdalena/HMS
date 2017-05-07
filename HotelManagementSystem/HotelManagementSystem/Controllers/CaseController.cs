@@ -44,17 +44,16 @@ namespace HotelManagementSystem.Controllers
         public async Task<IActionResult> List()
         {
             List<Case> cases = await storage.Cases.ToListAsync();
-            
-            return Json(new
-            {
-                cases = cases.Select(q => new
+
+            return Json(
+                cases.Select(q => new
                 {
                     CaseID = q.CaseID,
                     Description = q.Description,
                     Title = q.Title,
                     WorkerType = Enum.GetName(typeof(WorkerType), q.WorkerType)
                 })
-            });
+                );
         }
              /**
        * @api {get} /Case?CaseID Read

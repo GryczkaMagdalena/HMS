@@ -19,6 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -32,15 +33,18 @@ namespace HotelManagementSystem.Controllers
         private UserService userService;
         private StorageContext db = new StorageContext();
         private IdentityContext idb = new IdentityContext();
+        private readonly ILogger logger;
 
         public AuthController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IPasswordHasher<User> hash,
-            RoleManager<IdentityRole> roleManager
+            RoleManager<IdentityRole> roleManager,
+            ILogger<AuthController> logger
             )
         {
             userService = new UserService(idb,userManager,signInManager,hash,roleManager);
+            this.logger = logger;
         }
         /**
             * @apiDeprecated do not use it.  
@@ -407,7 +411,7 @@ namespace HotelManagementSystem.Controllers
                 var result = await userService.CreateUser(user, registerModel.Password);
                 if (result.Succeeded)
                 {
-                    var roleResult = await userService.AddUserToRole(registerModel.RoleName, user);
+                    var roleResult = await userService.AddUserToRole(registerModel.RoleName, user.Id);
                     if (roleResult.Succeeded)
                     {
                         return Json(new { status = "registered" });
@@ -559,10 +563,9 @@ namespace HotelManagementSystem.Controllers
         {
             try
             {
-                var user = await idb.Users.FindAsync(UserID.ToString());
                 if(await userService.RoleExists(roleName))
                 {
-                   var result = await userService.AddUserToRole(roleName, user);
+                   var result = await userService.AddUserToRole(roleName, UserID.ToString());
                     if (result.Succeeded)
                     {
                         return Ok(new { status = "User added to role " + roleName });
@@ -577,8 +580,9 @@ namespace HotelManagementSystem.Controllers
                     return NotFound(new { status = "Role does not exists" });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError("Error", ex.ToString());
                 return NotFound(new { status = "User does not exists" });
             }
         }
@@ -605,14 +609,12 @@ namespace HotelManagementSystem.Controllers
             try
             {
                 var user = await idb.Users.FindAsync(UserID.ToString());
-                var roles2 = user.Roles.ToList();
-                var tmp = idb.UserRoles.First(q => q.UserId == UserID.ToString());
-                var inRole = await userService.IsInRoleAsync(user, "Administrator");
                 var roles = await userService.GetUserRoles(user);
                 return Ok(new { roles });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError("Error", ex.ToString());
                 return NotFound(new { status = "User does not exists" });
             }
         }
