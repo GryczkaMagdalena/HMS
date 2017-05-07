@@ -8,7 +8,7 @@ using HotelManagementSystem.Models.Entities.Identity;
 
 namespace HotelManagementSystem.Migrations
 {
-    [DbContext(typeof(StorageContext))]
+    [DbContext(typeof(IdentityContext))]
     [Migration("20170412214204_AddedCases")]
     partial class AddedCases
     {

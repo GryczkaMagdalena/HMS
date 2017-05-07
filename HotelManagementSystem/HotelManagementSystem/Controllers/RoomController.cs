@@ -17,7 +17,7 @@ namespace HotelManagementSystem.Controllers
     [Route("api/Room")]
     public class RoomController : Controller
     {
-        private StorageContext storage = new StorageContext();
+        private IdentityContext storage = new IdentityContext();
         
           /**
       * @api {get} /Room List
@@ -48,8 +48,7 @@ namespace HotelManagementSystem.Controllers
             var roomsObjectified = rooms.Select(q => new
             {
                 RoomID = q.RoomID,
-                GuestFirstName = q.GuestFirstName,
-                GuestLastName = q.GuestLastName,
+                User = q.User,
                 Number = q.Number,
                 Occupied = q.Occupied
             });

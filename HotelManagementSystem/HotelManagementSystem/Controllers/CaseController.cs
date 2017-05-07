@@ -19,7 +19,7 @@ namespace HotelManagementSystem.Controllers
     [Route("api/Case")]
     public class CaseController : Controller
     {
-        private StorageContext storage = new StorageContext();
+        private IdentityContext storage = new IdentityContext();
 
         /**
        * @api {get} /Case List

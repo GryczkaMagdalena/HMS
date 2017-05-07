@@ -10,8 +10,9 @@ namespace HotelManagementSystem.Models.Entities.Storage
         [Key]
         public Guid TaskID { get; set; }
         public string Describe { get; set; }
-        [ForeignKey("RoomID")]
-        public Guid RoomID { get; set; }
         public virtual Room Room { get; set; }
+        public virtual User Issuer { get; set; }
+        public virtual User Listener { get; set; }
+        public virtual User Receiver { get; set; }
     }
 }

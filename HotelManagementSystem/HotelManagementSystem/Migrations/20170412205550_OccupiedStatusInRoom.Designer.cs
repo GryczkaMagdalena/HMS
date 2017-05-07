@@ -7,7 +7,7 @@ using HotelManagementSystem.Models.Infrastructure;
 
 namespace HotelManagementSystem.Migrations
 {
-    [DbContext(typeof(StorageContext))]
+    [DbContext(typeof(IdentityContext))]
     [Migration("20170412205550_OccupiedStatusInRoom")]
     partial class OccupiedStatusInRoom
     {
