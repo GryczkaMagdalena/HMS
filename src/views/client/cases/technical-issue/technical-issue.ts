@@ -6,12 +6,14 @@ import {CasesService} from '../../../../services/cases-service';
 
 @inject(DialogService, CasesService)
 export class TechnicalIssue {
-  cases: {}[];
+  cases;
   selectedId: number;
 
-  constructor(private dialogService = DialogService, private casesService: CasesService) {
+  constructor(private dialogService: DialogService, private casesService: CasesService) {
     casesService.getTechnicianCases().then(res => {
-      this.cases = JSON.parse(JSON.stringify(res));
+      let tmpCases = JSON.parse(JSON.stringify(res));
+      this.cases = tmpCases.cases;
+      console.log('this.cases', this.cases);
     });
 
     this.cases = [
@@ -35,7 +37,7 @@ export class TechnicalIssue {
   }
 
   selectCase(selectedCase) {
-    this.selectedId = selectedCase.CaseID;
+    this.selectedId = selectedCase.caseID;
     console.log(selectedCase);
     // return true;
   }

@@ -9,59 +9,56 @@ export class CasesService {
   constructor(private httpFetch: HttpFetch) {
     this.cases = [
       {
-        CaseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273801",
-        Title:"Wymiana żarówki",
-        Description:'Wymiana żarówki',
-        WorkerType:"Technician"
+        caseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273801",
+        title:"Wymiana żarówki",
+        description:'Wymiana żarówki',
+        workerType:"Technician"
       },
       {
-        CaseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273802",
-        Title:"Naprawa łóżka",
-        Description:'Naprawa łóżka',
-        WorkerType:"Technician"
+        caseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273802",
+        title:"Naprawa łóżka",
+        description:'Naprawa łóżka',
+        workerType:"Technician"
       },
       {
-        CaseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273803",
-        Title:"Naprawa telewizora",
-        Description:'Naprawa telewizora',
-        WorkerType:"Technician"
+        caseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273803",
+        title:"Naprawa telewizora",
+        description:'Naprawa telewizora',
+        workerType:"Technician"
       },
       {
-        CaseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273804",
-        Title:"Inne",
-        Description:'Inne',
-        WorkerType:"Technician"
+        caseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273804",
+        title:"Inne",
+        description:'Inne',
+        workerType:"Technician"
       },
       {
-        CaseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273805",
-        Title:"ExampleCase",
-        Description:"Clean something",
-        WorkerType:"Technician"
+        caseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273805",
+        title:"ExampleCase",
+        description:"Clean something",
+        workerType:"Technician"
       }
     ]
   }
 
   getTechnicianCases() {
-    // return new Promise((resolve, reject) => {
-    //   this.httpFetch.fetch('/api/Case')
-    //     .then(response => response.json())
-    //     .then(data => console.log(data))
-    //     .catch(err => reject(err));
-    // });
     return new Promise((resolve, reject) => {
-      resolve(this.cases);
+      this.httpFetch.fetch('/api/Case')
+        .then(response => response.json())
+        .then(data => resolve(data))
+        .catch(err => reject(err));
     });
+    // return new Promise((resolve, reject) => {
+    //   resolve(this.cases);
+    // });
   }
 
   getCleanerCases() {
-    // return new Promise((resolve, reject) => {
-    //   this.httpFetch.fetch('/api/Case')
-    //     .then(response => response.json())
-    //     .then(data => console.log(data))
-    //     .catch(err => reject(err));
-    // });
     return new Promise((resolve, reject) => {
-      resolve(this.cases);
+      this.httpFetch.fetch('/api/Case')
+        .then(response => response.json())
+        .then(data => resolve(data))
+        .catch(err => reject(err));
     });
   }
 }

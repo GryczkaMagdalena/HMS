@@ -6,9 +6,9 @@
         <div class="list-group">
           <button type="button"
                   repeat.for="case of cases"
-                  class="list-group-item ${case.CaseID === $parent.selectedId ? 'active' : ''}"
+                  class="list-group-item ${case.caseID === $parent.selectedId ? 'active' : ''}"
                   click.delegate="$parent.selectCase(case)">
-            ${case.Description}
+            ${case.description}
           </button>
         </div>
       </div>
