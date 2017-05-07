@@ -37,8 +37,9 @@ namespace HotelManagementSystem.Models.Infrastructure
             return await _userManager.GetRolesAsync(user);
         }
 
-        public async Task<IdentityResult> AddUserToRole(string roleName,User user)
+        public async Task<IdentityResult> AddUserToRole(string roleName,String UserID)
         {
+            var user = await _userManager.FindByIdAsync(UserID);
             return await _userManager.AddToRoleAsync(user, roleName);
         }
         public async Task<IdentityResult> SignOut()
