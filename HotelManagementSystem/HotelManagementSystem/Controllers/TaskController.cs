@@ -64,7 +64,7 @@ namespace HotelManagementSystem.Controllers
             return Json(tasksObjectified);
         }
              /**
-       * @api {get} /Task?TaskID Read
+       * @api {get} /Task/TaskID Read
        * @apiVersion 0.1.0
        * @apiName Read
        * @apiGroup Task
@@ -113,10 +113,6 @@ namespace HotelManagementSystem.Controllers
         * @apiName Update
         * @apiGroup task
         *
-        // * @apiParam {GUID} taskID task identifier
-        // * @apiParam {String} Title task title
-        // * @apiParam {String} Description task details
-        // * @apiParam {Number} WorkerType Type of task - one of (0-Cleaner,1-Technician,2-None)
         * 
         * 
         *@apiSuccess {String} status task was updated 
@@ -170,9 +166,6 @@ namespace HotelManagementSystem.Controllers
          * @apiName Create
          * @apiGroup Task
          *
-         // * @apiParam {String} Title task title
-         // * @apiParam {String} Description task details
-         // * @apiParam {Number} WorkerType Type of task - one of (0-Cleaner,1-Technician,2-None)
          * 
          * 
          *@apiSuccess {String} status task was created 
@@ -239,7 +232,7 @@ namespace HotelManagementSystem.Controllers
         }
 
         /**
-       * @api {delete} /Task?TaskID Delete
+       * @api {delete} /Task/TaskID Delete
        * @apiVersion 0.1.0
        * @apiName Delete
        * @apiGroup Task

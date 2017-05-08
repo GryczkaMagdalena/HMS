@@ -56,7 +56,7 @@ namespace HotelManagementSystem.Controllers
                 );
         }
              /**
-       * @api {get} /Case?CaseID Read
+       * @api {get} /Case/CaseID Read
        * @apiVersion 0.1.0
        * @apiName Read
        * @apiGroup Case
@@ -105,6 +105,34 @@ namespace HotelManagementSystem.Controllers
         }
 
 
+        /**
+          * @api {get} /Case/Filter/WorkerType Read
+          * @apiVersion 0.1.0
+          * @apiName Read
+          * @apiGroup Case
+          *
+          * @apiParam {String} WorkerType (Cleaner or Technician)
+          * 
+          * 
+          *@apiSuccess {String} CaseID Case identifier
+          * @apiSuccess {String} Title Case title
+          * @apiSuccess {String} Description Case details
+          * @apiSuccess {String} WorkerType Worker type associated with this case 
+          *@apiSuccessExample Success-Response:
+          * HTTP/1.1 200 OK
+           *       {
+           *       "CaseID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+           *       "Title":"ExampleCase",
+           *       "Description":"Clean something",
+           *       "WorkerType":"Technician"
+           *       }
+           *@apiError NotFound Given ID does not appeal to any of cases
+           *@apiErrorExample Error-Response:
+           * HTTP/1.1 200 OK
+           * {
+           *   "status":"notFound"
+           * }
+          */
         // GET api/Case/Filter/{Type}
         [HttpGet("Filter/{Type}")]
         public async Task<IActionResult> Read(String Type) {
@@ -233,7 +261,7 @@ namespace HotelManagementSystem.Controllers
             }
         }
         /**
-       * @api {delete} /Case?CaseID Delete
+       * @api {delete} /Case/CaseID Delete
        * @apiVersion 0.1.0
        * @apiName Delete
        * @apiGroup Case
