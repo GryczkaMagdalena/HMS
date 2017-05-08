@@ -23,9 +23,27 @@ namespace HotelManagementSystem.Controllers
         }
 
         private StorageContext storage = new StorageContext();
+        /**
+       * @api {get} /Task List
+       * @apiVersion 0.1.0
+       * @apiName List
+       * @apiGroup Task
+       *
+       *@apiSuccess {Array} tasks List of all existing tasks
+       *@apiSuccessExample Success-Response:
+       * HTTP/1.1 200 OK
+        *   [
+        *       {
+        *       "TaskID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+        *       "Describe":"Describtion of task",
+        *       "RoomID":"5ba83f3c-4ea4-4da4-9c06-e986a8273800",
+        *       "Room":"Connected room"
+        *       }
+        *   ]
+       */
         // GET: api/Task
         [HttpGet]
-        public async Task<IActionResult> Task()
+        public async Task<IActionResult> List()
         {
             List<Models.Entities.Storage.Task> tasks = await storage.Tasks.ToListAsync();
 
@@ -38,26 +56,86 @@ namespace HotelManagementSystem.Controllers
             });
             return Json(tasksObjectified);
         }
+             /**
+       * @api {get} /Task?TaskID Read
+       * @apiVersion 0.1.0
+       * @apiName Read
+       * @apiGroup Task
+       *
+       * @apiParam {GUID} TaskID Task identifier
+       * 
+       * 
+       *@apiSuccess {String} TaskID Task identifier
+       * @apiSuccess {String} Description of task
+       * @apiSuccess {String} RoomID Room identifier
+       * @apiSuccess {Room} Room
+       *@apiSuccessExample Success-Response:
+       * HTTP/1.1 200 OK
+        *       {
+        *       "TaskID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+        *       "Describe":"Describtion of task",
+        *       "RoomID":"5ba83f3c-4ea4-4da4-9c06-e986a8273800",
+        *       "Room":"Connected room"
+        *       }
+        *@apiError NotFound Given ID does not appeal to any of tasks
+        *@apiErrorExample Error-Response:
+        * HTTP/1.1 200 OK
+        * {
+        *   "status":"notFound"
+        * }
+       */
 
-        // GET: api/Task/5
+        // GET: api/Task/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTask([FromRoute] Guid id)
+        public async Task<IActionResult> Read([FromRoute] Guid id)
         {
             Models.Entities.Storage.Task rule = null;
             try
             {
                 rule = await storage.Tasks.FindAsync(id);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Json(ex);
+                return Json(new {status="notFound" });
             }
             return Json(rule);
         }
+        /**
+        * @api {put} /task?TaskID Update
+        * @apiVersion 0.1.0
+        * @apiName Update
+        * @apiGroup task
+        *
+        // * @apiParam {GUID} taskID task identifier
+        // * @apiParam {String} Title task title
+        // * @apiParam {String} Description task details
+        // * @apiParam {Number} WorkerType Type of task - one of (0-Cleaner,1-Technician,2-None)
+        * 
+        * 
+        *@apiSuccess {String} status task was updated 
+        *@apiSuccessExample Success-Response:
+        * HTTP/1.1 200 OK
+         *       {
+         *       "status":"updated"
+         *       }
+         *@apiError InvalidInput One of inputs was null or invalid
+         *@apiErrorExample Error-Response:
+         * HTTP/1.1 200 OK  
+         * {
+         *   "status":"failure"
+         * }
+         * 
+         * @apiError NotFound task with specified ID was not found
+         * @apiErrorExample Error-Response:
+         * HTTP/1.1 200 OK
+         * {
+         *  "status":"notFound"
+         * }
+    */
 
-        // PUT: api/Task/5
+        // PUT: api/Task/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Task([FromRoute] Guid id, [FromBody] Models.Entities.Storage.Task value)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] Models.Entities.Storage.Task value)
         {
             try
             {
@@ -74,15 +152,39 @@ namespace HotelManagementSystem.Controllers
                     return Json(new { status = "failure" });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Json(ex);
+                return Json(new {status="notFound" });
             }
         }
+        /**
+         * @api {post} /Task Create
+         * @apiVersion 0.1.0
+         * @apiName Create
+         * @apiGroup Task
+         *
+         // * @apiParam {String} Title task title
+         // * @apiParam {String} Description task details
+         // * @apiParam {Number} WorkerType Type of task - one of (0-Cleaner,1-Technician,2-None)
+         * 
+         * 
+         *@apiSuccess {String} status task was created 
+         *@apiSuccessExample Success-Response:
+         * HTTP/1.1 200 OK
+          *       {
+          *       "status":"created"
+          *       }
+          *@apiError InvalidInput One of inputs was null or invalid
+          *@apiErrorExample Error-Response:
+          * HTTP/1.1 200 OK
+          * {
+          *   "status":"failure"
+          * }
+     */
 
         // POST: api/Task
         [HttpPost]
-        public async Task<IActionResult> Task([FromBody] Models.Entities.Storage.Task value)
+        public async Task<IActionResult> Create([FromBody] Models.Entities.Storage.Task value)
         {
             try
             {
@@ -98,15 +200,38 @@ namespace HotelManagementSystem.Controllers
                     return Json(new { status = "failure" });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Json(ex);
+                return Json(new {status="notFound" });
             }
         }
 
-        // DELETE: api/Task/5
+        /**
+       * @api {delete} /Task?TaskID Delete
+       * @apiVersion 0.1.0
+       * @apiName Delete
+       * @apiGroup Task
+       *
+       * @apiParam {GUID} TaskID Task identifier
+       * 
+       * 
+       *@apiSuccess {String} status Task was deleted
+       *@apiSuccessExample Success-Response:
+       * HTTP/1.1 200 OK
+        *       {
+        *       "status":"removed"
+        *       }
+        * 
+        * @apiError NotFound Task with specified ID was not found
+        * @apiErrorExample Error-Response:
+        * HTTP/1.1 200 OK
+        * {
+        *  "status":"notFound"
+        * }
+   */
+        // DELETE: api/Task/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTask([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             try
             {
@@ -123,9 +248,9 @@ namespace HotelManagementSystem.Controllers
                     throw new Exception("Entity not present in database");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Json(ex);
+                return Json(new {status="notFound" });
             }
         }
 
