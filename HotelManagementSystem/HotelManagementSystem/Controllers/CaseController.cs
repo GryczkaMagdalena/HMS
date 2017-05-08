@@ -107,7 +107,7 @@ namespace HotelManagementSystem.Controllers
 
         /**
           * @api {get} /Case/Filter/WorkerType Read
-          * @apiVersion 0.1.0
+          * @apiVersion 0.1.2
           * @apiName Read
           * @apiGroup Case
           *

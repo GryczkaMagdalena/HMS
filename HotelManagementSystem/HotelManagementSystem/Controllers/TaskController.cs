@@ -33,7 +33,7 @@ namespace HotelManagementSystem.Controllers
 
         /**
        * @api {get} /Task List
-       * @apiVersion 0.1.0
+       * @apiVersion 0.1.2
        * @apiName List
        * @apiGroup Task
        *
@@ -65,7 +65,7 @@ namespace HotelManagementSystem.Controllers
         }
              /**
        * @api {get} /Task/TaskID Read
-       * @apiVersion 0.1.0
+       * @apiVersion 0.1.2
        * @apiName Read
        * @apiGroup Task
        *
@@ -109,9 +109,9 @@ namespace HotelManagementSystem.Controllers
         }
         /**
         * @api {put} /task?TaskID Update
-        * @apiVersion 0.1.0
+        * @apiVersion 0.1.2
         * @apiName Update
-        * @apiGroup task
+        * @apiGroup Task
         *
         * 
         * 
@@ -162,7 +162,7 @@ namespace HotelManagementSystem.Controllers
         }
         /**
          * @api {post} /Task Create
-         * @apiVersion 0.1.0
+         * @apiVersion 0.1.2
          * @apiName Create
          * @apiGroup Task
          *
@@ -233,7 +233,7 @@ namespace HotelManagementSystem.Controllers
 
         /**
        * @api {delete} /Task/TaskID Delete
-       * @apiVersion 0.1.0
+       * @apiVersion 0.1.2
        * @apiName Delete
        * @apiGroup Task
        *
