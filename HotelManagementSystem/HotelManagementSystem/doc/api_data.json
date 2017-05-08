@@ -87,7 +87,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "filename": "./Controllers/AuthController.cs",
     "groupTitle": "Auth"
   },
   {
@@ -189,7 +189,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "filename": "./Controllers/AuthController.cs",
     "groupTitle": "Auth"
   },
   {
@@ -291,7 +291,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "filename": "./Controllers/AuthController.cs",
     "groupTitle": "Auth"
   },
   {
@@ -324,7 +324,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "filename": "./Controllers/AuthController.cs",
     "groupTitle": "Auth"
   },
   {
@@ -379,7 +379,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "filename": "./Controllers/AuthController.cs",
     "groupTitle": "Auth"
   },
   {
@@ -409,7 +409,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "filename": "./Controllers/AuthController.cs",
     "groupTitle": "Auth"
   },
   {
@@ -534,7 +534,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "filename": "./Controllers/AuthController.cs",
     "groupTitle": "Auth"
   },
   {
@@ -667,7 +667,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "filename": "./Controllers/AuthController.cs",
     "groupTitle": "Auth"
   },
   {
@@ -796,7 +796,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "filename": "./Controllers/AuthController.cs",
     "groupTitle": "Auth"
   },
   {
@@ -872,7 +872,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/CaseController.cs",
+    "filename": "./Controllers/CaseController.cs",
     "groupTitle": "Case"
   },
   {
@@ -934,7 +934,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/CaseController.cs",
+    "filename": "./Controllers/CaseController.cs",
     "groupTitle": "Case"
   },
   {
@@ -964,7 +964,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/CaseController.cs",
+    "filename": "./Controllers/CaseController.cs",
     "groupTitle": "Case"
   },
   {
@@ -1047,7 +1047,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/CaseController.cs",
+    "filename": "./Controllers/CaseController.cs",
     "groupTitle": "Case"
   },
   {
@@ -1130,7 +1130,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/CaseController.cs",
+    "filename": "./Controllers/CaseController.cs",
     "groupTitle": "Case"
   },
   {
@@ -1224,7 +1224,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/CaseController.cs",
+    "filename": "./Controllers/CaseController.cs",
     "groupTitle": "Case"
   },
   {
@@ -1293,7 +1293,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/HomeController.cs",
+    "filename": "./Controllers/HomeController.cs",
     "groupTitle": "Home"
   },
   {
@@ -1355,7 +1355,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/HomeController.cs",
+    "filename": "./Controllers/HomeController.cs",
     "groupTitle": "Home"
   },
   {
@@ -1385,7 +1385,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/HomeController.cs",
+    "filename": "./Controllers/HomeController.cs",
     "groupTitle": "Home"
   },
   {
@@ -1461,7 +1461,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/HomeController.cs",
+    "filename": "./Controllers/HomeController.cs",
     "groupTitle": "Home"
   },
   {
@@ -1548,7 +1548,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/HomeController.cs",
+    "filename": "./Controllers/HomeController.cs",
     "groupTitle": "Home"
   },
   {
@@ -1610,7 +1610,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/RoomController.cs",
+    "filename": "./Controllers/RoomController.cs",
     "groupTitle": "Room"
   },
   {
@@ -1672,7 +1672,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/RoomController.cs",
+    "filename": "./Controllers/RoomController.cs",
     "groupTitle": "Room"
   },
   {
@@ -1702,7 +1702,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/RoomController.cs",
+    "filename": "./Controllers/RoomController.cs",
     "groupTitle": "Room"
   },
   {
@@ -1792,7 +1792,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/RoomController.cs",
+    "filename": "./Controllers/RoomController.cs",
     "groupTitle": "Room"
   },
   {
@@ -1872,7 +1872,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/RoomController.cs",
+    "filename": "./Controllers/RoomController.cs",
     "groupTitle": "Room"
   },
   {
@@ -1921,7 +1921,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "filename": "./Controllers/TaskController.cs",
     "groupTitle": "Task"
   },
   {
@@ -1983,7 +1983,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "filename": "./Controllers/TaskController.cs",
     "groupTitle": "Task"
   },
   {
@@ -2013,7 +2013,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "filename": "./Controllers/TaskController.cs",
     "groupTitle": "Task"
   },
   {
@@ -2096,7 +2096,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "filename": "./Controllers/TaskController.cs",
     "groupTitle": "Task"
   },
   {
@@ -2122,35 +2122,7 @@
     "type": "",
     "url": "",
     "version": "0.0.0",
-    "filename": "HotelManagementSystem/doc/main.js",
-    "group": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_doc_main_js",
-    "groupTitle": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_doc_main_js",
-    "name": ""
-  },
-  {
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "optional": false,
-            "field": "varname1",
-            "description": "<p>No type.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "varname2",
-            "description": "<p>With type.</p>"
-          }
-        ]
-      }
-    },
-    "type": "",
-    "url": "",
-    "version": "0.0.0",
-    "filename": "HotelManagementSystem/wwwroot/doc/main.js",
+    "filename": "./wwwroot/doc/main.js",
     "group": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
     "groupTitle": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
     "name": ""
@@ -2212,7 +2184,7 @@
         }
       ]
     },
-    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "filename": "./Controllers/TaskController.cs",
     "groupTitle": "task"
   }
 ]
