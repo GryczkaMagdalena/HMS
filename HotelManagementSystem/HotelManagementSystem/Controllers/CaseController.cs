@@ -105,13 +105,13 @@ namespace HotelManagementSystem.Controllers
         }
 
 
-        // GET api/Case/{type}
-        [HttpGet("{type}")]
-        public async Task<IActionResult> Read(WorkerType Type) {
+        // GET api/Case/Filter/{Type}
+        [HttpGet("Filter/{Type}")]
+        public async Task<IActionResult> Read(String Type) {
             List<Case> cases = null;
             try 
             {
-                cases = await storage.Cases.Where(x => x.WorkerType == Type).ToListAsync();
+                cases = await storage.Cases.Where(x => x.WorkerType.ToString() == Type).ToListAsync();
             } 
             catch (Exception) 
             {
