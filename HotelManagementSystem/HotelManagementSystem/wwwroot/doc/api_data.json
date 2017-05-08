@@ -971,7 +971,7 @@
     "type": "get",
     "url": "/Case/Filter/WorkerType",
     "title": "Read",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "name": "Read",
     "group": "Case",
     "parameter": {
@@ -1879,7 +1879,7 @@
     "type": "post",
     "url": "/Task",
     "title": "Create",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "name": "Create",
     "group": "Task",
     "success": {
@@ -1928,7 +1928,7 @@
     "type": "delete",
     "url": "/Task/TaskID",
     "title": "Delete",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "name": "Delete",
     "group": "Task",
     "parameter": {
@@ -1990,7 +1990,7 @@
     "type": "get",
     "url": "/Task",
     "title": "List",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "name": "List",
     "group": "Task",
     "success": {
@@ -2020,7 +2020,7 @@
     "type": "get",
     "url": "/Task/TaskID",
     "title": "Read",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "name": "Read",
     "group": "Task",
     "parameter": {
@@ -2100,6 +2100,66 @@
     "groupTitle": "Task"
   },
   {
+    "type": "put",
+    "url": "/task?TaskID",
+    "title": "Update",
+    "version": "0.1.2",
+    "name": "Update",
+    "group": "Task",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>task was updated</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"status\":\"updated\"\n      }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidInput",
+            "description": "<p>One of inputs was null or invalid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>task with specified ID was not found</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 200 OK  \n{\n  \"status\":\"failure\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n \"status\":\"notFound\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "groupTitle": "Task"
+  },
+  {
     "success": {
       "fields": {
         "Success 200": [
@@ -2154,65 +2214,5 @@
     "group": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
     "groupTitle": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
     "name": ""
-  },
-  {
-    "type": "put",
-    "url": "/task?TaskID",
-    "title": "Update",
-    "version": "0.1.0",
-    "name": "Update",
-    "group": "task",
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "status",
-            "description": "<p>task was updated</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n      {\n      \"status\":\"updated\"\n      }",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "InvalidInput",
-            "description": "<p>One of inputs was null or invalid</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "NotFound",
-            "description": "<p>task with specified ID was not found</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK  \n{\n  \"status\":\"failure\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n \"status\":\"notFound\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
-    "groupTitle": "task"
   }
 ]
