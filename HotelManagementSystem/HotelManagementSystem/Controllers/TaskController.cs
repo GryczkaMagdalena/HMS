@@ -31,8 +31,6 @@ namespace HotelManagementSystem.Controllers
             _taskDisposer = new TaskDisposer(userService);
         }
 
-
-        private StorageContext storage = new StorageContext();
         /**
        * @api {get} /Task List
        * @apiVersion 0.1.0
