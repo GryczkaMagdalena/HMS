@@ -31,8 +31,7 @@ namespace HotelManagementSystem.Controllers
     public class AuthController : Controller
     {
         private UserService userService;
-        private StorageContext db = new StorageContext();
-        private IdentityContext idb = new IdentityContext();
+        private IdentityContext db = new IdentityContext();
         private readonly ILogger logger;
 
         public AuthController(
@@ -43,7 +42,7 @@ namespace HotelManagementSystem.Controllers
             ILogger<AuthController> logger
             )
         {
-            userService = new UserService(idb,userManager,signInManager,hash,roleManager);
+            userService = new UserService(db,userManager,signInManager,hash,roleManager);
             this.logger = logger;
         }
         /**
@@ -120,7 +119,7 @@ namespace HotelManagementSystem.Controllers
                 var result = await userService.PasswordSignInAsync(user,user.Password);
                 if (result.Succeeded)
                 {
-                    var entity = idb.Users.First(q => q.UserName == user.Login);
+                    var entity = db.Users.First(q => q.UserName == user.Login);
                     var roles = await userService.GetUserRoles(entity);
 
                     var output = new
@@ -131,7 +130,7 @@ namespace HotelManagementSystem.Controllers
                         PhoneNumber = entity.PhoneNumber,
                         WorkerType = Enum.GetName(typeof(WorkerType), entity.WorkerType.Value),
                         Role = roles,
-                        RoomID = entity.RoomID
+                        Room = entity.Room
                     };
                     return Json(output);
                 }
@@ -214,7 +213,7 @@ namespace HotelManagementSystem.Controllers
                 if (ModelState.IsValid)
                 {
                     Room room = db.Rooms.First(q => q.Number == roomNumber);
-                    User guestAccount = idb.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
+                    User guestAccount = db.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
 
                     if (!(await userService.IsInRoleAsync(guestAccount, "Customer")))
                     {
@@ -232,9 +231,9 @@ namespace HotelManagementSystem.Controllers
                     }
 
                     guestAccount.Room = null;
-                    guestAccount.RoomID = null;
-                    room.GuestFirstName = string.Empty;
-                    room.GuestLastName = string.Empty;
+                    guestAccount.Room = null;
+
+                    room.User = null;
                     room.Occupied = false;
 
                     db.Rooms.Attach(room);
@@ -242,10 +241,10 @@ namespace HotelManagementSystem.Controllers
 
                     await db.SaveChangesAsync();
 
-                    idb.Users.Attach(guestAccount);
-                    idb.Entry(guestAccount).State = EntityState.Modified;
+                    db.Users.Attach(guestAccount);
+                    db.Entry(guestAccount).State = EntityState.Modified;
 
-                    await idb.SaveChangesAsync();
+                    await db.SaveChangesAsync();
 
                     return Json(new { status = "checkedOut" });
                 }
@@ -308,7 +307,7 @@ namespace HotelManagementSystem.Controllers
                 if (ModelState.IsValid)
                 {
                     Room room = db.Rooms.First(q => q.Number == roomNumber);
-                    User guestAccount = idb.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
+                    User guestAccount = db.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
 
                     if (!(await userService.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
                     {
@@ -325,10 +324,8 @@ namespace HotelManagementSystem.Controllers
                         return Json(new { status = "roomAlreadyOccupied" });
                     }
 
-                    guestAccount.RoomID = room.RoomID;
                     guestAccount.Room = room;
-                    room.GuestFirstName = guestAccount.FirstName;
-                    room.GuestLastName = guestAccount.LastName;
+                    room.User = guestAccount;
                     room.Occupied = true;
 
                     db.Rooms.Attach(room);
@@ -336,10 +333,10 @@ namespace HotelManagementSystem.Controllers
 
                     await db.SaveChangesAsync();
 
-                    idb.Users.Attach(guestAccount);
-                    idb.Entry(guestAccount).State = EntityState.Modified;
+                    db.Users.Attach(guestAccount);
+                    db.Entry(guestAccount).State = EntityState.Modified;
 
-                    await idb.SaveChangesAsync();
+                    await db.SaveChangesAsync();
 
                     return Json(new { status = "checkedIn" });
                 }
@@ -505,14 +502,14 @@ namespace HotelManagementSystem.Controllers
                         {
                             token = new JwtSecurityTokenHandler().WriteToken(token),
                             expiration = token.ValidTo,
-                            user= new
+                            user = new
                             {
-                                FirstName= user.FirstName,
+                                FirstName = user.FirstName,
                                 LastName = user.LastName,
                                 Email = user.Email,
-                                WorkerType= Enum.GetName(typeof(WorkerType),user.WorkerType),
+                                WorkerType = Enum.GetName(typeof(WorkerType), user.WorkerType),
                                 Roles = user.Roles,
-                                RoomID = user.RoomID
+                                Room = user.Room
                             }
                         });
                     }
@@ -608,7 +605,7 @@ namespace HotelManagementSystem.Controllers
         {
             try
             {
-                var user = await idb.Users.FindAsync(UserID.ToString());
+                var user = await db.Users.FindAsync(UserID.ToString());
                 var roles = await userService.GetUserRoles(user);
                 return Ok(new { roles });
             }

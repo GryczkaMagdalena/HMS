@@ -7,7 +7,8 @@
       "LastName": "Postman",
       "PhoneNumber": "123-456-778",
       "RoleName": "Customer",
-      "Email": "guest1@hms.com"
+      "Email": "guest1@hms.com",
+      "WorkerType": "None"
     },
     {
       "Login": "guest2",
@@ -16,7 +17,8 @@
       "LastName": "Solo",
       "PhoneNumber": "123-456-778",
       "RoleName": "Customer",
-      "Email": "guest2@hms.com"
+      "Email": "guest2@hms.com",
+      "WorkerType": "None"
     },
     {
       "Login": "guest3",
@@ -25,7 +27,8 @@
       "LastName": "Drogo",
       "PhoneNumber": "123-456-778",
       "RoleName": "Customer",
-      "Email": "guest3@hms.com"
+      "Email": "guest3@hms.com",
+      "WorkerType": "None"
     },
     {
       "Login": "guest4",
@@ -34,7 +37,8 @@
       "LastName": "Gold",
       "PhoneNumber": "123-456-778",
       "RoleName": "Customer",
-      "Email": "guest4@hms.com"
+      "Email": "guest4@hms.com",
+      "WorkerType": "None"
     },
     {
       "Login": "guest5",
@@ -43,7 +47,8 @@
       "LastName": "Lama",
       "PhoneNumber": "123-456-778",
       "RoleName": "Customer",
-      "Email": "guest5@hms.com"
+      "Email": "guest5@hms.com",
+      "WorkerType": "None"
     },
     {
       "Login": "guest6",
@@ -52,7 +57,8 @@
       "LastName": "Hitler",
       "PhoneNumber": "123-456-778",
       "RoleName": "Customer",
-      "Email": "guest6@hms.com"
+      "Email": "guest6@hms.com",
+      "WorkerType": "None"
     },
     {
       "Login": "guest7",
@@ -61,7 +67,8 @@
       "LastName": "Stallone",
       "PhoneNumber": "123-456-778",
       "RoleName": "Customer",
-      "Email": "guest7@hms.com"
+      "Email": "guest7@hms.com",
+      "WorkerType": "None"
     },
     {
       "Login": "guest8",
@@ -70,7 +77,8 @@
       "LastName": "Vallboa",
       "PhoneNumber": "123-456-778",
       "RoleName": "Customer",
-      "Email": "guest8@hms.com"
+      "Email": "guest8@hms.com",
+      "WorkerType": "None"
     },
     {
       "Login": "guest9",
@@ -79,7 +87,8 @@
       "LastName": "Maccaroni",
       "PhoneNumber": "123-456-778",
       "RoleName": "Customer",
-      "Email": "guest9@hms.com"
+      "Email": "guest9@hms.com",
+      "WorkerType": "None"
     },
     {
       "Login": "guest10",
@@ -88,9 +97,10 @@
       "LastName": "Man",
       "PhoneNumber": "123-456-778",
       "RoleName": "Customer",
-      "Email": "guest10@hms.com"
+      "Email": "guest10@hms.com",
+      "WorkerType": "None"
     }
-  ]
+  ],
   "Workers": [
     {
       "Login": "worker1",
@@ -98,8 +108,9 @@
       "FirstName": "Grażyna",
       "LastName": "Malina",
       "PhoneNumber": "123-456-778",
-      "RoleName": "Customer",
-      "Email": "worker1@hms.com"
+      "RoleName": "Worker",
+      "Email": "worker1@hms.com",
+      "WorkerType": "Cleaner"
     },
     {
       "Login": "worker2",
@@ -107,8 +118,9 @@
       "FirstName": "Halina",
       "LastName": "Stalina",
       "PhoneNumber": "123-456-778",
-      "RoleName": "Customer",
-      "Email": "worker2@hms.com"
+      "RoleName": "Worker",
+      "Email": "worker2@hms.com",
+      "WorkerType": "Cleaner"
     },
     {
       "Login": "worker3",
@@ -116,8 +128,9 @@
       "FirstName": "Alina",
       "LastName": "Stalina",
       "PhoneNumber": "123-456-778",
-      "RoleName": "Customer",
-      "Email": "worker3@hms.com"
+      "RoleName": "Worker",
+      "Email": "worker3@hms.com",
+      "WorkerType": "Cleaner"
     },
     {
       "Login": "worker4",
@@ -125,8 +138,9 @@
       "FirstName": "Anna",
       "LastName": "Wanna",
       "PhoneNumber": "123-456-778",
-      "RoleName": "Customer",
-      "Email": "worker4@hms.com"
+      "RoleName": "Worker",
+      "Email": "worker4@hms.com",
+      "WorkerType": "Cleaner"
     },
     {
       "Login": "worker5",
@@ -134,8 +148,9 @@
       "FirstName": "Zdzisław",
       "LastName": "Wanna",
       "PhoneNumber": "123-456-778",
-      "RoleName": "Customer",
-      "Email": "worker5@hms.com"
+      "RoleName": "Worker",
+      "Email": "worker5@hms.com",
+      "WorkerType": "Technician"
     },
     {
       "Login": "worker6",
@@ -143,8 +158,9 @@
       "FirstName": "Bronisław",
       "LastName": "Pomorowski",
       "PhoneNumber": "123-456-778",
-      "RoleName": "Customer",
-      "Email": "worker6@hms.com"
+      "RoleName": "Worker",
+      "Email": "worker6@hms.com",
+      "WorkerType": "Technician"
     },
     {
       "Login": "worker7",
@@ -152,8 +168,9 @@
       "FirstName": "Zdzisław",
       "LastName": "Krecina",
       "PhoneNumber": "123-456-778",
-      "RoleName": "Customer",
-      "Email": "worker7@hms.com"
+      "RoleName": "Worker",
+      "Email": "worker7@hms.com",
+      "WorkerType": "Technician"
     },
     {
       "Login": "worker8",
@@ -161,8 +178,9 @@
       "FirstName": "Alfons",
       "LastName": "Padlina",
       "PhoneNumber": "123-456-778",
-      "RoleName": "Customer",
-      "Email": "worker8@hms.com"
+      "RoleName": "Worker",
+      "Email": "worker8@hms.com",
+      "WorkerType": "Technician"
     }
 
   ]

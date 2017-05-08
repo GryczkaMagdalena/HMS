@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HotelManagementSystem.Models.Infrastructure;
 using Microsoft.AspNetCore.Cors;
+using HotelManagementSystem.Models.Concrete;
+using HotelManagementSystem.Models.Entities.Storage;
+using Microsoft.AspNetCore.Identity;
+using HotelManagementSystem.Models.Entities.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -15,12 +20,17 @@ namespace HotelManagementSystem.Controllers
     [Route("api/Task/[action]")]
     public class TaskController : Controller
     {
-        private readonly StorageContext _context;
-
-        public TaskController(StorageContext context)
+        private readonly IdentityContext _context;
+        private readonly UserService userService;
+        private readonly TaskDisposer _taskDisposer;
+        public TaskController(IdentityContext context,UserManager<User> manager,
+            RoleManager<IdentityRole> roles,IPasswordHasher<User> hash ,SignInManager<User>signInManager)
         {
             _context = context;
+            userService = new UserService(context, manager, signInManager, hash, roles);
+            _taskDisposer = new TaskDisposer(userService);
         }
+
 
         private StorageContext storage = new StorageContext();
         /**
@@ -45,14 +55,13 @@ namespace HotelManagementSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            List<Models.Entities.Storage.Task> tasks = await storage.Tasks.ToListAsync();
+            List<Models.Entities.Storage.Task> tasks = await _context.Tasks.ToListAsync();
 
             var tasksObjectified = tasks.Select(q => new
             {
                 TaskID = q.TaskID,
                 Describe = q.Describe,
-                RoomID = q.RoomID,
-                Room = q.Room
+                Room = q.Room,
             });
             return Json(tasksObjectified);
         }
@@ -92,7 +101,7 @@ namespace HotelManagementSystem.Controllers
             Models.Entities.Storage.Task rule = null;
             try
             {
-                rule = await storage.Tasks.FindAsync(id);
+                rule = await _context.Tasks.FindAsync(id);
             }
             catch (Exception)
             {
@@ -142,9 +151,9 @@ namespace HotelManagementSystem.Controllers
                 if (ModelState.IsValid)
                 {
                     value.TaskID = id;
-                    storage.Tasks.Attach(value);
-                    storage.Entry(value).State = EntityState.Modified;
-                    await storage.SaveChangesAsync();
+                    _context.Tasks.Attach(value);
+                    _context.Entry(value).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
                     return Json(new { status = "updated" });
                 }
                 else
@@ -184,15 +193,40 @@ namespace HotelManagementSystem.Controllers
 
         // POST: api/Task
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Models.Entities.Storage.Task value)
+        public async Task<IActionResult> Task([FromBody] TaskViewModel value)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    value.TaskID = Guid.NewGuid();
-                    await storage.Tasks.AddAsync(value);
-                    await storage.SaveChangesAsync();
+                    var user = await _context.Users.FirstAsync(q => q.Email == value.Email);
+                    var room = await _context.Rooms.FirstAsync(q => q.Number == value.RoomNumber);
+
+                    if (user == null) return NotFound(new { status = "userNotFound" });
+                    if (room == null) return NotFound(new { status = "roomNotFound" });
+                    //TODO implement with passing actual case when it will be available
+                    var Case = new Case()
+                    {
+                        CaseID=Guid.NewGuid(),Description="desc1",Title="title1",WorkerType=WorkerType.Cleaner
+                    };
+                    var receiver = await _taskDisposer.FindWorker(Case);
+                    var listener = await _taskDisposer.AttachListeningManager(Case, receiver);
+
+                    if (receiver == null) return BadRequest(new {status="All workers busy. Try again later" });
+
+                    var newTask = new Models.Entities.Storage.Task()
+                    {
+                        TaskID=Guid.NewGuid(),
+                        Describe=value.Describe,
+                        Room=room,
+                        Issuer=user,
+                        Receiver= receiver,
+                        Listener = listener
+                    };
+
+
+                    await _context.Tasks.AddAsync(newTask);
+                    await _context.SaveChangesAsync();
                     return Json(new { status = "created" });
                 }
                 else
@@ -235,12 +269,12 @@ namespace HotelManagementSystem.Controllers
         {
             try
             {
-                Models.Entities.Storage.Task toDelete = await storage.Tasks.FindAsync(id);
+                Models.Entities.Storage.Task toDelete = await _context.Tasks.FindAsync(id);
                 if (toDelete != null)
                 {
-                    storage.Tasks.Attach(toDelete);
-                    storage.Entry(toDelete).State = EntityState.Deleted;
-                    await storage.SaveChangesAsync();
+                    _context.Tasks.Attach(toDelete);
+                    _context.Entry(toDelete).State = EntityState.Deleted;
+                    await _context.SaveChangesAsync();
                     return Json(new { status = "removed" });
                 }
                 else
@@ -253,6 +287,7 @@ namespace HotelManagementSystem.Controllers
                 return Json(new {status="notFound" });
             }
         }
+
 
         private bool TaskExists(Guid id)
         {

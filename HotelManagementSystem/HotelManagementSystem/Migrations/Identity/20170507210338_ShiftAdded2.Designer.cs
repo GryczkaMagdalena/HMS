@@ -9,9 +9,10 @@ using HotelManagementSystem.Models.Entities.Identity;
 namespace HotelManagementSystem.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    partial class IdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20170507210338_ShiftAdded2")]
+    partial class ShiftAdded2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -147,21 +148,9 @@ namespace HotelManagementSystem.Migrations.Identity
 
                     b.Property<string>("Describe");
 
-                    b.Property<string>("IssuerId");
-
-                    b.Property<string>("ListenerId");
-
-                    b.Property<string>("ReceiverId");
-
                     b.Property<Guid?>("RoomID");
 
                     b.HasKey("TaskID");
-
-                    b.HasIndex("IssuerId");
-
-                    b.HasIndex("ListenerId");
-
-                    b.HasIndex("ReceiverId");
 
                     b.HasIndex("RoomID");
 
@@ -291,18 +280,6 @@ namespace HotelManagementSystem.Migrations.Identity
 
             modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Task", b =>
                 {
-                    b.HasOne("HotelManagementSystem.Models.Entities.Identity.User", "Issuer")
-                        .WithMany("IssuedTasks")
-                        .HasForeignKey("IssuerId");
-
-                    b.HasOne("HotelManagementSystem.Models.Entities.Identity.User", "Listener")
-                        .WithMany("ListenedTasks")
-                        .HasForeignKey("ListenerId");
-
-                    b.HasOne("HotelManagementSystem.Models.Entities.Identity.User", "Receiver")
-                        .WithMany("ReceivedTasks")
-                        .HasForeignKey("ReceiverId");
-
                     b.HasOne("HotelManagementSystem.Models.Entities.Storage.Room", "Room")
                         .WithMany()
                         .HasForeignKey("RoomID");

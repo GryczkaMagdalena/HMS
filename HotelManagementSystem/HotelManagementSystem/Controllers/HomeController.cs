@@ -17,7 +17,7 @@ namespace HotelManagementSystem.Controllers
     [Route("api/[controller]")]
     public class HomeController : Controller
     {
-        private StorageContext storage = new StorageContext();
+        private IdentityContext storage = new IdentityContext();
         // GET api/values
 
         /**

@@ -37,9 +37,6 @@ namespace HotelManagementSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<StorageContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("Storage")));
-
             services.AddDbContext<IdentityContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("Storage")));
 
@@ -82,7 +79,7 @@ namespace HotelManagementSystem
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, StorageContext context, IdentityContext iContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,  IdentityContext iContext)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -113,7 +110,7 @@ namespace HotelManagementSystem
                 }
             });
             app.UseMvc();
-            DbInitializer.Initialize(context);
+         //   DbInitializer.Initialize(context);
             DbInitializer.Initialize(iContext);
         }
     }

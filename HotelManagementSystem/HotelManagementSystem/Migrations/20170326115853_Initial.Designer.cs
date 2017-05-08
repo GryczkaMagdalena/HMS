@@ -7,7 +7,7 @@ using HotelManagementSystem.Models.Infrastructure;
 
 namespace HotelManagementSystem.Migrations
 {
-    [DbContext(typeof(StorageContext))]
+    [DbContext(typeof(IdentityContext))]
     [Migration("20170326115853_Initial")]
     partial class Initial
     {

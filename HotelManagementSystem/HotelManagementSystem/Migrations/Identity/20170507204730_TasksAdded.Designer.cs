@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using HotelManagementSystem.Models.Infrastructure;
-using HotelManagementSystem.Models.Entities.Identity;
 
 namespace HotelManagementSystem.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    partial class IdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20170507204730_TasksAdded")]
+    partial class TasksAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -73,22 +73,6 @@ namespace HotelManagementSystem.Migrations.Identity
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Case", b =>
-                {
-                    b.Property<Guid>("CaseID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("Title");
-
-                    b.Property<int>("WorkerType");
-
-                    b.HasKey("CaseID");
-
-                    b.ToTable("Cases");
-                });
-
             modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Room", b =>
                 {
                     b.Property<Guid>("RoomID")
@@ -105,21 +89,7 @@ namespace HotelManagementSystem.Migrations.Identity
                     b.HasIndex("UserID")
                         .IsUnique();
 
-                    b.ToTable("Rooms");
-                });
-
-            modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Rule", b =>
-                {
-                    b.Property<Guid>("RuleID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("RuleID");
-
-                    b.ToTable("Rules");
+                    b.ToTable("Room");
                 });
 
             modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Shift", b =>
@@ -137,35 +107,7 @@ namespace HotelManagementSystem.Migrations.Identity
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Shifts");
-                });
-
-            modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Task", b =>
-                {
-                    b.Property<Guid>("TaskID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Describe");
-
-                    b.Property<string>("IssuerId");
-
-                    b.Property<string>("ListenerId");
-
-                    b.Property<string>("ReceiverId");
-
-                    b.Property<Guid?>("RoomID");
-
-                    b.HasKey("TaskID");
-
-                    b.HasIndex("IssuerId");
-
-                    b.HasIndex("ListenerId");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("RoomID");
-
-                    b.ToTable("Tasks");
+                    b.ToTable("Shift");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -242,7 +184,7 @@ namespace HotelManagementSystem.Migrations.Identity
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.HasAlternateKey("UserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserLogins");
                 });
@@ -287,25 +229,6 @@ namespace HotelManagementSystem.Migrations.Identity
                     b.HasOne("HotelManagementSystem.Models.Entities.Identity.User")
                         .WithMany("Shifts")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Task", b =>
-                {
-                    b.HasOne("HotelManagementSystem.Models.Entities.Identity.User", "Issuer")
-                        .WithMany("IssuedTasks")
-                        .HasForeignKey("IssuerId");
-
-                    b.HasOne("HotelManagementSystem.Models.Entities.Identity.User", "Listener")
-                        .WithMany("ListenedTasks")
-                        .HasForeignKey("ListenerId");
-
-                    b.HasOne("HotelManagementSystem.Models.Entities.Identity.User", "Receiver")
-                        .WithMany("ReceivedTasks")
-                        .HasForeignKey("ReceiverId");
-
-                    b.HasOne("HotelManagementSystem.Models.Entities.Storage.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
