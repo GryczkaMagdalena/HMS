@@ -94,7 +94,7 @@ namespace HotelManagementSystem.Controllers
             {
                 rule = await storage.Tasks.FindAsync(id);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(new {status="notFound" });
             }
@@ -152,7 +152,7 @@ namespace HotelManagementSystem.Controllers
                     return Json(new { status = "failure" });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(new {status="notFound" });
             }
@@ -200,7 +200,7 @@ namespace HotelManagementSystem.Controllers
                     return Json(new { status = "failure" });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(new {status="notFound" });
             }
@@ -248,7 +248,7 @@ namespace HotelManagementSystem.Controllers
                     throw new Exception("Entity not present in database");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(new {status="notFound" });
             }
