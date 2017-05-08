@@ -800,34 +800,6 @@ define({ "api": [
     "groupTitle": "Auth"
   },
   {
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "optional": false,
-            "field": "varname1",
-            "description": "<p>No type.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "varname2",
-            "description": "<p>With type.</p>"
-          }
-        ]
-      }
-    },
-    "type": "",
-    "url": "",
-    "version": "0.0.0",
-    "filename": "HotelManagementSystem/wwwroot/doc/main.js",
-    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
-    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
-    "name": ""
-  },
-  {
     "type": "post",
     "url": "/Case",
     "title": "Create",
@@ -905,7 +877,7 @@ define({ "api": [
   },
   {
     "type": "delete",
-    "url": "/Case?CaseID",
+    "url": "/Case/CaseID",
     "title": "Delete",
     "version": "0.1.0",
     "name": "Delete",
@@ -997,7 +969,90 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/Case?CaseID",
+    "url": "/Case/Filter/WorkerType",
+    "title": "Read",
+    "version": "0.1.0",
+    "name": "Read",
+    "group": "Case",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "WorkerType",
+            "description": "<p>(Cleaner or Technician)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "CaseID",
+            "description": "<p>Case identifier</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Title",
+            "description": "<p>Case title</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Description",
+            "description": "<p>Case details</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "WorkerType",
+            "description": "<p>Worker type associated with this case</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"CaseID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Title\":\"ExampleCase\",\n      \"Description\":\"Clean something\",\n      \"WorkerType\":\"Technician\"\n      }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Given ID does not appeal to any of cases</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\":\"notFound\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/CaseController.cs",
+    "groupTitle": "Case"
+  },
+  {
+    "type": "get",
+    "url": "/Case/CaseID",
     "title": "Read",
     "version": "0.1.0",
     "name": "Read",
@@ -1819,5 +1874,345 @@ define({ "api": [
     },
     "filename": "HotelManagementSystem/Controllers/RoomController.cs",
     "groupTitle": "Room"
+  },
+  {
+    "type": "post",
+    "url": "/Task",
+    "title": "Create",
+    "version": "0.1.0",
+    "name": "Create",
+    "group": "Task",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>task was created</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"status\":\"created\"\n      }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidInput",
+            "description": "<p>One of inputs was null or invalid</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\":\"failure\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "groupTitle": "Task"
+  },
+  {
+    "type": "delete",
+    "url": "/Task/TaskID",
+    "title": "Delete",
+    "version": "0.1.0",
+    "name": "Delete",
+    "group": "Task",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "GUID",
+            "optional": false,
+            "field": "TaskID",
+            "description": "<p>Task identifier</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>Task was deleted</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"status\":\"removed\"\n      }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Task with specified ID was not found</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n \"status\":\"notFound\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "groupTitle": "Task"
+  },
+  {
+    "type": "get",
+    "url": "/Task",
+    "title": "List",
+    "version": "0.1.0",
+    "name": "List",
+    "group": "Task",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "tasks",
+            "description": "<p>List of all existing tasks</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n  [\n      {\n      \"TaskID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Describe\":\"Describtion of task\",\n      \"RoomID\":\"5ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Room\":\"Connected room\"\n      }\n  ]",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "groupTitle": "Task"
+  },
+  {
+    "type": "get",
+    "url": "/Task/TaskID",
+    "title": "Read",
+    "version": "0.1.0",
+    "name": "Read",
+    "group": "Task",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "GUID",
+            "optional": false,
+            "field": "TaskID",
+            "description": "<p>Task identifier</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "TaskID",
+            "description": "<p>Task identifier</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Description",
+            "description": "<p>of task</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "RoomID",
+            "description": "<p>Room identifier</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Room",
+            "optional": false,
+            "field": "Room",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"TaskID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Describe\":\"Describtion of task\",\n      \"RoomID\":\"5ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Room\":\"Connected room\"\n      }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Given ID does not appeal to any of tasks</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\":\"notFound\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "groupTitle": "Task"
+  },
+  {
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "varname1",
+            "description": "<p>No type.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "varname2",
+            "description": "<p>With type.</p>"
+          }
+        ]
+      }
+    },
+    "type": "",
+    "url": "",
+    "version": "0.0.0",
+    "filename": "HotelManagementSystem/doc/main.js",
+    "group": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_doc_main_js",
+    "groupTitle": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_doc_main_js",
+    "name": ""
+  },
+  {
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "varname1",
+            "description": "<p>No type.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "varname2",
+            "description": "<p>With type.</p>"
+          }
+        ]
+      }
+    },
+    "type": "",
+    "url": "",
+    "version": "0.0.0",
+    "filename": "HotelManagementSystem/wwwroot/doc/main.js",
+    "group": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "groupTitle": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "name": ""
+  },
+  {
+    "type": "put",
+    "url": "/task?TaskID",
+    "title": "Update",
+    "version": "0.1.0",
+    "name": "Update",
+    "group": "task",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>task was updated</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"status\":\"updated\"\n      }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidInput",
+            "description": "<p>One of inputs was null or invalid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>task with specified ID was not found</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 200 OK  \n{\n  \"status\":\"failure\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n \"status\":\"notFound\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "groupTitle": "task"
   }
 ] });
