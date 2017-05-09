@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using HotelManagementSystem.Models.Infrastructure;
 using Microsoft.AspNetCore.Cors;
@@ -15,9 +16,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace HotelManagementSystem.Controllers
 {
+    [Authorize]
     [EnableCors("HotelCorsPolicy")]
     [Produces("application/json")]
-    [Route("api/Task/[action]")]
+    [Route("api/Task")]
     public class TaskController : Controller
     {
         private readonly IdentityContext _context;
@@ -55,13 +57,16 @@ namespace HotelManagementSystem.Controllers
         {
             List<Models.Entities.Storage.Task> tasks = await _context.Tasks.ToListAsync();
 
-            var tasksObjectified = tasks.Select(q => new
+            return Json(tasks.Select(q => new
             {
                 TaskID = q.TaskID,
                 Describe = q.Describe,
                 Room = q.Room,
-            });
-            return Json(tasksObjectified);
+                Issuer = q.Issuer,
+                Receiver = q.Receiver,
+                Listener = q.Listener,
+                Case = q.Case,
+            }));
         }
              /**
        * @api {get} /Task/TaskID Read
@@ -166,8 +171,10 @@ namespace HotelManagementSystem.Controllers
          * @apiName Create
          * @apiGroup Task
          *
-         * 
-         * 
+       * @apiSuccess {String} Email User Email
+       * @apiSuccess {String} Numer Numer of room
+       * @apiSuccess {String} Title title of case
+       * 
          *@apiSuccess {String} status task was created 
          *@apiSuccessExample Success-Response:
          * HTTP/1.1 200 OK
@@ -192,16 +199,13 @@ namespace HotelManagementSystem.Controllers
                 {
                     var user = await _context.Users.FirstAsync(q => q.Email == value.Email);
                     var room = await _context.Rooms.FirstAsync(q => q.Number == value.RoomNumber);
+                    var case_in_task = await _context.Cases.FirstAsync(q => q.Title == value.Title);
 
                     if (user == null) return NotFound(new { status = "userNotFound" });
                     if (room == null) return NotFound(new { status = "roomNotFound" });
                     //TODO implement with passing actual case when it will be available
-                    var Case = new Case()
-                    {
-                        CaseID=Guid.NewGuid(),Description="desc1",Title="title1",WorkerType=WorkerType.Cleaner
-                    };
-                    var receiver = await _taskDisposer.FindWorker(Case);
-                    var listener = await _taskDisposer.AttachListeningManager(Case, receiver);
+                    var receiver = await _taskDisposer.FindWorker(case_in_task);
+                    var listener = await _taskDisposer.AttachListeningManager(case_in_task, receiver);
 
                     if (receiver == null) return BadRequest(new {status="All workers busy. Try again later" });
 
@@ -212,7 +216,8 @@ namespace HotelManagementSystem.Controllers
                         Room=room,
                         Issuer=user,
                         Receiver= receiver,
-                        Listener = listener
+                        Listener = listener,
+                        Case = case_in_task,
                     };
 
 

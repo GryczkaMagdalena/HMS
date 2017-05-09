@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace HotelManagementSystem.Models.Entities.Storage
 {
@@ -10,5 +11,8 @@ namespace HotelManagementSystem.Models.Entities.Storage
         public Guid ShiftID { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+        public DateTime ActualTime { get; set; }
+        [DefaultValue(false)]
+        public Boolean Break { get; set; }
     }
 }

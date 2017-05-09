@@ -9,9 +9,10 @@ using HotelManagementSystem.Models.Entities.Identity;
 namespace HotelManagementSystem.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    partial class IdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20170509175003_AddTaskMig")]
+    partial class AddTaskMig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -126,10 +127,6 @@ namespace HotelManagementSystem.Migrations.Identity
                 {
                     b.Property<Guid>("ShiftID")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("ActualTime");
-
-                    b.Property<bool>("Break");
 
                     b.Property<DateTime>("EndTime");
 
