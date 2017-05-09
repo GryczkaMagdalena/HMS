@@ -10,5 +10,6 @@ namespace HotelManagementSystem.Models.Concrete
         public string Describe { get; set; }
         public string Email { get; set; }
         public string RoomNumber { get; set; }
+        public string Title { get; set; }
     }
 }

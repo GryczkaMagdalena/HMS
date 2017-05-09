@@ -14,5 +14,7 @@ namespace HotelManagementSystem.Models.Entities.Storage
         public virtual User Issuer { get; set; }
         public virtual User Listener { get; set; }
         public virtual User Receiver { get; set; }
+        [ForeignKey("CaseID")]
+        public virtual Case Case { get; set; }
     }
 }
