@@ -1,3 +1,9 @@
 <template>
-  Hotel Rules template
+	<require from="./content/rules-list"></require>
+	<div class="container">
+		<div class="row">
+			<rules-list class="col-md-4"></rules-list>
+			<router-view class="col-md-8"></router-view>
+		</div>
+	</div>
 </template>

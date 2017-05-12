@@ -1,0 +1,10 @@
+<template>
+	<div class="list-group">
+		<span repeat.for="rule of rules" class="list-group">
+			<a route-href="route: ruleRouter; params.bind: {id:rule.ruleID}" click.delegate="$parent.setRule(rule.ruleID)" class="list-group-item ${rule.ruleID === $parent.rule ? 'active' : ''}">
+				<h4>${rule.name}</h4>
+			</a>
+		</span>
+		<button type="button" class="btn btn-warning" click.delegate='return()'>Return</button>
+	</div>
+</template>
