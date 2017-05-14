@@ -330,6 +330,36 @@ define({ "api": [
   {
     "type": "post",
     "url": "/Auth/GetUserRoles",
+    "title": "GetUserID",
+    "version": "0.1.3",
+    "name": "GetUserID",
+    "group": "Auth",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "GUID",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID of currently logged user</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "HTTP/1.1 200 OK\n  {\n    \"id\":\"some29299guid\"\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
+    "url": "/Auth/GetUserRoles",
     "title": "GetUserRoles",
     "version": "0.1.1",
     "name": "GetUserRoles",
@@ -672,6 +702,97 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/Auth/RemoveFromRole",
+    "title": "RemoveFromRole",
+    "version": "0.1.3",
+    "name": "RemoveFromRole",
+    "group": "Auth",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "GUID",
+            "optional": false,
+            "field": "UserID",
+            "description": "<p>ID of user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "roleName",
+            "description": "<p>Name of role</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>Status of successful response</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\":\"User removed from role Customer\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "RoleNotFound",
+            "description": "<p>Role name is invalid.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "UserError",
+            "description": "<p>User cannot be added to role.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "UserNotExists",
+            "description": "<p>User cannot be found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n \"status\":\"Role does not exists\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n     \"status\":User cannot be removed from role Customer\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n     \"status\":User does not exists\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
+    "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
     "url": "/Auth/Token",
     "title": "Token",
     "version": "0.1.1",
@@ -798,6 +919,90 @@ define({ "api": [
     },
     "filename": "HotelManagementSystem/Controllers/AuthController.cs",
     "groupTitle": "Auth"
+  },
+  {
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "varname1",
+            "description": "<p>No type.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "varname2",
+            "description": "<p>With type.</p>"
+          }
+        ]
+      }
+    },
+    "type": "",
+    "url": "",
+    "version": "0.0.0",
+    "filename": "HotelManagementSystem/doc/main.js",
+    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_doc_main_js",
+    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_doc_main_js",
+    "name": ""
+  },
+  {
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "varname1",
+            "description": "<p>No type.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "varname2",
+            "description": "<p>With type.</p>"
+          }
+        ]
+      }
+    },
+    "type": "",
+    "url": "",
+    "version": "0.0.0",
+    "filename": "HotelManagementSystem/wwwroot/doc/main.js",
+    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "name": ""
+  },
+  {
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "varname1",
+            "description": "<p>No type.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "varname2",
+            "description": "<p>With type.</p>"
+          }
+        ]
+      }
+    },
+    "type": "",
+    "url": "",
+    "version": "0.0.0",
+    "filename": "HotelManagementSystem/wwwroot/doc/ping/main.js",
+    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
+    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
+    "name": ""
   },
   {
     "type": "post",
@@ -969,9 +1174,9 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/Case/Filter/WorkerType",
+    "url": "/Case/CaseID",
     "title": "Read",
-    "version": "0.1.2",
+    "version": "0.1.0",
     "name": "Read",
     "group": "Case",
     "parameter": {
@@ -979,10 +1184,10 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
-            "type": "String",
+            "type": "GUID",
             "optional": false,
-            "field": "WorkerType",
-            "description": "<p>(Cleaner or Technician)</p>"
+            "field": "CaseID",
+            "description": "<p>Case identifier</p>"
           }
         ]
       }
@@ -1052,20 +1257,20 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/Case/CaseID",
-    "title": "Read",
-    "version": "0.1.0",
-    "name": "Read",
+    "url": "/Case/Filter/WorkerType",
+    "title": "ReadFilter",
+    "version": "0.1.2",
+    "name": "ReadFilter",
     "group": "Case",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "type": "GUID",
+            "type": "String",
             "optional": false,
-            "field": "CaseID",
-            "description": "<p>Case identifier</p>"
+            "field": "WorkerType",
+            "description": "<p>(Cleaner or Technician)</p>"
           }
         ]
       }
@@ -1889,6 +2094,27 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": false,
+            "field": "Email",
+            "description": "<p>User Email</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Numer",
+            "description": "<p>Numer of room</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Title",
+            "description": "<p>title of case</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
             "field": "status",
             "description": "<p>task was created</p>"
           }
@@ -2160,59 +2386,53 @@ define({ "api": [
     "groupTitle": "Task"
   },
   {
+    "type": "get",
+    "url": "/Worker/Shifts",
+    "title": "ActualizeShifts",
+    "version": "0.1.3",
+    "name": "ActualizeShifts",
+    "group": "Worker",
     "success": {
       "fields": {
         "Success 200": [
           {
             "group": "Success 200",
-            "optional": false,
-            "field": "varname1",
-            "description": "<p>No type.</p>"
-          },
-          {
-            "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "varname2",
-            "description": "<p>With type.</p>"
+            "field": "status",
+            "description": "<p>Shifts were updated</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"status\":\"success\"\n      }",
+          "type": "json"
+        }
+      ]
     },
-    "type": "",
-    "url": "",
-    "version": "0.0.0",
-    "filename": "HotelManagementSystem/doc/main.js",
-    "group": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_doc_main_js",
-    "groupTitle": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_doc_main_js",
-    "name": ""
-  },
-  {
-    "success": {
+    "error": {
       "fields": {
-        "Success 200": [
+        "Error 4xx": [
           {
-            "group": "Success 200",
-            "optional": false,
-            "field": "varname1",
-            "description": "<p>No type.</p>"
-          },
-          {
-            "group": "Success 200",
+            "group": "Error 4xx",
             "type": "String",
             "optional": false,
-            "field": "varname2",
-            "description": "<p>With type.</p>"
+            "field": "status",
+            "description": "<p>Shifts are acutal - no need to update</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Error-Response",
+          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"this action is not needed\"\n}",
+          "type": "json"
+        }
+      ]
     },
-    "type": "",
-    "url": "",
-    "version": "0.0.0",
-    "filename": "HotelManagementSystem/wwwroot/doc/main.js",
-    "group": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
-    "groupTitle": "_home_magdalena_RiderProjects_HMS_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
-    "name": ""
+    "filename": "HotelManagementSystem/Controllers/WorkerController.cs",
+    "groupTitle": "Worker"
   }
 ] });

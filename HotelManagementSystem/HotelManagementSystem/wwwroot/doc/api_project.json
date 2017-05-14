@@ -1,15 +1,15 @@
 {
   "name": "HotelManagmentSystem",
-  "version": "0.1.2",
-  "description": "HotelManagmentSystem",
-  "title": "Its a HotelManagmentSystem",
-  "url": "https://github.com/GryczkaMagdalena/HMS",
+  "version": "0.1.3",
+  "description": "Official API documentation for Hotel Management System",
+  "title": "HMS-API",
+  "url": "https://hotelmanagementsystem.azurewebsites.net",
   "sampleUrl": false,
   "defaultVersion": "0.0.0",
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2017-05-08T19:22:51.417Z",
+    "time": "2017-05-13T18:02:46.425Z",
     "url": "http://apidocjs.com",
     "version": "0.17.5"
   }
