@@ -26,7 +26,6 @@ namespace HotelManagementSystem.Models.Infrastructure
                 "User ID=hmsuser;" +
                 "Password=Al315t3r<r0wl3y");
         }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<IdentityUserLogin<string>>().HasKey(q => new { q.UserId });

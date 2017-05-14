@@ -50,12 +50,13 @@ namespace HotelManagementSystem.Controllers
             try
             {
                 user = await context.Users.FindAsync(id);
+                if (user == null) throw new Exception();
             }
             catch (Exception)
             {
-                return Json(new { status = "notFound" });
+                return NotFound(new { status = "notFound" });
             }
-            return Json(new
+            return Ok(new
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
@@ -120,7 +121,7 @@ namespace HotelManagementSystem.Controllers
                 return Json(ex);
             }
         }
-        
+
         //POST: api/Worker/{id}
         [HttpPost("{id}")]
         public async Task<IActionResult> Create(string id)
@@ -146,10 +147,38 @@ namespace HotelManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "failure"+ex });
+                return Json(new { status = "failure" + ex });
             }
         }
 
+        /**
+       * @api {get} /Worker/Shifts ActualizeShifts
+       * @apiVersion 0.1.3
+       * @apiName ActualizeShifts
+       * @apiGroup Worker
+       *
+       * *@apiSuccess {String} status Shifts were updated
+       *@apiSuccessExample Success-Response:
+       * HTTP/1.1 200 OK
+        *       {
+        *       "status":"success"
+        *       }
+        * @apiError {String} status Shifts are acutal - no need to update
+        * @apiErrorExample Error-Response
+        * HTTP/1.1 400 BadRequest
+        * {
+        *    "status":"this action is not needed"
+        * }
+        * 
+        */
+        [HttpGet("shifts")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> ActualizeShifts()
+        {
+            var result = await DbInitializer.AddWorkerShifts(context);
+            if (result) return Ok(new { status = "success" });
+            return BadRequest(new { status = "this action is not needed" });
+        }
 
         // DELETE api/Worker/{id}
         [HttpDelete("{id}")]

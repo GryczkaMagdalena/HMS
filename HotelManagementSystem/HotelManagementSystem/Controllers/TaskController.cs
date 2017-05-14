@@ -30,7 +30,7 @@ namespace HotelManagementSystem.Controllers
         {
             _context = context;
             userService = new UserService(context, manager, signInManager, hash, roles);
-            _taskDisposer = new TaskDisposer(userService);
+            _taskDisposer = new TaskDisposer(userService,_context);
         }
 
         /**
@@ -55,7 +55,9 @@ namespace HotelManagementSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            List<Models.Entities.Storage.Task> tasks = await _context.Tasks.ToListAsync();
+            List<Models.Entities.Storage.Task> tasks = await _context.Tasks.Include(q=>q.Case)
+                .Include(p=>p.Issuer).Include(q=>q.Listener).Include(q=>q.Receiver).ToListAsync();
+
 
             return Json(tasks.Select(q => new
             {
@@ -203,7 +205,7 @@ namespace HotelManagementSystem.Controllers
 
                     if (user == null) return NotFound(new { status = "userNotFound" });
                     if (room == null) return NotFound(new { status = "roomNotFound" });
-                    //TODO implement with passing actual case when it will be available
+
                     var receiver = await _taskDisposer.FindWorker(case_in_task);
                     var listener = await _taskDisposer.AttachListeningManager(case_in_task, receiver);
 
@@ -220,8 +222,14 @@ namespace HotelManagementSystem.Controllers
                         Case = case_in_task,
                     };
 
+                    receiver.ReceivedTasks.Add(newTask);
+                    user.IssuedTasks.Add(newTask);
 
-                    await _context.Tasks.AddAsync(newTask);
+                    _context.Entry(newTask).State = EntityState.Added;
+                    _context.Entry(user).State = EntityState.Modified;
+                    _context.Entry(receiver).State = EntityState.Modified;
+
+
                     await _context.SaveChangesAsync();
                     return Json(new { status = "created" });
                 }
@@ -230,8 +238,9 @@ namespace HotelManagementSystem.Controllers
                     return Json(new { status = "failure" });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 return Json(new {status="notFound" });
             }
         }

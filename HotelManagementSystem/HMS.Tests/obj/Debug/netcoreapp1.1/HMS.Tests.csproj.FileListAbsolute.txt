@@ -1,0 +1,14 @@
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\bin\Debug\netcoreapp1.1\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\bin\Debug\netcoreapp1.1\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\bin\Debug\netcoreapp1.1\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\bin\Debug\netcoreapp1.1\HMS.Tests.deps.json
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\bin\Debug\netcoreapp1.1\HMS.Tests.runtimeconfig.json
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\bin\Debug\netcoreapp1.1\HMS.Tests.runtimeconfig.dev.json
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\bin\Debug\netcoreapp1.1\HMS.Tests.dll
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\bin\Debug\netcoreapp1.1\HMS.Tests.pdb
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\bin\Debug\netcoreapp1.1\HotelManagementSystem.dll
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\bin\Debug\netcoreapp1.1\HotelManagementSystem.pdb
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\obj\Debug\netcoreapp1.1\HMS.Tests.csprojResolveAssemblyReference.cache
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\obj\Debug\netcoreapp1.1\HMS.Tests.AssemblyInfo.cs
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\obj\Debug\netcoreapp1.1\HMS.Tests.dll
+C:\Users\tirur\Source\Repos\HotelManagementSystem\HotelManagementSystem\HMS.Tests\obj\Debug\netcoreapp1.1\HMS.Tests.pdb

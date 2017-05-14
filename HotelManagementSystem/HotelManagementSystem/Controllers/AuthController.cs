@@ -42,7 +42,7 @@ namespace HotelManagementSystem.Controllers
             ILogger<AuthController> logger
             )
         {
-            userService = new UserService(db,userManager,signInManager,hash,roleManager);
+            userService = new UserService(db, userManager, signInManager, hash, roleManager);
             this.logger = logger;
         }
         /**
@@ -116,7 +116,7 @@ namespace HotelManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await userService.PasswordSignInAsync(user,user.Password);
+                var result = await userService.PasswordSignInAsync(user, user.Password);
                 if (result.Succeeded)
                 {
                     var entity = db.Users.First(q => q.UserName == user.Login);
@@ -402,6 +402,10 @@ namespace HotelManagementSystem.Controllers
                     LastName = registerModel.LastName,
                     FirstName = registerModel.FirstName,
                     Email = registerModel.Email,
+                    ReceivedTasks=new List<Models.Entities.Storage.Task>(),
+                    ListenedTasks=new List<Models.Entities.Storage.Task>(),
+                    Shifts = new List<Shift>(),
+                    IssuedTasks=new List<Models.Entities.Storage.Task>(),
                     NormalizedEmail = registerModel.Email,
                     WorkerType = (WorkerType)System.Enum.Parse(typeof(WorkerType), registerModel.WorkerType, true)
                 };
@@ -478,7 +482,8 @@ namespace HotelManagementSystem.Controllers
                 var user = await userService.GetUserByUsername(userModel.Login);
                 if (user != null)
                 {
-                    if (userService.VerifyHashedPassword(user, userModel.Password)==PasswordVerificationResult.Success){
+                    if (userService.VerifyHashedPassword(user, userModel.Password) == PasswordVerificationResult.Success)
+                    {
                         var userClaims = await userService.GetClaims(user);
                         var claims = new[]
                            {
@@ -486,7 +491,9 @@ namespace HotelManagementSystem.Controllers
                                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                                 new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
                                 new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
-                                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+                                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                                new Claim(ClaimTypes.Role,await userService.MainRole(user)),
+                                new Claim(ClaimTypes.GroupSid,Enum.GetName(typeof(WorkerType),user.WorkerType))
                             }.Union(userClaims);
 
                         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("HotelowaMuffinka"));
@@ -494,7 +501,7 @@ namespace HotelManagementSystem.Controllers
                         var token = new JwtSecurityToken(
                             claims: claims,
                             expires: DateTime.UtcNow.AddHours(8),
-                            signingCredentials:creds,
+                            signingCredentials: creds,
                             issuer: "http://hotelmanagementsystem.azurewebsites.net/",
                             audience: "http://hotelmanagementsystem.azurewebsites.net/"
                             );
@@ -508,15 +515,16 @@ namespace HotelManagementSystem.Controllers
                                 LastName = user.LastName,
                                 Email = user.Email,
                                 WorkerType = Enum.GetName(typeof(WorkerType), user.WorkerType),
-                                Roles = user.Roles,
+                                Roles = await userService.GetUserRoles(user),
                                 Room = user.Room
                             }
                         });
                     }
                 }
-            }catch(Exception)
+            }
+            catch (Exception)
             {
-                return NotFound(new { status="failed" });
+                return NotFound(new { status = "failed" });
             }
             return BadRequest(new { status = "failedToLogin" });
         }
@@ -556,13 +564,13 @@ namespace HotelManagementSystem.Controllers
          * }
         */
         [HttpPost("{UserID}")]
-        public async Task<IActionResult> AddToRole([FromRoute]Guid UserID,[FromBody] String roleName)
+        public async Task<IActionResult> AddToRole([FromRoute]Guid UserID, [FromBody] String roleName)
         {
             try
             {
-                if(await userService.RoleExists(roleName))
+                if (await userService.RoleExists(roleName))
                 {
-                   var result = await userService.AddUserToRole(roleName, UserID.ToString());
+                    var result = await userService.AddUserToRole(roleName, UserID.ToString());
                     if (result.Succeeded)
                     {
                         return Ok(new { status = "User added to role " + roleName });
@@ -570,6 +578,90 @@ namespace HotelManagementSystem.Controllers
                     else
                     {
                         return BadRequest(new { status = "User cannot be added to role" + roleName });
+                    }
+                }
+                else
+                {
+                    return NotFound(new { status = "Role does not exists" });
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error", ex.ToString());
+                return NotFound(new { status = "User does not exists" });
+            }
+        }
+        /**
+   * @api {post} /Auth/GetUserRoles GetUserID
+   * @apiVersion 0.1.3
+   * @apiName GetUserID
+   * @apiGroup Auth
+   * 
+   *  @apiSuccess {GUID} id ID of currently logged user
+   *  @apiSuccessExample Success-Response
+   *   HTTP/1.1 200 OK
+     *     {
+     *       "id":"some29299guid"
+     *     }
+   */
+        [HttpGet]
+        public async Task<IActionResult> GetUserID()
+        {
+            var login = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await userService.GetUserByUsername(login);
+            return Ok(new {id=user.Id });
+        }
+        private Task<User> GetCurrentUserAsync(ClaimsPrincipal user) => userService.GetUserAsync(user);
+        /**
+     * @api {post} /Auth/RemoveFromRole RemoveFromRole
+     * @apiVersion 0.1.3
+     * @apiName RemoveFromRole
+     * @apiGroup Auth
+     *
+     * @apiParam {GUID} UserID ID of user
+     * @apiParam {String} roleName Name of role
+     * 
+     * @apiSuccess {String} status Status of successful response
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *       "status":"User removed from role Customer"
+     *     }
+     *@apiError RoleNotFound Role name is invalid.
+      * @apiErrorExample Error-Response:
+      * HTTP/1.1 400 BadRequest
+      * {
+      *  "status":"Role does not exists"
+      * }  
+      * @apiError UserError User cannot be added to role.
+      * @apiErrorExample Error-Response:
+      * HTTP/1.1 400 BadRequest
+      * {
+      *      "status":User cannot be removed from role Customer"
+      * }
+      * 
+      * @apiError UserNotExists User cannot be found.
+      * @apiErrorExample Error-Response:
+      * HTTP/1.1 400 BadRequest
+      * {
+      *      "status":User does not exists"
+      * }
+     */
+        [HttpDelete("{UserID}")]
+        public async Task<IActionResult> RemoveFromRole([FromRoute]Guid UserID, [FromBody] String roleName)
+        {
+            try
+            {
+                if (await userService.RoleExists(roleName) && await db.Users.AnyAsync(q => q.Id == UserID.ToString()))
+                {
+                    var result = await userService.RemoveFromRole(roleName, UserID.ToString());
+                    if (result.Succeeded)
+                    {
+                        return Ok(new { status = "User removed from role " + roleName });
+                    }
+                    else
+                    {
+                        return BadRequest(new { status = "User cannot be removed from role" + roleName });
                     }
                 }
                 else
