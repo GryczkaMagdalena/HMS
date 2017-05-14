@@ -32,9 +32,31 @@ namespace HotelManagementSystem.Models.Infrastructure
             _passwordHasher = hasher;
             _roleManager = roleManager;
         }
+        public async Task<string> MainRole(User user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Any(q => q == "Administrator" || q == "admin"))
+            {
+                return "Administrator";
+            }
+            else if(roles.Any(q=>q=="Worker"||q=="worker"))
+            {
+                return "Worker";
+            }
+            else
+            {
+                return "Customer";
+            }
+        }
         public async Task<IList<string>> GetUserRoles(User user)
         {
             return await _userManager.GetRolesAsync(user);
+        }
+
+        public async Task<IdentityResult> RemoveFromRole(string roleName,String userID)
+        {
+            var user = await _userManager.FindByIdAsync(userID);
+            return await _userManager.RemoveFromRoleAsync(user, roleName);
         }
 
         public async Task<IdentityResult> AddUserToRole(string roleName,String UserID)
@@ -71,6 +93,11 @@ namespace HotelManagementSystem.Models.Infrastructure
         public async Task<bool> IsInRoleAsync(User guestAccount, string role)
         {
             return await _userManager.IsInRoleAsync(guestAccount, role);
+        }
+
+        internal Task<User> GetUserAsync(ClaimsPrincipal user)
+        {
+            return _userManager.GetUserAsync(user);
         }
     }
 }

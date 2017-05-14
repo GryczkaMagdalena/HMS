@@ -11,3 +11,7 @@
 .vs
 /HotelManagementSystem/doc
 /HotelManagementSystem/apidoc
+/HotelManagementSystem/.vs/config/applicationhost.config
+/HotelManagementSystem/HotelManagementSystem.Tests
+/HotelManagementSystem/HMS.Tests/bin/Debug/netcoreapp1.1
+/HotelManagementSystem/HMS.Tests/obj

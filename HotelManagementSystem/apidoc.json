@@ -1,7 +1,7 @@
 {
   "name": "HotelManagmentSystem",
-  "version": "0.1.2",
-  "description": "HotelManagmentSystem",
-  "title": "Its a HotelManagmentSystem",
-  "url" : "https://github.com/GryczkaMagdalena/HMS"
+  "version": "0.1.3",
+  "description": "Official API documentation for Hotel Management System",
+  "title": "HMS-API",
+  "url" : "https://hotelmanagementsystem.azurewebsites.net"
 }

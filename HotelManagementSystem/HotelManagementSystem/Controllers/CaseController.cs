@@ -106,9 +106,9 @@ namespace HotelManagementSystem.Controllers
 
 
         /**
-          * @api {get} /Case/Filter/WorkerType Read
+          * @api {get} /Case/Filter/WorkerType ReadFilter
           * @apiVersion 0.1.2
-          * @apiName Read
+          * @apiName ReadFilter
           * @apiGroup Case
           *
           * @apiParam {String} WorkerType (Cleaner or Technician)

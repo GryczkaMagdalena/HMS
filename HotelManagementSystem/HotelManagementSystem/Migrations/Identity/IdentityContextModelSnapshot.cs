@@ -14,7 +14,7 @@ namespace HotelManagementSystem.Migrations.Identity
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.1")
+                .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("HotelManagementSystem.Models.Entities.Identity.User", b =>
@@ -135,11 +135,11 @@ namespace HotelManagementSystem.Migrations.Identity
 
                     b.Property<DateTime>("StartTime");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserID");
 
                     b.HasKey("ShiftID");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserID");
 
                     b.ToTable("Shifts");
                 });
@@ -153,23 +153,23 @@ namespace HotelManagementSystem.Migrations.Identity
 
                     b.Property<string>("Describe");
 
-                    b.Property<string>("IssuerId");
+                    b.Property<string>("IssuerID");
 
-                    b.Property<string>("ListenerId");
+                    b.Property<string>("ListenerID");
 
-                    b.Property<string>("ReceiverId");
+                    b.Property<string>("ReceiverID");
 
-                    b.Property<Guid?>("RoomID");
+                    b.Property<Guid>("RoomID");
 
                     b.HasKey("TaskID");
 
                     b.HasIndex("CaseID");
 
-                    b.HasIndex("IssuerId");
+                    b.HasIndex("IssuerID");
 
-                    b.HasIndex("ListenerId");
+                    b.HasIndex("ListenerID");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("ReceiverID");
 
                     b.HasIndex("RoomID");
 
@@ -294,7 +294,7 @@ namespace HotelManagementSystem.Migrations.Identity
                 {
                     b.HasOne("HotelManagementSystem.Models.Entities.Identity.User")
                         .WithMany("Shifts")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserID");
                 });
 
             modelBuilder.Entity("HotelManagementSystem.Models.Entities.Storage.Task", b =>
@@ -305,19 +305,20 @@ namespace HotelManagementSystem.Migrations.Identity
 
                     b.HasOne("HotelManagementSystem.Models.Entities.Identity.User", "Issuer")
                         .WithMany("IssuedTasks")
-                        .HasForeignKey("IssuerId");
+                        .HasForeignKey("IssuerID");
 
                     b.HasOne("HotelManagementSystem.Models.Entities.Identity.User", "Listener")
                         .WithMany("ListenedTasks")
-                        .HasForeignKey("ListenerId");
+                        .HasForeignKey("ListenerID");
 
                     b.HasOne("HotelManagementSystem.Models.Entities.Identity.User", "Receiver")
                         .WithMany("ReceivedTasks")
-                        .HasForeignKey("ReceiverId");
+                        .HasForeignKey("ReceiverID");
 
                     b.HasOne("HotelManagementSystem.Models.Entities.Storage.Room", "Room")
                         .WithMany()
-                        .HasForeignKey("RoomID");
+                        .HasForeignKey("RoomID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

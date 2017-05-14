@@ -10,11 +10,15 @@ namespace HotelManagementSystem.Models.Entities.Storage
         [Key]
         public Guid TaskID { get; set; }
         public string Describe { get; set; }
+        public Guid RoomID { get; set; }
         public virtual Room Room { get; set; }
+        public string IssuerID { get; set; }
         public virtual User Issuer { get; set; }
+        public string ListenerID { get; set; }
         public virtual User Listener { get; set; }
+        public string ReceiverID { get; set; }
         public virtual User Receiver { get; set; }
-        [ForeignKey("CaseID")]
         public virtual Case Case { get; set; }
+        public Guid? CaseID { get; set; }
     }
 }

@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
 namespace HotelManagementSystem
 {
     public class Startup
@@ -43,7 +42,9 @@ namespace HotelManagementSystem
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityContext>();
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             var corsBuilder = new CorsPolicyBuilder();
             corsBuilder.AllowAnyHeader();
             corsBuilder.AllowAnyMethod();
@@ -79,7 +80,7 @@ namespace HotelManagementSystem
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,  IdentityContext iContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IdentityContext iContext)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -98,19 +99,19 @@ namespace HotelManagementSystem
             app.UseIdentity();
             app.UseJwtBearerAuthentication(new JwtBearerOptions()
             {
-                AutomaticAuthenticate=true,
-                AutomaticChallenge=true,
-                TokenValidationParameters= new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey=true,
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("HotelowaMuffinka")),
-                    ValidateLifetime=true,
-                    ValidIssuer= "http://hotelmanagementsystem.azurewebsites.net/",
-                    ValidAudience= "http://hotelmanagementsystem.azurewebsites.net/"
+                    ValidateLifetime = true,
+                    ValidIssuer = "http://hotelmanagementsystem.azurewebsites.net/",
+                    ValidAudience = "http://hotelmanagementsystem.azurewebsites.net/"
                 }
             });
             app.UseMvc();
-         //   DbInitializer.Initialize(context);
+            //   DbInitializer.Initialize(context);
             DbInitializer.Initialize(iContext);
         }
     }

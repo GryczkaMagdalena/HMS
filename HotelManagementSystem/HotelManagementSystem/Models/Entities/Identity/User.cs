@@ -11,8 +11,6 @@ namespace HotelManagementSystem.Models.Entities.Identity
 {
     public class User : IdentityUser
     {
-        [Key]
-        public override string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public virtual Room Room { get; set; }

@@ -1,6 +1,7 @@
 ﻿using HotelManagementSystem.Models.Entities.Identity;
 using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +13,15 @@ namespace HotelManagementSystem.Models.Infrastructure
     {
         private IdentityContext identityContext;
         private readonly UserService userService;
-        public TaskDisposer(UserService userService)
+        public TaskDisposer(UserService userService, IdentityContext context)
         {
             this.userService = userService;
-            identityContext = new IdentityContext();
+            identityContext = context;
         }
         private async Task<List<User>> GetWorkersByType(WorkerType type)
         {
             List<User> resultList = new List<User>();
-            var users = identityContext.Users.ToList();
+            var users = await identityContext.Users.Include(q => q.Shifts).ToListAsync();
             foreach (var user in users)
             {
                 if (await userService.IsInRoleAsync(user, "Worker") && user.WorkerType == type)
@@ -69,11 +70,18 @@ namespace HotelManagementSystem.Models.Infrastructure
         }
         private Shift WorkerCurrentShift(User worker)
         {
-            var now = DateTime.Now;
-            if (worker.Shifts != null)
-                return worker.Shifts.First(q => q.StartTime < now && q.EndTime > now);
-            else
-                return null;
+            try
+            {
+                var now = DateTime.Now;
+                if (worker.Shifts != null)
+                    return worker.Shifts.First(q => q.StartTime < now && q.EndTime > now);
+                else
+                    return null;
+            }catch(Exception ex)
+            {
+                Console.Write(ex.ToString());
+                return null; 
+            }
         }
         private bool CurrentlyInWork(User worker)
         {
@@ -90,8 +98,7 @@ namespace HotelManagementSystem.Models.Infrastructure
 
         private bool CurrentlyHaveBreak(User worker)
         {
-            //TODO use break field
-            return false;
+            return WorkerCurrentShift(worker).Break;
         }
 
         private List<User> FilterOnBreak(List<User> workers)
@@ -99,15 +106,13 @@ namespace HotelManagementSystem.Models.Infrastructure
             List<User> NotOnBreak = new List<User>();
             foreach(var worker in workers)
             {
-                //TODO if worker has breake
-                if (false)
+                if (!CurrentlyHaveBreak(worker))
                 {
                     NotOnBreak.Add(worker);
                 }
             }
             return NotOnBreak;
         }
-
         public async Task<User> FindWorker(Case toDo)
         {
 
@@ -120,21 +125,23 @@ namespace HotelManagementSystem.Models.Infrastructure
             workersInWork = FilterOnBreak(workersInWork);
 
             //TODO add real timespan of case
-            var workersNotLeaving = GetWorkersWhoCanPerformTask(new TimeSpan(), workersInWork);
+            var workersNotLeaving = GetWorkersWhoCanPerformTask(new TimeSpan(2,15,0), workersInWork);
             if (workersNotLeaving.Count == 0)
             {
-               // targetWorkers = workersInWork.OrderBy(q => q.ReceivedTasks.Count).ToList();
+                targetWorkers = workersInWork.Where(p => p.ReceivedTasks != null).OrderBy(q => q.ReceivedTasks.Count).ToList();
+               targetWorkers.AddRange(workersNotLeaving.Where(q => q.ReceivedTasks == null));
             }
             else
             {
-               // targetWorkers = workersNotLeaving.OrderBy(q => q.ReceivedTasks.Count).ToList();
+               targetWorkers = workersNotLeaving.Where(p=>p.ReceivedTasks!=null).OrderBy(q => q.ReceivedTasks.Count).ToList();
+               targetWorkers.AddRange(workersNotLeaving.Where(q => q.ReceivedTasks == null));
             }
             return targetWorkers.First();
         }
 
         public async Task<User> AttachListeningManager(Case toDo, User worker)
         {
-            return new User();
+            return null;
         }
     }
 }
