@@ -34,7 +34,7 @@ namespace HMS.Tests
         [TestMethod]
         public async System.Threading.Tasks.Task CreateRoom()
         {
-            var controller = new RoomController();
+            var controller = new RoomController(new ILogger<RoomController>());
             Room room = new Room()
             {
                 RoomID = Guid.NewGuid(),
