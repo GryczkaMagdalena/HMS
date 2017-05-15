@@ -12,7 +12,7 @@ namespace HotelManagementSystem.Models.Entities.Storage
         public Guid ShiftID { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public DateTime ActualTime { get; set; }
+        public TimeSpan ActualTime { get; set; }
         [DefaultValue(false)]
         public Boolean Break { get; set; }
         public string UserID { get; set; }
