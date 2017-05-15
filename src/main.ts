@@ -14,7 +14,8 @@ export function configure(aurelia: Aurelia) {
 
   aurelia.use
     .standardConfiguration()
-    .feature('resources');
+    .feature('resources')
+    .plugin('aurelia-dialog');
 
   if (environment.debug) {
     aurelia.use.developmentLogging();
