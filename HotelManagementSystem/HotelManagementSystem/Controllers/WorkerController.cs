@@ -7,9 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using HotelManagementSystem.Models.Infrastructure;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Identity;
 using HotelManagementSystem.Models.Entities.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -19,15 +18,26 @@ namespace HotelManagementSystem.Controllers
     [Route("api/Worker")]
     public class WorkerController : Controller
     {
-        private IdentityContext context = new IdentityContext();
-
+        private IdentityContext _context;
+        private ILogger _logger;
+        public WorkerController(IdentityContext context, ILogger<WorkerController> logger)
+        {
+            _logger = logger;
+            _context = context;
+        }
         // GET: api/Worker
+        /**
+       * @api {get} /Worker/ List
+       * @apiVersion 0.1.3
+       * @apiName List
+       * @apiGroup Worker
+       */
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            List<User> users = await context.Users.ToListAsync();
+            List<User> users = await _context.Users.ToListAsync();
 
-            return Json(users.Select(q => new
+            return Ok(users.Select(q => new
             {
                 Id = q.Id,
                 FirstName = q.FirstName,
@@ -40,7 +50,12 @@ namespace HotelManagementSystem.Controllers
                 Shifts = q.Shifts,
             }));
         }
-
+        /**
+        * @api {get} /Worker/{id} Read
+        * @apiVersion 0.1.3
+        * @apiName Read
+        * @apiGroup Worker
+        */ 
         // GET: api/Worker/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> Read([FromRoute] string id)
@@ -49,11 +64,12 @@ namespace HotelManagementSystem.Controllers
 
             try
             {
-                user = await context.Users.FindAsync(id);
+                user = await _context.Users.FindAsync(id);
                 if (user == null) throw new Exception();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message, ex);
                 return NotFound(new { status = "notFound" });
             }
             return Ok(new
@@ -94,7 +110,7 @@ namespace HotelManagementSystem.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> ActualizeShifts()
         {
-            var result = await DbInitializer.AddWorkerShifts(context);
+            var result = await DbInitializer.AddWorkerShifts(_context);
             if (result) return Ok(new { status = "success" });
             return BadRequest(new { status = "this action is not needed" });
         }

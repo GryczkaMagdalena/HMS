@@ -2,15 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HotelManagementSystem.Models.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using HotelManagementSystem.Models.Entities.Identity;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
 using HotelManagementSystem.Models.Concrete;
-using Newtonsoft.Json;
 using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cors;
@@ -30,9 +27,9 @@ namespace HotelManagementSystem.Controllers
     [Route("api/Auth/[action]")]
     public class AuthController : Controller
     {
-        private UserService userService;
-        private IdentityContext db = new IdentityContext();
-        private readonly ILogger logger;
+        private UserService _userService;
+        private IdentityContext _context = new IdentityContext();
+        private readonly ILogger _logger;
 
         public AuthController(
             UserManager<User> userManager,
@@ -42,8 +39,8 @@ namespace HotelManagementSystem.Controllers
             ILogger<AuthController> logger
             )
         {
-            userService = new UserService(db, userManager, signInManager, hash, roleManager);
-            this.logger = logger;
+            _userService = new UserService(_context, userManager, signInManager, hash, roleManager);
+            this._logger = logger;
         }
         /**
             * @apiDeprecated do not use it.  
@@ -116,11 +113,11 @@ namespace HotelManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await userService.PasswordSignInAsync(user, user.Password);
+                var result = await _userService.PasswordSignInAsync(user, user.Password);
                 if (result.Succeeded)
                 {
-                    var entity = db.Users.First(q => q.UserName == user.Login);
-                    var roles = await userService.GetUserRoles(entity);
+                    var entity = _context.Users.First(q => q.UserName == user.Login);
+                    var roles = await _userService.GetUserRoles(entity);
 
                     var output = new
                     {
@@ -160,7 +157,7 @@ namespace HotelManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await userService.SignOut();
+            await _userService.SignOut();
             return Json(new { status = "logout" });
         }
         /**
@@ -212,10 +209,10 @@ namespace HotelManagementSystem.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    Room room = db.Rooms.First(q => q.Number == roomNumber);
-                    User guestAccount = db.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
+                    Room room = _context.Rooms.First(q => q.Number == roomNumber);
+                    User guestAccount = _context.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
 
-                    if (!(await userService.IsInRoleAsync(guestAccount, "Customer")))
+                    if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))
                     {
                         return Json(new { status = "invalidRole" });
                     }
@@ -236,15 +233,15 @@ namespace HotelManagementSystem.Controllers
                     room.User = null;
                     room.Occupied = false;
 
-                    db.Rooms.Attach(room);
-                    db.Entry(room).State = EntityState.Modified;
+                    _context.Rooms.Attach(room);
+                    _context.Entry(room).State = EntityState.Modified;
 
-                    await db.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
-                    db.Users.Attach(guestAccount);
-                    db.Entry(guestAccount).State = EntityState.Modified;
+                    _context.Users.Attach(guestAccount);
+                    _context.Entry(guestAccount).State = EntityState.Modified;
 
-                    await db.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     return Json(new { status = "checkedOut" });
                 }
@@ -306,10 +303,10 @@ namespace HotelManagementSystem.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    Room room = db.Rooms.First(q => q.Number == roomNumber);
-                    User guestAccount = db.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
+                    Room room = _context.Rooms.First(q => q.Number == roomNumber);
+                    User guestAccount = _context.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
 
-                    if (!(await userService.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
+                    if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
                     {
                         return Json(new { status = "invalidRole" });
                     }
@@ -328,15 +325,15 @@ namespace HotelManagementSystem.Controllers
                     room.User = guestAccount;
                     room.Occupied = true;
 
-                    db.Rooms.Attach(room);
-                    db.Entry(room).State = EntityState.Modified;
+                    _context.Rooms.Attach(room);
+                    _context.Entry(room).State = EntityState.Modified;
 
-                    await db.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
-                    db.Users.Attach(guestAccount);
-                    db.Entry(guestAccount).State = EntityState.Modified;
+                    _context.Users.Attach(guestAccount);
+                    _context.Entry(guestAccount).State = EntityState.Modified;
 
-                    await db.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     return Json(new { status = "checkedIn" });
                 }
@@ -409,10 +406,10 @@ namespace HotelManagementSystem.Controllers
                     NormalizedEmail = registerModel.Email,
                     WorkerType = (WorkerType)System.Enum.Parse(typeof(WorkerType), registerModel.WorkerType, true)
                 };
-                var result = await userService.CreateUser(user, registerModel.Password);
+                var result = await _userService.CreateUser(user, registerModel.Password);
                 if (result.Succeeded)
                 {
-                    var roleResult = await userService.AddUserToRole(registerModel.RoleName, user.Id);
+                    var roleResult = await _userService.AddUserToRole(registerModel.RoleName, user.Id);
                     if (roleResult.Succeeded)
                     {
                         return Json(new { status = "registered" });
@@ -479,12 +476,12 @@ namespace HotelManagementSystem.Controllers
         {
             try
             {
-                var user = await userService.GetUserByUsername(userModel.Login);
+                var user = await _userService.GetUserByUsername(userModel.Login);
                 if (user != null)
                 {
-                    if (userService.VerifyHashedPassword(user, userModel.Password) == PasswordVerificationResult.Success)
+                    if (_userService.VerifyHashedPassword(user, userModel.Password) == PasswordVerificationResult.Success)
                     {
-                        var userClaims = await userService.GetClaims(user);
+                        var userClaims = await _userService.GetClaims(user);
                         var claims = new[]
                            {
                                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
@@ -492,7 +489,7 @@ namespace HotelManagementSystem.Controllers
                                 new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
                                 new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
                                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                                new Claim(ClaimTypes.Role,await userService.MainRole(user)),
+                                new Claim(ClaimTypes.Role,await _userService.MainRole(user)),
                                 new Claim(ClaimTypes.GroupSid,Enum.GetName(typeof(WorkerType),user.WorkerType))
                             }.Union(userClaims);
 
@@ -515,7 +512,7 @@ namespace HotelManagementSystem.Controllers
                                 LastName = user.LastName,
                                 Email = user.Email,
                                 WorkerType = Enum.GetName(typeof(WorkerType), user.WorkerType),
-                                Roles = await userService.GetUserRoles(user),
+                                Roles = await _userService.GetUserRoles(user),
                                 Room = user.Room
                             }
                         });
@@ -568,9 +565,9 @@ namespace HotelManagementSystem.Controllers
         {
             try
             {
-                if (await userService.RoleExists(roleName))
+                if (await _userService.RoleExists(roleName))
                 {
-                    var result = await userService.AddUserToRole(roleName, UserID.ToString());
+                    var result = await _userService.AddUserToRole(roleName, UserID.ToString());
                     if (result.Succeeded)
                     {
                         return Ok(new { status = "User added to role " + roleName });
@@ -587,7 +584,7 @@ namespace HotelManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error", ex.ToString());
+                _logger.LogError("Error", ex.ToString());
                 return NotFound(new { status = "User does not exists" });
             }
         }
@@ -608,10 +605,10 @@ namespace HotelManagementSystem.Controllers
         public async Task<IActionResult> GetUserID()
         {
             var login = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await userService.GetUserByUsername(login);
+            var user = await _userService.GetUserByUsername(login);
             return Ok(new {id=user.Id });
         }
-        private Task<User> GetCurrentUserAsync(ClaimsPrincipal user) => userService.GetUserAsync(user);
+        private Task<User> GetCurrentUserAsync(ClaimsPrincipal user) => _userService.GetUserAsync(user);
         /**
      * @api {post} /Auth/RemoveFromRole RemoveFromRole
      * @apiVersion 0.1.3
@@ -652,9 +649,9 @@ namespace HotelManagementSystem.Controllers
         {
             try
             {
-                if (await userService.RoleExists(roleName) && await db.Users.AnyAsync(q => q.Id == UserID.ToString()))
+                if (await _userService.RoleExists(roleName) && await _context.Users.AnyAsync(q => q.Id == UserID.ToString()))
                 {
-                    var result = await userService.RemoveFromRole(roleName, UserID.ToString());
+                    var result = await _userService.RemoveFromRole(roleName, UserID.ToString());
                     if (result.Succeeded)
                     {
                         return Ok(new { status = "User removed from role " + roleName });
@@ -671,7 +668,7 @@ namespace HotelManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error", ex.ToString());
+                _logger.LogError("Error", ex.ToString());
                 return NotFound(new { status = "User does not exists" });
             }
         }
@@ -697,13 +694,13 @@ namespace HotelManagementSystem.Controllers
         {
             try
             {
-                var user = await db.Users.FindAsync(UserID.ToString());
-                var roles = await userService.GetUserRoles(user);
+                var user = await _context.Users.FindAsync(UserID.ToString());
+                var roles = await _userService.GetUserRoles(user);
                 return Ok(new { roles });
             }
             catch (Exception ex)
             {
-                logger.LogError("Error", ex.ToString());
+                _logger.LogError("Error", ex.ToString());
                 return NotFound(new { status = "User does not exists" });
             }
         }

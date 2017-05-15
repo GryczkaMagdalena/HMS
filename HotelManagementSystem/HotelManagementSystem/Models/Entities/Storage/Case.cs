@@ -14,6 +14,6 @@ namespace HotelManagementSystem.Models.Entities.Storage
         public string Title { get; set; }
         public string Description { get; set; }
         public WorkerType WorkerType { get; set; }
-        public DateTime EstimatedTime { get; set; }
+        public TimeSpan EstimatedTime { get; set; }
     }
 }
