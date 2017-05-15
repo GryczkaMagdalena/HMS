@@ -51,7 +51,8 @@ namespace HotelManagementSystem.Controllers
                     CaseID = q.CaseID,
                     Description = q.Description,
                     Title = q.Title,
-                    WorkerType = Enum.GetName(typeof(WorkerType), q.WorkerType)
+                    WorkerType = Enum.GetName(typeof(WorkerType), q.WorkerType),
+                    EstimatedTime = q.EstimatedTime
                 })
                 );
         }
@@ -100,7 +101,8 @@ namespace HotelManagementSystem.Controllers
                 CaseID = value.CaseID,
                 Title = value.Title,
                 Description = value.Description,
-                WorkerType = Enum.GetName(typeof(WorkerType),value.WorkerType) 
+                WorkerType = Enum.GetName(typeof(WorkerType),value.WorkerType),
+                EstimatedTime = value.EstimatedTime
             });
         }
 
@@ -151,7 +153,8 @@ namespace HotelManagementSystem.Controllers
                     CaseID = q.CaseID,
                     Description = q.Description,
                     Title = q.Title,
-                    WorkerType = Enum.GetName(typeof(WorkerType), q.WorkerType)
+                    WorkerType = Enum.GetName(typeof(WorkerType), q.WorkerType),
+                    EstimatedTime = q.EstimatedTime
                 })
             });
         }
