@@ -124,8 +124,7 @@ namespace HotelManagementSystem.Models.Infrastructure
             if (workersInWork.Count == 0) return null;
             workersInWork = FilterOnBreak(workersInWork);
 
-            //TODO add real timespan of case
-            var workersNotLeaving = GetWorkersWhoCanPerformTask(new TimeSpan(2,15,0), workersInWork);
+            var workersNotLeaving = GetWorkersWhoCanPerformTask(toDo.EstimatedTime, workersInWork);
             if (workersNotLeaving.Count == 0)
             {
                 targetWorkers = workersInWork.Where(p => p.ReceivedTasks != null).OrderBy(q => q.ReceivedTasks.Count).ToList();

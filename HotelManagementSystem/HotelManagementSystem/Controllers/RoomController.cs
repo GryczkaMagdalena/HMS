@@ -8,6 +8,7 @@ using HotelManagementSystem.Models.Infrastructure;
 using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.Extensions.Logging;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -17,34 +18,40 @@ namespace HotelManagementSystem.Controllers
     [Route("api/Room")]
     public class RoomController : Controller
     {
-        private IdentityContext storage = new IdentityContext();
-        
-          /**
-      * @api {get} /Room List
-      * @apiVersion 0.1.0
-      * @apiName List
-      * @apiGroup Room
-      *
-      *@apiSuccess {Array} rules List of all rooms
-      * 
-      *@apiSuccessExample Success-Response:
-      * HTTP/1.1 200 OK
-       * [
-       *    { 
-       *    "RoomID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-       *    "GuestFirstName":"Marco",
-       *    "GuestLastName":"Polo",
-       *    "Number":9,
-       *    "Occupied":false
-       *    }
-       * ]
-       * 
-      */
+        private IdentityContext _context;
+        private ILogger _logger;
+        public RoomController(ILogger<RoomController> logger, IdentityContext context)
+        {
+            _context = context;
+            _logger = logger;
+        }
+
+        /**
+    * @api {get} /Room List
+    * @apiVersion 0.1.0
+    * @apiName List
+    * @apiGroup Room
+    *
+    *@apiSuccess {Array} rules List of all rooms
+    * 
+    *@apiSuccessExample Success-Response:
+    * HTTP/1.1 200 OK
+     * [
+     *    { 
+     *    "RoomID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+     *    "GuestFirstName":"Marco",
+     *    "GuestLastName":"Polo",
+     *    "Number":9,
+     *    "Occupied":false
+     *    }
+     * ]
+     * 
+    */
         // GET api/Room
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            List<Room> rooms = await storage.Rooms.ToListAsync();
+            List<Room> rooms = await _context.Rooms.ToListAsync();
             var roomsObjectified = rooms.Select(q => new
             {
                 RoomID = q.RoomID,
@@ -52,7 +59,7 @@ namespace HotelManagementSystem.Controllers
                 Number = q.Number,
                 Occupied = q.Occupied
             });
-            return Json(roomsObjectified);
+            return Ok(roomsObjectified);
         }
         /**
    * @api {get} /Room?RoomID Read
@@ -80,7 +87,7 @@ namespace HotelManagementSystem.Controllers
    *    }
     *@apiError NotFound Given ID does not appeal to any of rooms
     *@apiErrorExample Error-Response:
-    * HTTP/1.1 200 OK
+    * HTTP/1.1 404 NotFound
     * {
     *   "status":"notFound"
     * }
@@ -92,12 +99,13 @@ namespace HotelManagementSystem.Controllers
             Room room = null;
             try
             {
-                room = await storage.Rooms.FindAsync(RoomID);
-            }catch(Exception)
+                room = await _context.Rooms.FindAsync(RoomID);
+            }catch(Exception ex)
             {
-                return Json(new { status = "notFound" });
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new { status = "notFound" });
             }
-            return Json(room);
+            return Ok(room);
         }
 
         /**
@@ -121,6 +129,12 @@ namespace HotelManagementSystem.Controllers
         * {
         *   "status":"failure"
         * }
+        * @apiError NotFound Referenced ID was not found
+        *@apiErrorExample Error-Response:
+        * HTTP/1.1 404 NotFound
+        * {
+        *   "status":"notFound"
+        * }
    */
         // POST api/Room
         [HttpPost]
@@ -131,17 +145,18 @@ namespace HotelManagementSystem.Controllers
                 if (ModelState.IsValid)
                 {
                     room.RoomID = Guid.NewGuid();
-                    await storage.Rooms.AddAsync(room);
-                    await storage.SaveChangesAsync();
-                    return Json(new { status = "created" });
+                    await _context.Rooms.AddAsync(room);
+                    await _context.SaveChangesAsync();
+                    return Ok(new { status = "created" });
                 }
                 else
                 {
-                    return Json(new { status = "failure" });
+                    return BadRequest(new { status = "failure" });
                 }
             }catch(Exception ex)
             {
-                return Json(ex);
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new { status = "notFound" });
             }
         }
         /**
@@ -161,14 +176,14 @@ namespace HotelManagementSystem.Controllers
        *       }
        *@apiError InvalidInput One of inputs was null or invalid
        *@apiErrorExample Error-Response:
-       * HTTP/1.1 200 OK
+       * HTTP/1.1 400 BadRequest
        * {
        *   "status":"failure"
        * }
        * 
        * @apiError NotFound Room with specified ID was not found
        * @apiErrorExample Error-Response:
-       * HTTP/1.1 200 OK
+       * HTTP/1.1 404 NotFound
        * {
        *  "status":"notFound"
        * }
@@ -181,69 +196,77 @@ namespace HotelManagementSystem.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var origin = await storage.Rooms.FindAsync(RoomID);
+                    var origin = await _context.Rooms.FindAsync(RoomID);
                     if (origin == null) return Json(new { status = "notFound" });
                     origin = room;
                     origin.RoomID = RoomID;
-                    storage.Rooms.Attach(room);
-                    storage.Entry(room).State = EntityState.Modified;
-                    await storage.SaveChangesAsync();
-                    return Json(new { status = "updated" });
+                    _context.Rooms.Attach(room);
+                    _context.Entry(room).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return Ok(new { status = "updated" });
                 }
                 else
                 {
-                    return Json(new { status = "failure" });
+                    return BadRequest(new { status = "failure" });
                 }
             }catch(Exception ex)
             {
-                return Json(ex);
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new { status = "notFound" });
             }
         }
 
         // DELETE api/Room/{id}
-      /**
-      * @api {delete} /Room?RoomID Delete
-      * @apiVersion 0.1.0
-      * @apiName Delete
-      * @apiGroup Room
-      *
-      * @apiParam {GUID} RoomID Room identifier
-      * 
-      * 
-      *@apiSuccess {String} status Room was deleted
-      *@apiSuccessExample Success-Response:
-      * HTTP/1.1 200 OK
-       *       {
-       *       "status":"removed"
-       *       }
-       * 
-       * @apiError NotFound Room with specified ID was not found
-       * @apiErrorExample Error-Response:
-       * HTTP/1.1 200 OK
-       * {
-       *  "status":"notFound"
-       * }
-  */
+        /**
+        * @api {delete} /Room?RoomID Delete
+        * @apiVersion 0.1.0
+        * @apiName Delete
+        * @apiGroup Room
+        *
+        * @apiParam {GUID} RoomID Room identifier
+        * 
+        * 
+        *@apiSuccess {String} status Room was deleted
+        *@apiSuccessExample Success-Response:
+        * HTTP/1.1 200 OK
+         *       {
+         *       "status":"removed"
+         *       }
+         * 
+         * @apiError NotFound Room with specified ID was not found
+         * @apiErrorExample Error-Response:
+         * HTTP/1.1 404 NotFound
+         * {
+         *  "status":"notFound"
+         * }
+         * @apiError InvalidData Reference or object was not correct
+         *@apiErrorExample Error-Response:
+         * HTTP/1.1 400 BadRequest
+         * {
+         *   "status":"failure"
+         * }
+    */
         [HttpDelete("{RoomID}")]
         public async Task<IActionResult> Delete (Guid RoomID)
         {
             try
             {
-                Room toDelete = await storage.Rooms.FindAsync(RoomID);
+                Room toDelete = await _context.Rooms.FindAsync(RoomID);
                 if (toDelete != null)
                 {
-                    storage.Rooms.Attach(toDelete);
-                    storage.Entry(toDelete).State = EntityState.Deleted;
-                    await storage.SaveChangesAsync();
-                    return Json(new { status = "removed" });
+                    _context.Rooms.Attach(toDelete);
+                    _context.Entry(toDelete).State = EntityState.Deleted;
+                    await _context.SaveChangesAsync();
+                    return Ok(new { status = "removed" });
                 }
                 else
                 {
-                    return Json(new { status = "failure" });
+                    return NotFound(new { status = "notFound" });
                 }
             }catch(Exception ex)
             {
-                return Json(ex);
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(new { status = "failure" });
             }
         }
     }

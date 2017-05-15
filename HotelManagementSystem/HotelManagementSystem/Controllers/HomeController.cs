@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.Extensions.Logging;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -17,7 +18,13 @@ namespace HotelManagementSystem.Controllers
     [Route("api/[controller]")]
     public class HomeController : Controller
     {
-        private IdentityContext storage = new IdentityContext();
+        private IdentityContext _context;
+        private ILogger _logger;
+        public HomeController(ILogger<HomeController> logger, IdentityContext context)
+        {
+            _context = context;
+            _logger = logger;
+        }
         // GET api/values
 
         /**
@@ -41,7 +48,7 @@ namespace HotelManagementSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> Rule()
         {
-            List<Rule> rules = await storage.Rules.ToListAsync();
+            List<Rule> rules = await _context.Rules.ToListAsync();
             //Alokacja anonimowego obiektu przechowującego dane z obiektu klasy
             //jest to przykład, normalnie zwrócenie samej listy spowoduje auto-parsowanie
             // jednakże czasami chcemy wyłączyć tylko kilka pól
@@ -51,7 +58,7 @@ namespace HotelManagementSystem.Controllers
                 Name = q.Name,
                 Description = q.Description
             });
-            return Json(rulesObjectified);
+            return Ok(rulesObjectified);
         }
            /**
        * @api {get} /Home?RuleID Read
@@ -74,7 +81,7 @@ namespace HotelManagementSystem.Controllers
         *       }
         *@apiError NotFound Given ID does not appeal to any of rules
         *@apiErrorExample Error-Response:
-        * HTTP/1.1 200 OK
+        * HTTP/1.1 404 NotFound
         * {
         *   "status":"notFound"
         * }
@@ -86,13 +93,14 @@ namespace HotelManagementSystem.Controllers
             Rule rule = null;
             try
             {
-                rule = await storage.Rules.FindAsync(RuleID);
+                rule = await _context.Rules.FindAsync(RuleID);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Json(new { status = "notFound" });
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new { status = "notFound" });
             }
-            return Json(rule);
+            return Ok(rule);
         }
 
         /**
@@ -113,10 +121,16 @@ namespace HotelManagementSystem.Controllers
          *       }
          *@apiError InvalidInput One of inputs was null or invalid
          *@apiErrorExample Error-Response:
-         * HTTP/1.1 200 OK
+         * HTTP/1.1 400 BadRequest
          * {
          *   "status":"failure"
          * }
+         * @apiError NotFound Given ID does not appeal to any of rules
+        *@apiErrorExample Error-Response:
+        * HTTP/1.1 404 NotFound
+        * {
+        *   "status":"notFound"
+        * }
     */
         // POST api/values
         [HttpPost]
@@ -127,18 +141,19 @@ namespace HotelManagementSystem.Controllers
                 if (ModelState.IsValid)
                 {
                     value.RuleID = Guid.NewGuid();
-                    await storage.Rules.AddAsync(value);
-                    await storage.SaveChangesAsync();
-                    return Json(new { status = "created" });
+                    await _context.Rules.AddAsync(value);
+                    await _context.SaveChangesAsync();
+                    return Ok(new { status = "created" });
                 }
                 else
                 {
-                    return Json(new {status="failure" });
+                    return BadRequest(new {status="failure" });
                 }
             }
             catch (Exception ex)
             {
-                return Json(ex);
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new { status = "notFound" });
             }
         }
         /**
@@ -159,14 +174,14 @@ namespace HotelManagementSystem.Controllers
         *       }
         *@apiError InvalidInput One of inputs was null or invalid
         *@apiErrorExample Error-Response:
-        * HTTP/1.1 200 OK
+        * HTTP/1.1 400 BadRequest
         * {
         *   "status":"failure"
         * }
         * 
         * @apiError NotFound Rule with specified ID was not found
         * @apiErrorExample Error-Response:
-        * HTTP/1.1 200 OK
+        * HTTP/1.1 404 NotFound
         * {
         *  "status":"notFound"
         * }
@@ -179,22 +194,23 @@ namespace HotelManagementSystem.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    Rule origin = await storage.Rules.FindAsync(RuleID);
+                    Rule origin = await _context.Rules.FindAsync(RuleID);
                     if (origin == null) return Json(new { status = "notFound" });
                     origin = value;
                     origin.RuleID = RuleID;
-                    storage.Rules.Attach(value);
-                    storage.Entry(value).State = EntityState.Modified;
-                    await storage.SaveChangesAsync();
-                    return Json(new { status = "updated" });
+                    _context.Rules.Attach(value);
+                    _context.Entry(value).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return Ok(new { status = "updated" });
                 }
                 else
                 {
-                    return Json(new { status = "failure" });
+                    return BadRequest(new { status = "failure" });
                 }
             }catch(Exception ex)
             {
-                return Json(ex);
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new { status = "notFound" });
             }
         }
         /**
@@ -215,10 +231,16 @@ namespace HotelManagementSystem.Controllers
        * 
        * @apiError NotFound Rule with specified ID was not found
        * @apiErrorExample Error-Response:
-       * HTTP/1.1 200 OK
+       * HTTP/1.1 404 NotFound
        * {
        *  "status":"notFound"
        * }
+       * @apiError BadRequest Given ID does not appeal to any of rules
+        *@apiErrorExample Error-Response:
+        * HTTP/1.1 400 BadRequest
+        * {
+        *   "status":"failure"
+        * }
   */
         // DELETE api/values/5
         [HttpDelete("{RuleID}")]
@@ -226,21 +248,22 @@ namespace HotelManagementSystem.Controllers
         {
             try
             {
-                Rule toDelete = await storage.Rules.FindAsync(RuleID);
+                Rule toDelete = await _context.Rules.FindAsync(RuleID);
                 if (toDelete != null)
                 {
-                    storage.Rules.Attach(toDelete);
-                    storage.Entry(toDelete).State = EntityState.Deleted;
-                    await storage.SaveChangesAsync();
+                    _context.Rules.Attach(toDelete);
+                    _context.Entry(toDelete).State = EntityState.Deleted;
+                    await _context.SaveChangesAsync();
                     return Json(new { status = "removed" });
                 }
                 else
                 {
-                    return Json(new { status = "failure" });
+                    return NotFound(new { status = "notFound" });
                 }
             }catch(Exception ex)
             {
-                return Json(ex);
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(new { status = "failure" });
             }
         }
     }

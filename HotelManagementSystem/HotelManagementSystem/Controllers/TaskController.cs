@@ -13,6 +13,7 @@ using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.AspNetCore.Identity;
 using HotelManagementSystem.Models.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -22,15 +23,17 @@ namespace HotelManagementSystem.Controllers
     [Route("api/Task")]
     public class TaskController : Controller
     {
+        private readonly ILogger _logger;
         private readonly IdentityContext _context;
         private readonly UserService userService;
         private readonly TaskDisposer _taskDisposer;
-        public TaskController(IdentityContext context,UserManager<User> manager,
-            RoleManager<IdentityRole> roles,IPasswordHasher<User> hash ,SignInManager<User>signInManager)
+        public TaskController(IdentityContext context, UserManager<User> manager,
+            RoleManager<IdentityRole> roles, IPasswordHasher<User> hash, SignInManager<User> signInManager, ILogger<TaskController> logger)
         {
             _context = context;
             userService = new UserService(context, manager, signInManager, hash, roles);
-            _taskDisposer = new TaskDisposer(userService,_context);
+            _taskDisposer = new TaskDisposer(userService, _context);
+            _logger = logger;
         }
 
         /**
@@ -55,11 +58,11 @@ namespace HotelManagementSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            List<Models.Entities.Storage.Task> tasks = await _context.Tasks.Include(q=>q.Case)
-                .Include(p=>p.Issuer).Include(q=>q.Listener).Include(q=>q.Receiver).ToListAsync();
+            List<Models.Entities.Storage.Task> tasks = await _context.Tasks.Include(q => q.Case)
+                .Include(p => p.Issuer).Include(q => q.Listener).Include(q => q.Receiver).ToListAsync();
 
 
-            return Json(tasks.Select(q => new
+            return Ok(tasks.Select(q => new
             {
                 TaskID = q.TaskID,
                 Describe = q.Describe,
@@ -70,34 +73,34 @@ namespace HotelManagementSystem.Controllers
                 Case = q.Case,
             }));
         }
-             /**
-       * @api {get} /Task/TaskID Read
-       * @apiVersion 0.1.2
-       * @apiName Read
-       * @apiGroup Task
-       *
-       * @apiParam {GUID} TaskID Task identifier
-       * 
-       * 
-       *@apiSuccess {String} TaskID Task identifier
-       * @apiSuccess {String} Description of task
-       * @apiSuccess {String} RoomID Room identifier
-       * @apiSuccess {Room} Room
-       *@apiSuccessExample Success-Response:
-       * HTTP/1.1 200 OK
-        *       {
-        *       "TaskID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-        *       "Describe":"Describtion of task",
-        *       "RoomID":"5ba83f3c-4ea4-4da4-9c06-e986a8273800",
-        *       "Room":"Connected room"
-        *       }
-        *@apiError NotFound Given ID does not appeal to any of tasks
-        *@apiErrorExample Error-Response:
-        * HTTP/1.1 200 OK
-        * {
-        *   "status":"notFound"
-        * }
-       */
+        /**
+  * @api {get} /Task/TaskID Read
+  * @apiVersion 0.1.2
+  * @apiName Read
+  * @apiGroup Task
+  *
+  * @apiParam {GUID} TaskID Task identifier
+  * 
+  * 
+  *@apiSuccess {String} TaskID Task identifier
+  * @apiSuccess {String} Description of task
+  * @apiSuccess {String} RoomID Room identifier
+  * @apiSuccess {Room} Room
+  *@apiSuccessExample Success-Response:
+  * HTTP/1.1 200 OK
+   *       {
+   *       "TaskID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+   *       "Describe":"Describtion of task",
+   *       "RoomID":"5ba83f3c-4ea4-4da4-9c06-e986a8273800",
+   *       "Room":"Connected room"
+   *       }
+   *@apiError NotFound Given ID does not appeal to any of tasks
+   *@apiErrorExample Error-Response:
+   * HTTP/1.1 404 NotFound
+   * {
+   *   "status":"notFound"
+   * }
+  */
 
         // GET: api/Task/{id}
         [HttpGet("{id}")]
@@ -108,11 +111,12 @@ namespace HotelManagementSystem.Controllers
             {
                 rule = await _context.Tasks.FindAsync(id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Json(new {status="notFound" });
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new { status = "notFound" });
             }
-            return Json(rule);
+            return Ok(rule);
         }
         /**
         * @api {put} /task?TaskID Update
@@ -130,14 +134,14 @@ namespace HotelManagementSystem.Controllers
          *       }
          *@apiError InvalidInput One of inputs was null or invalid
          *@apiErrorExample Error-Response:
-         * HTTP/1.1 200 OK  
+         * HTTP/1.1 400 BadRequest
          * {
          *   "status":"failure"
          * }
          * 
          * @apiError NotFound task with specified ID was not found
          * @apiErrorExample Error-Response:
-         * HTTP/1.1 200 OK
+         * HTTP/1.1 404 NotFound
          * {
          *  "status":"notFound"
          * }
@@ -155,16 +159,17 @@ namespace HotelManagementSystem.Controllers
                     _context.Tasks.Attach(value);
                     _context.Entry(value).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
-                    return Json(new { status = "updated" });
+                    return Ok(new { status = "updated" });
                 }
                 else
                 {
-                    return Json(new { status = "failure" });
+                    return BadRequest(new { status = "failure" });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Json(new {status="notFound" });
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new { status = "notFound" });
             }
         }
         /**
@@ -185,63 +190,88 @@ namespace HotelManagementSystem.Controllers
           *       }
           *@apiError InvalidInput One of inputs was null or invalid
           *@apiErrorExample Error-Response:
-          * HTTP/1.1 200 OK
+          * HTTP/1.1 400 BadRequest
           * {
           *   "status":"failure"
           * }
+          * 
+          * @apiError BusyWorkers All workers are busy or too many not in work to take task
+          *@apiErrorExample Error-Response:
+          * HTTP/1.1 400 BadRequest
+          * {
+          *   "status":"All workers busy. Try again later"
+          * }
+          * 
+          * @apiError NotFound User with specified ID was not found
+         * @apiErrorExample Error-Response:
+         * HTTP/1.1 404 NotFound
+         * {
+         *  "status":"userNotFound"
+         * }
+         *  @apiError NotFound Room with specified ID was not found
+         * @apiErrorExample Error-Response:
+         * HTTP/1.1 404 NotFound
+         * {
+         *  "status":"roomNotFound"
+         * }
      */
 
         // POST: api/Task
         [HttpPost]
         public async Task<IActionResult> Task([FromBody] TaskViewModel value)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                using (var safeTransaction = await _context.Database.BeginTransactionAsync())
                 {
-                    var user = await _context.Users.FirstAsync(q => q.Email == value.Email);
-                    var room = await _context.Rooms.FirstAsync(q => q.Number == value.RoomNumber);
-                    var case_in_task = await _context.Cases.FirstAsync(q => q.Title == value.Title);
-
-                    if (user == null) return NotFound(new { status = "userNotFound" });
-                    if (room == null) return NotFound(new { status = "roomNotFound" });
-
-                    var receiver = await _taskDisposer.FindWorker(case_in_task);
-                    var listener = await _taskDisposer.AttachListeningManager(case_in_task, receiver);
-
-                    if (receiver == null) return BadRequest(new {status="All workers busy. Try again later" });
-
-                    var newTask = new Models.Entities.Storage.Task()
+                    try
                     {
-                        TaskID=Guid.NewGuid(),
-                        Describe=value.Describe,
-                        Room=room,
-                        Issuer=user,
-                        Receiver= receiver,
-                        Listener = listener,
-                        Case = case_in_task,
-                    };
+                        var user = await _context.Users.FirstAsync(q => q.Email == value.Email);
+                        var room = await _context.Rooms.FirstAsync(q => q.Number == value.RoomNumber);
+                        var case_in_task = await _context.Cases.FirstAsync(q => q.Title == value.Title);
 
-                    receiver.ReceivedTasks.Add(newTask);
-                    user.IssuedTasks.Add(newTask);
+                        if (user == null) return NotFound(new { status = "userNotFound" });
+                        if (room == null) return NotFound(new { status = "roomNotFound" });
 
-                    _context.Entry(newTask).State = EntityState.Added;
-                    _context.Entry(user).State = EntityState.Modified;
-                    _context.Entry(receiver).State = EntityState.Modified;
+                        var receiver = await _taskDisposer.FindWorker(case_in_task);
+                        var listener = await _taskDisposer.AttachListeningManager(case_in_task, receiver);
+
+                        if (receiver == null) return BadRequest(new { status = "All workers busy. Try again later" });
+
+                        var newTask = new Models.Entities.Storage.Task()
+                        {
+                            TaskID = Guid.NewGuid(),
+                            Describe = value.Describe,
+                            Room = room,
+                            Issuer = user,
+                            Receiver = receiver,
+                            Listener = listener,
+                            Case = case_in_task,
+                        };
+
+                        receiver.ReceivedTasks.Add(newTask);
+                        user.IssuedTasks.Add(newTask);
+
+                        _context.Entry(newTask).State = EntityState.Added;
+                        _context.Entry(user).State = EntityState.Modified;
+                        _context.Entry(receiver).State = EntityState.Modified;
 
 
-                    await _context.SaveChangesAsync();
-                    return Json(new { status = "created" });
-                }
-                else
-                {
-                    return Json(new { status = "failure" });
+                        await _context.SaveChangesAsync();
+                        safeTransaction.Commit();
+                        return Ok(new { status = "created" });
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.Message, ex);
+                        safeTransaction.Rollback();
+                        return BadRequest(new { status = "failure" });
+                    }
                 }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.ToString());
-                return Json(new {status="notFound" });
+                return BadRequest(new { status = "failure" });
             }
         }
 
@@ -263,10 +293,16 @@ namespace HotelManagementSystem.Controllers
         * 
         * @apiError NotFound Task with specified ID was not found
         * @apiErrorExample Error-Response:
-        * HTTP/1.1 200 OK
+        * HTTP/1.1 404 NotFound
         * {
         *  "status":"notFound"
         * }
+        * @apiError InvalidInput One of inputs was null or invalid
+          *@apiErrorExample Error-Response:
+          * HTTP/1.1 400 BadRequest
+          * {
+          *   "status":"failure"
+          * }
    */
         // DELETE: api/Task/{id}
         [HttpDelete("{id}")]
@@ -280,19 +316,18 @@ namespace HotelManagementSystem.Controllers
                     _context.Tasks.Attach(toDelete);
                     _context.Entry(toDelete).State = EntityState.Deleted;
                     await _context.SaveChangesAsync();
-                    return Json(new { status = "removed" });
+                    return Ok(new { status = "removed" });
                 }
                 else
                 {
-                    throw new Exception("Entity not present in database");
+                    return NotFound(new { status = "notFound" });
                 }
             }
             catch (Exception)
             {
-                return Json(new {status="notFound" });
+                return BadRequest(new { status = "failure" });
             }
         }
-
 
         private bool TaskExists(Guid id)
         {
@@ -300,3 +335,4 @@ namespace HotelManagementSystem.Controllers
         }
     }
 }
+ 

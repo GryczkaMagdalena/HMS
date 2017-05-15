@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using HotelManagementSystem.Models.Infrastructure;
@@ -10,6 +9,7 @@ using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.EntityFrameworkCore;
 using HotelManagementSystem.Models.Entities.Identity;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.Extensions.Logging;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -19,8 +19,13 @@ namespace HotelManagementSystem.Controllers
     [Route("api/Case")]
     public class CaseController : Controller
     {
-        private IdentityContext storage = new IdentityContext();
-
+        private IdentityContext _context;
+        private ILogger _logger;
+        public CaseController(ILogger<CaseController> logger,IdentityContext context)
+        {
+            _context = context;
+            _logger = logger;
+        }
         /**
        * @api {get} /Case List
        * @apiVersion 0.1.0
@@ -43,9 +48,9 @@ namespace HotelManagementSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            List<Case> cases = await storage.Cases.ToListAsync();
+            List<Case> cases = await _context.Cases.ToListAsync();
 
-            return Json(
+            return Ok(
                 cases.Select(q => new
                 {
                     CaseID = q.CaseID,
@@ -79,7 +84,7 @@ namespace HotelManagementSystem.Controllers
         *       }
         *@apiError NotFound Given ID does not appeal to any of cases
         *@apiErrorExample Error-Response:
-        * HTTP/1.1 200 OK
+        * HTTP/1.1 404 NotFound
         * {
         *   "status":"notFound"
         * }
@@ -91,13 +96,14 @@ namespace HotelManagementSystem.Controllers
             Case value = null;
             try
             {
-                value = await storage.Cases.FindAsync(CaseID);
+                value = await _context.Cases.FindAsync(CaseID);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Json(new {status="notFound" });
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new {status="notFound" });
             }
-            return Json(new {
+            return Ok(new {
                 CaseID = value.CaseID,
                 Title = value.Title,
                 Description = value.Description,
@@ -130,7 +136,7 @@ namespace HotelManagementSystem.Controllers
            *       }
            *@apiError NotFound Given ID does not appeal to any of cases
            *@apiErrorExample Error-Response:
-           * HTTP/1.1 200 OK
+           * HTTP/1.1 404 NotFound
            * {
            *   "status":"notFound"
            * }
@@ -141,13 +147,14 @@ namespace HotelManagementSystem.Controllers
             List<Case> cases = null;
             try 
             {
-                cases = await storage.Cases.Where(x => x.WorkerType.ToString() == Type).ToListAsync();
+                cases = await _context.Cases.Where(x => x.WorkerType.ToString() == Type).ToListAsync();
             } 
-            catch (Exception) 
+            catch (Exception ex) 
             {
-                return Json(new {status="notFound"});
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new {status="notFound"});
             }
-            return Json(new {
+            return Ok(new {
                 cases = cases.Select(q => new
                 {
                     CaseID = q.CaseID,
@@ -178,7 +185,7 @@ namespace HotelManagementSystem.Controllers
           *       }
           *@apiError InvalidInput One of inputs was null or invalid
           *@apiErrorExample Error-Response:
-          * HTTP/1.1 200 OK
+          * HTTP/1.1 400 BadRequest
           * {
           *   "status":"failure"
           * }
@@ -192,17 +199,18 @@ namespace HotelManagementSystem.Controllers
                 if (ModelState.IsValid)
                 {
                     value.CaseID = Guid.NewGuid();
-                    await storage.Cases.AddAsync(value);
-                    await storage.SaveChangesAsync();
-                    return Json(new { status = "created" });
+                    await _context.Cases.AddAsync(value);
+                    await _context.SaveChangesAsync();
+                    return Ok(new { status = "created" });
                 }
                 else
                 {
-                    return Json(new { status = "failure" });
+                    return BadRequest(new { status = "failure" });
                 }
             }catch(Exception ex)
             {
-                return Json(ex);
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(new { status = "failure" });
             }
         }
         /**
@@ -225,14 +233,14 @@ namespace HotelManagementSystem.Controllers
          *       }
          *@apiError InvalidInput One of inputs was null or invalid
          *@apiErrorExample Error-Response:
-         * HTTP/1.1 200 OK
+         * HTTP/1.1 400 BadRequest
          * {
          *   "status":"failure"
          * }
          * 
          * @apiError NotFound Case with specified ID was not found
          * @apiErrorExample Error-Response:
-         * HTTP/1.1 200 OK
+         * HTTP/1.1 404 NotFound
          * {
          *  "status":"notFound"
          * }
@@ -245,22 +253,23 @@ namespace HotelManagementSystem.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    Case origin = await storage.Cases.FindAsync(CaseID);
-                    if (origin == null) return Json(new { status = "notFound" });
+                    Case origin = await _context.Cases.FindAsync(CaseID);
+                    if (origin == null) return NotFound(new { status = "notFound" });
                     origin = value;
                     origin.CaseID = CaseID;
-                    storage.Cases.Attach(origin);
-                    storage.Entry(origin).State = EntityState.Modified;
-                    await storage.SaveChangesAsync();
-                    return Json(new { status = "updated" });
+                    _context.Cases.Attach(origin);
+                    _context.Entry(origin).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return Ok(new { status = "updated" });
                 }
                 else
                 {
-                    return Json(new { status = "failure" });
+                    return BadRequest(new { status = "failure" });
                 }
             }catch(Exception ex)
             {
-                return Json(ex);
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(new { status = "failure" });
             }
         }
         /**
@@ -281,10 +290,16 @@ namespace HotelManagementSystem.Controllers
         * 
         * @apiError NotFound Case with specified ID was not found
         * @apiErrorExample Error-Response:
-        * HTTP/1.1 200 OK
+        * HTTP/1.1 404 NotFound
         * {
         *  "status":"notFound"
         * }
+        * @apiError InvalidInput One of inputs was null or invalid
+         *@apiErrorExample Error-Response:
+         * HTTP/1.1 400 BadRequest
+         * {
+         *   "status":"failure"
+         * }
    */
         // DELETE api/Case/{id}
         [HttpDelete("{CaseID}")]
@@ -292,21 +307,22 @@ namespace HotelManagementSystem.Controllers
         {
             try
             {
-                Case toDelete = await storage.Cases.FindAsync(CaseID);
+                Case toDelete = await _context.Cases.FindAsync(CaseID);
                 if (toDelete != null)
                 {
-                    storage.Cases.Attach(toDelete);
-                    storage.Entry(toDelete).State = EntityState.Deleted;
-                    await storage.SaveChangesAsync();
+                    _context.Cases.Attach(toDelete);
+                    _context.Entry(toDelete).State = EntityState.Deleted;
+                    await _context.SaveChangesAsync();
                     return Json(new { status = "removed" });
                 }
                 else
                 {
-                    return Json(new { status = "failure" });
+                    return NotFound(new { status = "notFound" });
                 }
             }catch(Exception ex)
             {
-                return Json(ex);
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(new { status = "failure" });
             }
         }
     }
