@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
-
+using Microsoft.Extensions.Logging;
 namespace HMS.Tests
 {
     [TestClass]
