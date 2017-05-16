@@ -479,49 +479,49 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "FirstName",
+            "field": "firstName",
             "description": "<p>First name of user.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "LastName",
+            "field": "lastName",
             "description": "<p>Last name of user.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Email",
+            "field": "email",
             "description": "<p>Optional email address of user</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "PhoneNumber",
+            "field": "phoneNumber",
             "description": "<p>Optional phone number of user</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "WorkerType",
+            "field": "workerType",
             "description": "<p>One of available types (Cleaner,Technician,None).</p>"
           },
           {
             "group": "Success 200",
             "type": "Array",
             "optional": false,
-            "field": "Role",
+            "field": "role",
             "description": "<p>All roles that particular user have</p>"
           },
           {
             "group": "Success 200",
             "type": "GUID",
             "optional": false,
-            "field": "RoomID",
+            "field": "roomID",
             "description": "<p>Optional parameter - only guests have this not-null</p>"
           }
         ]
@@ -581,56 +581,56 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "Login",
+            "field": "login",
             "description": "<p>Login of user</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "Password",
+            "field": "password",
             "description": "<p>Password of user</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "FirstName",
+            "field": "firstName",
             "description": "<p>Optional user name</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "LastName",
+            "field": "lastName",
             "description": "<p>Optional user surname</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "PhoneNumber",
+            "field": "phoneNumber",
             "description": "<p>Optional contact number</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "RoleName",
+            "field": "roleName",
             "description": "<p>One of roles (Worker,Customer,Manager,Administrator)</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "Email",
+            "field": "email",
             "description": "<p>Required user identifier</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "WorkerType",
+            "field": "workerType",
             "description": "<p>One of available types (Cleaner,Technician,None)</p>"
           }
         ]
@@ -825,42 +825,42 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "FirstName",
+            "field": "firstName",
             "description": "<p>First name of user.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "LastName",
+            "field": "lastName",
             "description": "<p>Last name of user.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Email",
+            "field": "email",
             "description": "<p>Optional email address of user</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "WorkerType",
+            "field": "workerType",
             "description": "<p>One of available types (Cleaner,Technician,None).</p>"
           },
           {
             "group": "Success 200",
             "type": "Array",
             "optional": false,
-            "field": "Role",
+            "field": "role",
             "description": "<p>All roles that particular user have</p>"
           },
           {
             "group": "Success 200",
             "type": "GUID",
             "optional": false,
-            "field": "RoomID",
+            "field": "roomID",
             "description": "<p>Optional parameter - only guests have this not-null</p>"
           },
           {
@@ -1006,6 +1006,13 @@ define({ "api": [
             "optional": false,
             "field": "WorkerType",
             "description": "<p>Type of case - one of (0-Cleaner,1-Technician,2-None)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "EstimatedTime",
+            "description": "<p>Time in format &quot;HH:mm:ss&quot;</p>"
           }
         ]
       }
@@ -1147,7 +1154,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n  [\n      {\n      \"CaseID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Title\":\"ExampleCase\",\n      \"Description\":\"Clean something\",\n      \"WorkerType\":\"Technician\"\n      }\n  ]",
+          "content": "HTTP/1.1 200 OK\n  [\n      {\n      \"caseID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"title\":\"ExampleCase\",\n      \"description\":\"Clean something\",\n      \"workerType\":\"Technician\",\n      \"estimatedTime\":\"01:00:00\"\n      }\n  ]",
           "type": "json"
         }
       ]
@@ -1182,36 +1189,43 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "CaseID",
+            "field": "caseID",
             "description": "<p>Case identifier</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Title",
+            "field": "title",
             "description": "<p>Case title</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Description",
+            "field": "description",
             "description": "<p>Case details</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "WorkerType",
+            "field": "workerType",
             "description": "<p>Worker type associated with this case</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "TimeSpan",
+            "optional": false,
+            "field": "estimatedTime",
+            "description": "<p>Estimated time needed to perform task with this case</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n      {\n      \"CaseID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Title\":\"ExampleCase\",\n      \"Description\":\"Clean something\",\n      \"WorkerType\":\"Technician\"\n      }",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"caseID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"title\":\"ExampleCase\",\n      \"description\":\"Clean something\",\n      \"workerType\":\"Technician\",\n      \"estimatedTime\":\"01:00:00\"\n      }",
           "type": "json"
         }
       ]
@@ -1265,36 +1279,43 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "CaseID",
+            "field": "caseID",
             "description": "<p>Case identifier</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Title",
+            "field": "title",
             "description": "<p>Case title</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Description",
+            "field": "description",
             "description": "<p>Case details</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "WorkerType",
+            "field": "workerType",
             "description": "<p>Worker type associated with this case</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "TimeSpan",
+            "optional": false,
+            "field": "estimatedTime",
+            "description": "<p>Estimated time of case</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n      {\n      \"CaseID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Title\":\"ExampleCase\",\n      \"Description\":\"Clean something\",\n      \"WorkerType\":\"Technician\"\n      }",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"caseID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"title\":\"ExampleCase\",\n      \"description\":\"Clean something\",\n      \"workerType\":\"Technician\",\n       \"estimatedTime\":\"01:00:00\"\n      }",
           "type": "json"
         }
       ]
@@ -1358,6 +1379,13 @@ define({ "api": [
             "optional": false,
             "field": "WorkerType",
             "description": "<p>Type of case - one of (0-Cleaner,1-Technician,2-None)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "EstimatedTime",
+            "description": "<p>Time in format &quot;HH:mm:ss&quot;</p>"
           }
         ]
       }
@@ -1590,7 +1618,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n   { \n   \"RuleID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n   \"Name\":\"Rule1\",\n   \"Description\":\"Rule 1 desc\"\n   }\n]",
+          "content": "HTTP/1.1 200 OK\n[\n   { \n   \"ruleID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n   \"name\":\"Rule1\",\n   \"description\":\"Rule 1 desc\"\n   }\n]",
           "type": "json"
         }
       ]
@@ -1625,21 +1653,21 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "RuleID",
+            "field": "ruleID",
             "description": "<p>Rule identifier</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Title",
+            "field": "title",
             "description": "<p>Rule title</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Description",
+            "field": "description",
             "description": "<p>Rule details</p>"
           }
         ]
@@ -1647,7 +1675,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n      {\n      \"RuleID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Title\":\"ExampleRule\",\n      \"Description\":\"Restrict something\",\n      }",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"ruleID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"title\":\"ExampleRule\",\n      \"description\":\"Restrict something\",\n      }",
           "type": "json"
         }
       ]
@@ -1929,7 +1957,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n   { \n   \"RoomID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n   \"GuestFirstName\":\"Marco\",\n   \"GuestLastName\":\"Polo\",\n   \"Number\":9,\n   \"Occupied\":false\n   }\n]",
+          "content": "HTTP/1.1 200 OK\n[\n   { \n   \"roomID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n   \"user\":{\n     \"userID\":\"4ba83f3c-4ea4-4da4-9c06-e986a827230\",\n     \"lastName\":\"Franz\",\n     \"firstName\":\"Artur\",\n   },\n   \"number\":9,\n   \"occupied\":false\n   }\n]",
           "type": "json"
         }
       ]
@@ -1964,22 +1992,29 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "RoomID",
+            "field": "roomID",
             "description": "<p>Room identifier</p>"
           },
           {
             "group": "Success 200",
-            "type": "String",
+            "type": "GUID",
             "optional": false,
-            "field": "GuestFirstName",
-            "description": "<p>If room is occupied here will be name of client</p>"
+            "field": "userID",
+            "description": "<p>If room is occupied here will be id of client</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "GuestLastName",
-            "description": "<p>If room is occupied here will be surname of client</p>"
+            "field": "firstName",
+            "description": "<p>If room is occupied - first name of client</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "lastName",
+            "description": "<p>If room is occupied - last name of client</p>"
           },
           {
             "group": "Success 200",
@@ -2000,7 +2035,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n     { \n   \"RoomID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n   \"GuestFirstName\":\"Marco\",\n   \"GuestLastName\":\"Polo\",\n   \"Number\":9,\n   \"Occupied\":false\n   }",
+          "content": "HTTP/1.1 200 OK\n  { \n   \"roomID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n   \"user\":{\n     \"userID\":\"4ba83f3c-4ea4-4da4-9c06-e986a827230\",\n     \"lastName\":\"Franz\",\n     \"firstName\":\"Artur\",\n   },\n   \"number\":9,\n   \"occupied\":false\n   }",
           "type": "json"
         }
       ]
@@ -2121,21 +2156,21 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Email",
+            "field": "email",
             "description": "<p>User Email</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Numer",
+            "field": "numer",
             "description": "<p>Numer of room</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Title",
+            "field": "title",
             "description": "<p>title of case</p>"
           },
           {
@@ -2299,7 +2334,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n  [\n      {\n      \"TaskID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Describe\":\"Describtion of task\",\n      \"RoomID\":\"5ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Room\":\"Connected room\"\n      }\n  ]",
+          "content": "HTTP/1.1 200 OK\n  [\n      {\n      \"taskID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"describe\":\"Describtion of task\",\n      \"roomID\":\"5ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"room\":\"Connected room\"\n      }\n  ]",
           "type": "json"
         }
       ]
@@ -2334,28 +2369,28 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "TaskID",
+            "field": "taskID",
             "description": "<p>Task identifier</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "Description",
+            "field": "description",
             "description": "<p>of task</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "RoomID",
+            "field": "roomID",
             "description": "<p>Room identifier</p>"
           },
           {
             "group": "Success 200",
             "type": "Room",
             "optional": false,
-            "field": "Room",
+            "field": "room",
             "description": ""
           }
         ]
@@ -2363,7 +2398,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n      {\n      \"TaskID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Describe\":\"Describtion of task\",\n      \"RoomID\":\"5ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"Room\":\"Connected room\"\n      }",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"taskID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"describe\":\"Describtion of task\",\n      \"roomID\":\"5ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"room\":\"Connected room\"\n      }",
           "type": "json"
         }
       ]
