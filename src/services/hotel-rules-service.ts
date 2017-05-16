@@ -26,6 +26,13 @@ export class HotelRulesService {
 	}
 
 	getRule(ruleID){
-		return this.data.find(item => item.ruleID == ruleID);
+		let promise = new Promise((resolve, reject) =>{
+			this.httpFetch.fetch('/api/Home/' + String(ruleID))
+			.then(response => response.json())
+			.then(data => {
+				resolve(data);
+			}).catch(err => reject(err));
+		});
+		return promise;
 	}
 }

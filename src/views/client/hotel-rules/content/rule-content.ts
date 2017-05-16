@@ -8,6 +8,6 @@ export class RuleContent {
 	}
 
 	activate(params, routeConfig){
-		this.selectedRule = this.hotelRulesService.getRule(params.id);
+		this.hotelRulesService.getRule(params.id).then(data => this.selectedRule = data);
 	}
 }
