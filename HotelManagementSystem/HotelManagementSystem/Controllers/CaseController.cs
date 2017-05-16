@@ -37,10 +37,11 @@ namespace HotelManagementSystem.Controllers
        * HTTP/1.1 200 OK
         *   [
         *       {
-        *       "CaseID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-        *       "Title":"ExampleCase",
-        *       "Description":"Clean something",
-        *       "WorkerType":"Technician"
+        *       "caseID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+        *       "title":"ExampleCase",
+        *       "description":"Clean something",
+        *       "workerType":"Technician",
+        *       "estimatedTime":"01:00:00"
         *       }
         *   ]
        */
@@ -61,34 +62,36 @@ namespace HotelManagementSystem.Controllers
                 })
                 );
         }
-             /**
-       * @api {get} /Case/CaseID Read
-       * @apiVersion 0.1.0
-       * @apiName Read
-       * @apiGroup Case
-       *
-       * @apiParam {GUID} CaseID Case identifier
-       * 
-       * 
-       *@apiSuccess {String} CaseID Case identifier
-       * @apiSuccess {String} Title Case title
-       * @apiSuccess {String} Description Case details
-       * @apiSuccess {String} WorkerType Worker type associated with this case 
-       *@apiSuccessExample Success-Response:
-       * HTTP/1.1 200 OK
-        *       {
-        *       "CaseID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-        *       "Title":"ExampleCase",
-        *       "Description":"Clean something",
-        *       "WorkerType":"Technician"
-        *       }
-        *@apiError NotFound Given ID does not appeal to any of cases
-        *@apiErrorExample Error-Response:
-        * HTTP/1.1 404 NotFound
-        * {
-        *   "status":"notFound"
-        * }
-       */
+        /**
+  * @api {get} /Case/CaseID Read
+  * @apiVersion 0.1.0
+  * @apiName Read
+  * @apiGroup Case
+  *
+  * @apiParam {GUID} CaseID Case identifier
+  * 
+  * 
+  *@apiSuccess {String} caseID Case identifier
+  * @apiSuccess {String} title Case title
+  * @apiSuccess {String} description Case details
+  * @apiSuccess {String} workerType Worker type associated with this case 
+  * @apiSuccess {TimeSpan} estimatedTime Estimated time needed to perform task with this case
+  *@apiSuccessExample Success-Response:
+  * HTTP/1.1 200 OK
+   *       {
+   *       "caseID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+   *       "title":"ExampleCase",
+   *       "description":"Clean something",
+   *       "workerType":"Technician",
+   *       "estimatedTime":"01:00:00"
+   *       }
+   *@apiError NotFound Given ID does not appeal to any of cases
+   *@apiErrorExample Error-Response:
+   * HTTP/1.1 404 NotFound
+   * {
+   *   "status":"notFound"
+   * }
+  */
         // GET api/Case/{id}
         [HttpGet("{CaseID}")]
         public async Task<IActionResult> Read(Guid CaseID)
@@ -122,17 +125,19 @@ namespace HotelManagementSystem.Controllers
           * @apiParam {String} WorkerType (Cleaner or Technician)
           * 
           * 
-          *@apiSuccess {String} CaseID Case identifier
-          * @apiSuccess {String} Title Case title
-          * @apiSuccess {String} Description Case details
-          * @apiSuccess {String} WorkerType Worker type associated with this case 
+          *@apiSuccess {String} caseID Case identifier
+          * @apiSuccess {String} title Case title
+          * @apiSuccess {String} description Case details
+          * @apiSuccess {String} workerType Worker type associated with this case 
+          * @apiSuccess {TimeSpan} estimatedTime Estimated time of case
           *@apiSuccessExample Success-Response:
           * HTTP/1.1 200 OK
            *       {
-           *       "CaseID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-           *       "Title":"ExampleCase",
-           *       "Description":"Clean something",
-           *       "WorkerType":"Technician"
+           *       "caseID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+           *       "title":"ExampleCase",
+           *       "description":"Clean something",
+           *       "workerType":"Technician",
+           *        "estimatedTime":"01:00:00"
            *       }
            *@apiError NotFound Given ID does not appeal to any of cases
            *@apiErrorExample Error-Response:
@@ -175,6 +180,7 @@ namespace HotelManagementSystem.Controllers
          * @apiParam {String} Title Case title
          * @apiParam {String} Description Case details
          * @apiParam {Number} WorkerType Type of case - one of (0-Cleaner,1-Technician,2-None)
+         * @apiParam {String} EstimatedTime Time in format "HH:mm:ss"
          * 
          * 
          *@apiSuccess {String} status Case was created 
@@ -223,6 +229,7 @@ namespace HotelManagementSystem.Controllers
         * @apiParam {String} Title Case title
         * @apiParam {String} Description Case details
         * @apiParam {Number} WorkerType Type of case - one of (0-Cleaner,1-Technician,2-None)
+         * @apiParam {String} EstimatedTime Time in format "HH:mm:ss"
         * 
         * 
         *@apiSuccess {String} status Case was updated 

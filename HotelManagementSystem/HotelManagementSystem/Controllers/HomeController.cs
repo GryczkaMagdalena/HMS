@@ -38,9 +38,9 @@ namespace HotelManagementSystem.Controllers
       * HTTP/1.1 200 OK
        * [
        *    { 
-       *    "RuleID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-       *    "Name":"Rule1",
-       *    "Description":"Rule 1 desc"
+       *    "ruleID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+       *    "name":"Rule1",
+       *    "description":"Rule 1 desc"
        *    }
        * ]
        * 
@@ -69,15 +69,15 @@ namespace HotelManagementSystem.Controllers
        * @apiParam {GUID} RuleID Rule identifier
        * 
        * 
-       *@apiSuccess {String} RuleID Rule identifier
-       * @apiSuccess {String} Title Rule title
-       * @apiSuccess {String} Description Rule details
+       *@apiSuccess {String} ruleID Rule identifier
+       * @apiSuccess {String} title Rule title
+       * @apiSuccess {String} description Rule details
        *@apiSuccessExample Success-Response:
        * HTTP/1.1 200 OK
         *       {
-        *       "RuleID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-        *       "Title":"ExampleRule",
-        *       "Description":"Restrict something",
+        *       "ruleID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+        *       "title":"ExampleRule",
+        *       "description":"Restrict something",
         *       }
         *@apiError NotFound Given ID does not appeal to any of rules
         *@apiErrorExample Error-Response:

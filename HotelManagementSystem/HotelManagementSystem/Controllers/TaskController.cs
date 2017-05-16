@@ -47,10 +47,10 @@ namespace HotelManagementSystem.Controllers
        * HTTP/1.1 200 OK
         *   [
         *       {
-        *       "TaskID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-        *       "Describe":"Describtion of task",
-        *       "RoomID":"5ba83f3c-4ea4-4da4-9c06-e986a8273800",
-        *       "Room":"Connected room"
+        *       "taskID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+        *       "describe":"Describtion of task",
+        *       "roomID":"5ba83f3c-4ea4-4da4-9c06-e986a8273800",
+        *       "room":"Connected room"
         *       }
         *   ]
        */
@@ -82,17 +82,17 @@ namespace HotelManagementSystem.Controllers
   * @apiParam {GUID} TaskID Task identifier
   * 
   * 
-  *@apiSuccess {String} TaskID Task identifier
-  * @apiSuccess {String} Description of task
-  * @apiSuccess {String} RoomID Room identifier
-  * @apiSuccess {Room} Room
+  *@apiSuccess {String} taskID Task identifier
+  * @apiSuccess {String} description of task
+  * @apiSuccess {String} roomID Room identifier
+  * @apiSuccess {Room} room
   *@apiSuccessExample Success-Response:
   * HTTP/1.1 200 OK
    *       {
-   *       "TaskID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-   *       "Describe":"Describtion of task",
-   *       "RoomID":"5ba83f3c-4ea4-4da4-9c06-e986a8273800",
-   *       "Room":"Connected room"
+   *       "taskID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+   *       "describe":"Describtion of task",
+   *       "roomID":"5ba83f3c-4ea4-4da4-9c06-e986a8273800",
+   *       "room":"Connected room"
    *       }
    *@apiError NotFound Given ID does not appeal to any of tasks
    *@apiErrorExample Error-Response:
@@ -178,9 +178,9 @@ namespace HotelManagementSystem.Controllers
          * @apiName Create
          * @apiGroup Task
          *
-       * @apiSuccess {String} Email User Email
-       * @apiSuccess {String} Numer Numer of room
-       * @apiSuccess {String} Title title of case
+       * @apiSuccess {String} email User Email
+       * @apiSuccess {String} numer Numer of room
+       * @apiSuccess {String} title title of case
        * 
          *@apiSuccess {String} status task was created 
          *@apiSuccessExample Success-Response:

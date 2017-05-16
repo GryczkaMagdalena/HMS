@@ -75,13 +75,13 @@ namespace HotelManagementSystem.Controllers
           * @apiParam {String} Login Email or login of user
           * @apiParam {String} Password User's password
           *
-          * @apiSuccess {String} FirstName First name of user.
-          * @apiSuccess {String} LastName Last name of user.
-          * @apiSuccess {String} Email Optional email address of user
-          * @apiSuccess {String} PhoneNumber Optional phone number of user
-          * @apiSuccess {String} WorkerType One of available types (Cleaner,Technician,None).
-          * @apiSuccess {Array} Role All roles that particular user have 
-          * @apiSuccess {GUID} RoomID Optional parameter - only guests have this not-null 
+          * @apiSuccess {String} firstName First name of user.
+          * @apiSuccess {String} lastName Last name of user.
+          * @apiSuccess {String} email Optional email address of user
+          * @apiSuccess {String} phoneNumber Optional phone number of user
+          * @apiSuccess {String} workerType One of available types (Cleaner,Technician,None).
+          * @apiSuccess {Array} role All roles that particular user have 
+          * @apiSuccess {GUID} roomID Optional parameter - only guests have this not-null 
           *
           * @apiSuccessExample Success-Response:
           *     HTTP/1.1 200 OK
@@ -351,14 +351,14 @@ namespace HotelManagementSystem.Controllers
       * @apiName Register
       * @apiGroup Auth
       *
-      *@apiParam {String} Login Login of user
-      * @apiParam {String} Password Password of user
-      * @apiParam {String} FirstName Optional user name
-      * @apiParam {String} LastName Optional user surname
-      * @apiParam {String} PhoneNumber Optional contact number
-      * @apiParam {String} RoleName One of roles (Worker,Customer,Manager,Administrator)
-      * @apiParam {String} Email Required user identifier
-      * @apiParam {String} WorkerType One of available types (Cleaner,Technician,None)
+      *@apiParam {String} login Login of user
+      * @apiParam {String} password Password of user
+      * @apiParam {String} firstName Optional user name
+      * @apiParam {String} lastName Optional user surname
+      * @apiParam {String} phoneNumber Optional contact number
+      * @apiParam {String} roleName One of roles (Worker,Customer,Manager,Administrator)
+      * @apiParam {String} email Required user identifier
+      * @apiParam {String} workerType One of available types (Cleaner,Technician,None)
       * 
       *@apiSuccess {String} status User succesfully created
       *@apiSuccessExample Success-Response:
@@ -436,12 +436,12 @@ namespace HotelManagementSystem.Controllers
          * @apiParam {String} Login Email or login of user
          * @apiParam {String} Password User's password
          *
-         * @apiSuccess {String} FirstName First name of user.
-         * @apiSuccess {String} LastName Last name of user.
-         * @apiSuccess {String} Email Optional email address of user
-         * @apiSuccess {String} WorkerType One of available types (Cleaner,Technician,None).
-         * @apiSuccess {Array} Role All roles that particular user have 
-         * @apiSuccess {GUID} RoomID Optional parameter - only guests have this not-null 
+         * @apiSuccess {String} firstName First name of user.
+         * @apiSuccess {String} lastName Last name of user.
+         * @apiSuccess {String} email Optional email address of user
+         * @apiSuccess {String} workerType One of available types (Cleaner,Technician,None).
+         * @apiSuccess {Array} role All roles that particular user have 
+         * @apiSuccess {GUID} roomID Optional parameter - only guests have this not-null 
          * @apiSuccess {Token} token Authentication token that should be send in every response as header (headerKey:Authenticate, headerValue: "bearer " + token)
           *@apiSuccess {DateTime} expiration Date when token expires
          * @apiSuccessExample Success-Response:
