@@ -38,11 +38,14 @@ namespace HotelManagementSystem.Controllers
     * HTTP/1.1 200 OK
      * [
      *    { 
-     *    "RoomID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-     *    "GuestFirstName":"Marco",
-     *    "GuestLastName":"Polo",
-     *    "Number":9,
-     *    "Occupied":false
+     *    "roomID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+     *    "user":{
+     *      "userID":"4ba83f3c-4ea4-4da4-9c06-e986a827230",
+     *      "lastName":"Franz",
+     *      "firstName":"Artur",
+     *    },
+     *    "number":9,
+     *    "occupied":false
      *    }
      * ]
      * 
@@ -52,14 +55,34 @@ namespace HotelManagementSystem.Controllers
         public async Task<IActionResult> List()
         {
             List<Room> rooms = await _context.Rooms.ToListAsync();
-            var roomsObjectified = rooms.Select(q => new
+            if (rooms.Any(q => q.User == null))
             {
-                RoomID = q.RoomID,
-                User = q.User,
-                Number = q.Number,
-                Occupied = q.Occupied
-            });
-            return Ok(roomsObjectified);
+                var roomsObjectified = rooms.Select(q => new
+                {
+                    RoomID = q.RoomID,
+                    User = q,
+                    Number = q.Number,
+                    Occupied = q.Occupied
+                });
+                return Ok(roomsObjectified);
+            }
+            else
+            {
+                var roomsObjectified = rooms.Select(q => new
+                {
+                    RoomID = q.RoomID,
+                    User = new
+                    {
+                        UserID = q.UserID,
+                        FirstName = q.User.FirstName,
+                        LastName = q.User.LastName
+                    },
+                    Number = q.Number,
+                    Occupied = q.Occupied
+                });
+                return Ok(roomsObjectified);
+            }
+            
         }
         /**
    * @api {get} /Room?RoomID Read
@@ -70,21 +93,25 @@ namespace HotelManagementSystem.Controllers
    * @apiParam {GUID} RoomID Room identifier
    * 
    * 
-   * @apiSuccess {String} RoomID Room identifier
-   * @apiSuccess {String} GuestFirstName If room is occupied here will be name of client
-   * @apiSuccess {String} GuestLastName If room is occupied here will be surname of client
+   * @apiSuccess {String} roomID Room identifier
+   * @apiSuccess {GUID} userID If room is occupied here will be id of client
+   * @apiSuccess {String} firstName If room is occupied - first name of client
+   * @apiSuccess {String} lastName If room is occupied - last name of client
    * @apiSuccess {Boolean} Occupied Is room free
    * @apiSuccess {Number} Number Number of room
    * 
    *@apiSuccessExample Success-Response:
    * HTTP/1.1 200 OK
-    *      { 
-   *    "RoomID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-   *    "GuestFirstName":"Marco",
-   *    "GuestLastName":"Polo",
-   *    "Number":9,
-   *    "Occupied":false
-   *    }
+    *   { 
+     *    "roomID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
+     *    "user":{
+     *      "userID":"4ba83f3c-4ea4-4da4-9c06-e986a827230",
+     *      "lastName":"Franz",
+     *      "firstName":"Artur",
+     *    },
+     *    "number":9,
+     *    "occupied":false
+     *    }
     *@apiError NotFound Given ID does not appeal to any of rooms
     *@apiErrorExample Error-Response:
     * HTTP/1.1 404 NotFound
@@ -105,7 +132,31 @@ namespace HotelManagementSystem.Controllers
                 _logger.LogError(ex.Message, ex);
                 return NotFound(new { status = "notFound" });
             }
-            return Ok(room);
+            if (room.User == null)
+            {
+                return Ok(new
+                {
+                    RoomID = room.RoomID,
+                    User = room.User,
+                    Number = room.Number,
+                    Occupied = room.Occupied
+                });
+            }
+            else
+            {
+                return Ok(new
+                {
+                    RoomID = room.RoomID,
+                    User = new
+                    {
+                        UserID = room.UserID,
+                        FirstName = room.User.FirstName,
+                        LastName = room.User.LastName
+                    },
+                    Number = room.Number,
+                    Occupied = room.Occupied
+                });
+            }
         }
 
         /**
