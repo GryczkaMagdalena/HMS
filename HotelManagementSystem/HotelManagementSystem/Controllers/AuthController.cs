@@ -87,12 +87,14 @@ namespace HotelManagementSystem.Controllers
           *  { 
           *     "status":"invalidInput"
           *  }
-          *  @apiError TransactionFailed Internal Server Error
-       * @apiErrorExample Error-Response:
-       * HTTP/1.1 400 BadRequest
-       * {
-       *    "status":"transactionFailed"
-       *    }
+
+          *  
+          *  @apiError TransactionFailed Some data cannot be requested by server, try again later or contact administrator
+          *  @apiErrorExample Error-Response:
+          *  HTTP/1.1 404 NotFound
+          *  {
+          *     "status":"transactionFailed"
+          *  }
          */
         [HttpPost]
         public async Task<IActionResult> CheckOut([FromBody] CheckInViewModel checkOutModel)
@@ -122,6 +124,7 @@ namespace HotelManagementSystem.Controllers
                         }
 
                         guestAccount.Room = null;
+
                         room.User = null;
                         room.Occupied = false;
 
@@ -134,6 +137,7 @@ namespace HotelManagementSystem.Controllers
                         await _context.SaveChangesAsync();
                         safeTransaction.Commit();
 
+
                         return Ok(new { status = "checkedOut" });
                     }
                     catch (Exception ex)
@@ -141,6 +145,7 @@ namespace HotelManagementSystem.Controllers
                         _logger.LogError(ex.Message, ex);
                         safeTransaction.Rollback();
                         return BadRequest(new { status = "transactionFailed" });
+
                     }
                 }
             }
@@ -189,12 +194,12 @@ namespace HotelManagementSystem.Controllers
        *     "status":"invalidInput"
        *  }
        *  
-       *  @apiError TransactionFailed Internal Server Error
-       * @apiErrorExample Error-Response:
-       * HTTP/1.1 400 BadRequest
-       * {
+       *  @apiError TransactionFailed Some data on server cannot be requested, try again later or contact with Administrator
+       *  @apiErrorExample Error-Response
+       *  HTTP/1.1 404 NotFound
+       *  {
        *    "status":"transactionFailed"
-       *    }
+       *  }
       */
         [HttpPost]
         public async Task<IActionResult> CheckIn([FromBody] CheckInViewModel checkInModel)
@@ -207,6 +212,7 @@ namespace HotelManagementSystem.Controllers
                     {
                         Room room = await _context.Rooms.FirstAsync(q => q.Number == checkInModel.roomNumber);
                         User guestAccount = await _userService.GetUserByUsername(checkInModel.emailOrLogin);
+
 
                         if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
                         {
@@ -236,13 +242,14 @@ namespace HotelManagementSystem.Controllers
                         await _context.SaveChangesAsync();
                         safeTransaction.Commit();
 
+
                         return Ok(new { status = "checkedIn" });
                     }
                     catch (Exception ex)
                     {
                         safeTransaction.Rollback();
                         _logger.LogError(ex.Message, ex);
-                        return NotFound(new { status = "internalError" });
+                        return NotFound(new { status = "transactionFailed" });
                     }
                 }
             }
