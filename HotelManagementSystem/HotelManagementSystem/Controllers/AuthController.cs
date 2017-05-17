@@ -177,81 +177,93 @@ namespace HotelManagementSystem.Controllers
           *     }
           *@apiError InvalidRole Only user with role Customer can occupy room
           * @apiErrorExample Error-Response:
-          * HTTP/1.1 200 OK
+          * HTTP/1.1 400 BadRequest
           * { 
           *     "status":"invalidRole"
           * }
           * @apiError UserAlreadyCheckedOut If user does not occupy specified room, validation fails
           *  @apiErrorExample Error-Response:
-          *  HTTP/1.1 200 OK
+          *  HTTP/1.1 400 BadRequest
           *  {
           *     "status":"userAlreadyCheckedOut"
           *  }
           *  
           * @apiError RoomNotOccupied If specified room is not occupied, validation fails
           *  @apiErrorExample Error-Response:
-          *  HTTP/1.1 200 OK
+          *  HTTP/1.1 400 BadRequest
           *  {
           *     "status":"roomNotOccupied"
           *  }
           * 
           * @apiError InvalidInput If Room or User cannot be found
           *  @apiErrorExample Error-Response:
-          *  HTTP/1.1 200 OK
+          *  HTTP/1.1 400 BadRequest
           *  { 
           *     "status":"invalidInput"
           *  }
+          *  
+          *  @apiError TransactionFailed Some data cannot be requested by server, try again later or contact administrator
+          *  @apiErrorExample Error-Response:
+          *  HTTP/1.1 404 NotFound
+          *  {
+          *     "status":"transactionFailed"
+          *  }
          */
         [HttpPost]
-        public async Task<IActionResult> CheckOut([FromBody] string emailOrLogin, string roomNumber)
+        public async Task<IActionResult> CheckOut([FromBody] CheckInViewModel checkOutModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                using (var safeTransaction = await _context.Database.BeginTransactionAsync())
                 {
-                    Room room = _context.Rooms.First(q => q.Number == roomNumber);
-                    User guestAccount = _context.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
-
-                    if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))
+                    try
                     {
-                        return Json(new { status = "invalidRole" });
-                    }
+                        Room room = _context.Rooms.First(q => q.Number == checkOutModel.roomNumber);
+                        User guestAccount = _context.Users
+                            .First(p => p.Email == checkOutModel.emailOrLogin || p.UserName == checkOutModel.emailOrLogin);
 
-                    if (guestAccount.Room == null)
+                        if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))
+                        {
+                            return BadRequest(new { status = "invalidRole" });
+                        }
+
+                        if (guestAccount.Room == null)
+                        {
+                            return BadRequest(new { status = "userAlreadyCheckedOut" });
+                        }
+
+                        if (!room.Occupied)
+                        {
+                            return BadRequest(new { status = "roomNotOccupied" });
+                        }
+
+                        guestAccount.Room = null;
+                        guestAccount.Room = null;
+
+                        room.User = null;
+                        room.Occupied = false;
+
+                        _context.Rooms.Attach(room);
+                        _context.Entry(room).State = EntityState.Modified;
+
+                        await _context.SaveChangesAsync();
+
+                        _context.Users.Attach(guestAccount);
+                        _context.Entry(guestAccount).State = EntityState.Modified;
+
+                        await _context.SaveChangesAsync();
+                        safeTransaction.Commit();
+                        return Ok(new { status = "checkedOut" });
+                    }
+                    catch (Exception ex)
                     {
-                        return Json(new { status = "userAlreadyCheckedOut" });
+                        safeTransaction.Rollback();
+                        _logger.LogError(ex.Message, ex);
+                        return NotFound(new {status="transactionFailed" });
                     }
-
-                    if (!room.Occupied)
-                    {
-                        return Json(new { status = "roomNotOccupied" });
-                    }
-
-                    guestAccount.Room = null;
-                    guestAccount.Room = null;
-
-                    room.User = null;
-                    room.Occupied = false;
-
-                    _context.Rooms.Attach(room);
-                    _context.Entry(room).State = EntityState.Modified;
-
-                    await _context.SaveChangesAsync();
-
-                    _context.Users.Attach(guestAccount);
-                    _context.Entry(guestAccount).State = EntityState.Modified;
-
-                    await _context.SaveChangesAsync();
-
-                    return Json(new { status = "checkedOut" });
                 }
-                return Json(new { status = "invalidInput" });
-
             }
-            catch (Exception ex)
-            {
-                return Json(ex);
-            }
+            return BadRequest(new { status = "invalidInput" });
         }
 
         /**
@@ -271,78 +283,98 @@ namespace HotelManagementSystem.Controllers
        *     }
        *@apiError InvalidRole Only user with role Customer can occupy room
        * @apiErrorExample Error-Response:
-       * HTTP/1.1 200 OK
+       * HTTP/1.1 400 BadRequest
        * { 
        *     "status":"invalidRole"
        * }
        * @apiError UserAlreadyCheckedIn One customer can occupy only one room at the same time
        *  @apiErrorExample Error-Response:
-       *  HTTP/1.1 200 OK
+       *  HTTP/1.1 400 BadRequest
        *  {
        *     "status":"userAlreadyCheckedIn"
        *  }
        *  
        * @apiError RoomAlreadyOccupied If specified room is already occupied, validation fails
        *  @apiErrorExample Error-Response:
-       *  HTTP/1.1 200 OK
+       *  HTTP/1.1 400 BadRequest
        *  {
        *     "status":"roomAlreadyOccupied"
        *  }
        * 
        * @apiError InvalidInput If Room or User cannot be found
        *  @apiErrorExample Error-Response:
-       *  HTTP/1.1 200 OK
+       *  HTTP/1.1 400 BadRequest
        *  { 
        *     "status":"invalidInput"
        *  }
+       *  
+       *  @apiError InvalidInput If Room or User cannot be found
+       *  @apiErrorExample Error-Response:
+       *  HTTP/1.1 400 BadRequest
+       *  { 
+       *     "status":"invalidInput"
+       *  }
+       *  
+       *  @apiError TransactionFailed Some data on server cannot be requested, try again later or contact with Administrator
+       *  @apiErrorExample Error-Response
+       *  HTTP/1.1 404 NotFound
+       *  {
+       *    "status":"transactionFailed"
+       *  }
       */
         [HttpPost]
-        public async Task<IActionResult> CheckIn([FromBody] string emailOrLogin, string roomNumber)
+        public async Task<IActionResult> CheckIn([FromBody] CheckInViewModel checkInModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                using (var safeTransaction = await _context.Database.BeginTransactionAsync())
                 {
-                    Room room = _context.Rooms.First(q => q.Number == roomNumber);
-                    User guestAccount = _context.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
-
-                    if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
+                    try
                     {
-                        return Json(new { status = "invalidRole" });
-                    }
+                        Room room = _context.Rooms.First(q => q.Number == checkInModel.roomNumber);
+                        User guestAccount = _context.Users
+                            .First(p => p.Email == checkInModel.emailOrLogin || p.UserName == checkInModel.emailOrLogin);
 
-                    if (guestAccount.Room != null)
+                        if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
+                        {
+                            return BadRequest(new { status = "invalidRole" });
+                        }
+
+                        if (guestAccount.Room != null)
+                        {
+                            return BadRequest(new { status = "userAlreadyCheckedIn" });
+                        }
+
+                        if (room.Occupied)
+                        {
+                            return BadRequest(new { status = "roomAlreadyOccupied" });
+                        }
+
+                        guestAccount.Room = room;
+                        room.User = guestAccount;
+                        room.Occupied = true;
+
+                        _context.Rooms.Attach(room);
+                        _context.Entry(room).State = EntityState.Modified;
+
+                        await _context.SaveChangesAsync();
+
+                        _context.Users.Attach(guestAccount);
+                        _context.Entry(guestAccount).State = EntityState.Modified;
+
+                        await _context.SaveChangesAsync();
+                        safeTransaction.Commit();
+                        return Ok(new { status = "checkedIn" });
+                    }
+                    catch (Exception ex)
                     {
-                        return Json(new { status = "userAlreadyCheckedIn" });
+                        safeTransaction.Rollback();
+                        _logger.LogError(ex.Message, ex);
+                        return NotFound(new { status = "transactionFailed" });
                     }
-
-                    if (room.Occupied)
-                    {
-                        return Json(new { status = "roomAlreadyOccupied" });
-                    }
-
-                    guestAccount.Room = room;
-                    room.User = guestAccount;
-                    room.Occupied = true;
-
-                    _context.Rooms.Attach(room);
-                    _context.Entry(room).State = EntityState.Modified;
-
-                    await _context.SaveChangesAsync();
-
-                    _context.Users.Attach(guestAccount);
-                    _context.Entry(guestAccount).State = EntityState.Modified;
-
-                    await _context.SaveChangesAsync();
-
-                    return Json(new { status = "checkedIn" });
                 }
-                return Json(new { status = "invalidInput" });
             }
-            catch (Exception ex)
-            {
-                return Json(ex);
-            }
+            return BadRequest(new { status = "invalidInput" });
         }
 
         /**
@@ -399,10 +431,10 @@ namespace HotelManagementSystem.Controllers
                     LastName = registerModel.LastName,
                     FirstName = registerModel.FirstName,
                     Email = registerModel.Email,
-                    ReceivedTasks=new List<Models.Entities.Storage.Task>(),
-                    ListenedTasks=new List<Models.Entities.Storage.Task>(),
+                    ReceivedTasks = new List<Models.Entities.Storage.Task>(),
+                    ListenedTasks = new List<Models.Entities.Storage.Task>(),
                     Shifts = new List<Shift>(),
-                    IssuedTasks=new List<Models.Entities.Storage.Task>(),
+                    IssuedTasks = new List<Models.Entities.Storage.Task>(),
                     NormalizedEmail = registerModel.Email,
                     WorkerType = (WorkerType)System.Enum.Parse(typeof(WorkerType), registerModel.WorkerType, true)
                 };
@@ -606,7 +638,7 @@ namespace HotelManagementSystem.Controllers
         {
             var login = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userService.GetUserByUsername(login);
-            return Ok(new {id=user.Id });
+            return Ok(new { id = user.Id });
         }
         private Task<User> GetCurrentUserAsync(ClaimsPrincipal user) => _userService.GetUserAsync(user);
         /**

@@ -9,6 +9,10 @@ using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using HotelManagementSystem.Models.Entities.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -20,10 +24,13 @@ namespace HotelManagementSystem.Controllers
     {
         private IdentityContext _context;
         private ILogger _logger;
-        public RoomController(ILogger<RoomController> logger, IdentityContext context)
+        private UserService _userService;
+        public RoomController(ILogger<RoomController> logger, IdentityContext context,
+            UserManager<User> userManager,IPasswordHasher<User> hasher,RoleManager<IdentityRole> roleManager,SignInManager<User> signInManager)
         {
             _context = context;
             _logger = logger;
+            _userService = new UserService(context, userManager, signInManager, hasher, roleManager);
         }
 
         /**
@@ -319,6 +326,47 @@ namespace HotelManagementSystem.Controllers
                 _logger.LogError(ex.Message, ex);
                 return BadRequest(new { status = "failure" });
             }
+        }
+
+        /**
+        * @api {get} /Room/RoomNumber GetRoomNumber
+        * @apiVersion 0.1.0
+        * @apiName GetRoomNumber
+        * @apiGroup Room
+        * 
+        *@apiSuccess {String} roomNumber Number of room
+        *@apiSuccessExample Success-Response:
+        * HTTP/1.1 200 OK
+        * {
+        *   "roomNumber":"1"
+        * }
+        * 
+        * @apiError BadRole Only user with role Customer can access this method
+        * @apiErrorExample Error-Response:
+        * HTTP/1.1 403 Unauthorized
+        * 
+        * @apiError UserNotCheckedIn Current user is not checked in any room
+        * @apiErrorExample Error-Response:
+        * HTTP/1.1 400 BadRequest
+        * {
+        *   "status":"userNotCheckedIn"
+        * }
+        * 
+        */ 
+        [Authorize(Roles ="Customer")]
+        [HttpGet("RoomNumber")]
+        public async Task<IActionResult> RoomNumber()
+        {
+            var login = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userService.GetUserByUsername(login);
+                if (user.Room != null)
+                {
+                    return Ok(new { roomNumber = user.Room.Number });
+                }
+                else
+                {
+                    return NotFound(new { status = "userNotCheckedIn" });
+                }
         }
     }
 }
