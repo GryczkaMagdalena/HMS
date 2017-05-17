@@ -13,6 +13,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using HotelManagementSystem.Models.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using HotelManagementSystem.Models.Infrastructure.IdentityBase;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -26,11 +27,11 @@ namespace HotelManagementSystem.Controllers
         private ILogger _logger;
         private UserService _userService;
         public RoomController(ILogger<RoomController> logger, IdentityContext context,
-            UserManager<User> userManager,IPasswordHasher<User> hasher,RoleManager<IdentityRole> roleManager,SignInManager<User> signInManager)
+            ApplicationUserManager userManager,IPasswordHasher<User> hasher,RoleManager<IdentityRole> roleManager,SignInManager<User> signInManager)
         {
             _context = context;
             _logger = logger;
-            _userService = new UserService(context, userManager, signInManager, hasher, roleManager);
+            _userService = new UserService( userManager, signInManager, hasher, roleManager);
         }
 
         /**
