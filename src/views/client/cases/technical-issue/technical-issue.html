@@ -3,13 +3,12 @@
     <div class="col-xs-12 col-sm-8 col-sm-offset-2">
 
       <div class="issues-list">
-        <div class="list-group">
-          <button type="button"
-                  repeat.for="case of cases"
-                  class="list-group-item ${case.id === $parent.selectedId ? 'active' : ''}"
-                  click.delegate="$parent.selectCase(case)">
-            ${case.text}
-          </button>
+        <div class="list-group" repeat.for="case of cases">
+          <a class="list-group-item ${case == $parent.selectedCase ? 'active' : ''}" click.delegate="$parent.selectCase(case)">
+            <h4 class="list-group-item-heading">${case.title}</h4>
+            <p class="list-group-item-text">${case.description}</p>
+            <p class="list-group-item-text">Szacowany czas wykonania: ${case.estimatedTime}</p>
+          </a>
         </div>
       </div>
 

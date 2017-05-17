@@ -4,18 +4,47 @@ import {inject} from 'aurelia-framework';
 
 @inject(HttpFetch)
 export class CasesService {
-  cases: {}[];
+  technicanCases: {}[];
+  cleanerCases: {}[];
 
   constructor(private httpFetch: HttpFetch) {
+    this.technicanCases = [];
+    this.cleanerCases = [];
   }
 
-  getCases() {
-    let promise = new Promise((resolve, reject) => {
-      this.httpFetch.fetch('/api/Case')
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(err => reject(err));
+  getTechnicianCases() {
+    return new Promise((resolve, reject) => {
+      if (this.technicanCases.length < 1) {
+        this.httpFetch.fetch('/api/Case/Filter/Technician')
+          .then(response => response.json())
+          .then(data => {
+            let tmp = JSON.parse(JSON.stringify(data));
+            this.technicanCases = tmp.cases;
+            resolve(this.technicanCases);
+          })
+          .catch(err => reject(err));
+      } else {
+        resolve(this.technicanCases);
+      }
+
     });
-    return promise;
+  }
+
+  getCleanerCases() {
+    return new Promise((resolve, reject) => {
+      if (this.cleanerCases.length < 1) {
+        this.httpFetch.fetch('/api/Case/Filter/Cleaner')
+          .then(response => response.json())
+          .then(data => {
+            let tmp = JSON.parse(JSON.stringify(data));
+            this.cleanerCases = tmp.cases;
+            resolve(this.cleanerCases);
+          })
+          .catch(err => reject(err));
+      } else {
+        resolve(this.cleanerCases);
+      }
+
+    });
   }
 }
