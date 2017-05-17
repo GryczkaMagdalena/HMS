@@ -9,9 +9,10 @@ using HotelManagementSystem.Models.Entities.Identity;
 namespace HotelManagementSystem.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    partial class IdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20170517212539_IdentityFixRoomUserRelation")]
+    partial class IdentityFixRoomUserRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")

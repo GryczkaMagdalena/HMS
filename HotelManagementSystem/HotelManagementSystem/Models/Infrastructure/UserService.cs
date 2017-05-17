@@ -7,12 +7,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using HotelManagementSystem.Models.Entities.Storage;
+using Microsoft.EntityFrameworkCore;
+using HotelManagementSystem.Models.Infrastructure.IdentityBase;
 
 namespace HotelManagementSystem.Models.Infrastructure
 {
-    public class UserService
+    public class UserService 
     {
-        private UserManager<User> _userManager;
+        private ApplicationUserManager _userManager;
         private SignInManager<User> _signInManager;
         private IPasswordHasher<User> _passwordHasher;
         private RoleManager<IdentityRole> _roleManager;
@@ -25,7 +28,7 @@ namespace HotelManagementSystem.Models.Infrastructure
         {
             return await _signInManager.PasswordSignInAsync(user.Login, password, true, false);
         }
-        public UserService(IdentityContext context,UserManager<User> userManager, SignInManager<User> signInManager, IPasswordHasher<User> hasher,RoleManager<IdentityRole> roleManager)
+        public UserService(ApplicationUserManager userManager, SignInManager<User> signInManager, IPasswordHasher<User> hasher,RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -71,6 +74,8 @@ namespace HotelManagementSystem.Models.Infrastructure
         }
         public async Task<User> GetUserByUsername(string username)
         {
+            if (username.Contains("@"))
+                return await _userManager.FindByEmailAsync(username);
             return await _userManager.FindByNameAsync(username);
         }
 
@@ -80,16 +85,26 @@ namespace HotelManagementSystem.Models.Infrastructure
             return await _userManager.CreateAsync(user, password);
         }
 
+        public async Task<Room> GetRoomAsync(User user)
+        {
+           var entity = await _userManager.Users.Include(q => q.Room).FirstAsync(u=>u.Id==user.Id);
+            return entity.Room;
+        }
+
         public PasswordVerificationResult VerifyHashedPassword(User user,string password)
         {
             return _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+        }
+        public async Task<IdentityResult> UpdateUserAsync(User user)
+        {
+            return await _userManager.UpdateAsync(user);
         }
 
         public async Task<IList<Claim>> GetClaims(User user)
         {
             return await _userManager.GetClaimsAsync(user);
         }
-
+        
         public async Task<bool> IsInRoleAsync(User guestAccount, string role)
         {
             return await _userManager.IsInRoleAsync(guestAccount, role);

@@ -17,6 +17,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using HotelManagementSystem.Models.Infrastructure.IdentityBase;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -28,141 +29,26 @@ namespace HotelManagementSystem.Controllers
     public class AuthController : Controller
     {
         private UserService _userService;
-        private IdentityContext _context = new IdentityContext();
+        private IdentityContext _context;
         private readonly ILogger _logger;
 
         public AuthController(
-            UserManager<User> userManager,
             SignInManager<User> signInManager,
             IPasswordHasher<User> hash,
             RoleManager<IdentityRole> roleManager,
-            ILogger<AuthController> logger
+            ILogger<AuthController> logger,
+            ApplicationUserManager userManager,
+            IdentityContext context
             )
         {
-            _userService = new UserService(_context, userManager, signInManager, hash, roleManager);
-            this._logger = logger;
-        }
-        /**
-            * @apiDeprecated do not use it.  
-            * @api {get} /Auth/Login Login - clear cookie
-            * @apiVersion 0.1.1
-            * @apiName GetLogin
-            * @apiGroup Auth
-            *
-            *
-            * @apiSuccess {String} status Message about cleared cookie.
-            *
-            * @apiSuccessExample Success-Response:
-            *     HTTP/1.1 200 OK
-            *     {
-            *       "status": "clear",
-            *     }
-        */
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Login()
-        {
-            return Json(new { status = "clear" });
+            _userService = new UserService(userManager, signInManager, hash, roleManager);
+            _logger = logger;
+            _context = context;
         }
 
-        /**
-          * @apiDeprecated use now (#Auth:Token). 
-          * @api {post} /Auth/Login Login
-          * @apiVersion 0.1.1
-          * @apiName PostLogin
-          * @apiGroup Auth
-          *
-          * @apiParam {String} Login Email or login of user
-          * @apiParam {String} Password User's password
-          *
-          * @apiSuccess {String} firstName First name of user.
-          * @apiSuccess {String} lastName Last name of user.
-          * @apiSuccess {String} email Optional email address of user
-          * @apiSuccess {String} phoneNumber Optional phone number of user
-          * @apiSuccess {String} workerType One of available types (Cleaner,Technician,None).
-          * @apiSuccess {Array} role All roles that particular user have 
-          * @apiSuccess {GUID} roomID Optional parameter - only guests have this not-null 
-          *
-          * @apiSuccessExample Success-Response:
-          *     HTTP/1.1 200 OK
-          *     {
-          *     "firstName":"Abraham",
-          *     "lastName":"Lincoln",
-          *     "email":"president@usa.pl",
-          *     "phoneNumber":"123-908-123",
-          *     "workerType":"Technician",
-          *     "role":["Worker"]
-          *     }
-          * @apiError MissingData Login or Password are missing.
-          * @apiErrorExample Error-Response:
-          * HTTP/1.1 200 OK
-          * {
-          *  "status":"fail"
-          * }
-          * 
-          * @apiError Unathorized This User does not exist or password is invalid.
-          * @apiErrorExample Error-Response:
-          * HTTP/1.1 200 OK
-          * {
-          *     "status":"unauthorized"
-          * }
-      */
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] UserViewModel user)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _userService.PasswordSignInAsync(user, user.Password);
-                if (result.Succeeded)
-                {
-                    var entity = _context.Users.First(q => q.UserName == user.Login);
-                    var roles = await _userService.GetUserRoles(entity);
-
-                    var output = new
-                    {
-                        FirstName = entity.FirstName,
-                        LastName = entity.LastName,
-                        Email = entity.Email,
-                        PhoneNumber = entity.PhoneNumber,
-                        WorkerType = Enum.GetName(typeof(WorkerType), entity.WorkerType.Value),
-                        Role = roles,
-                        Room = entity.Room
-                    };
-                    return Json(output);
-                }
-                else
-                {
-                    return Json(new { status = "unauthorized" });
-                }
-            }
-            else
-            {
-                return Json(new { status = "fail" });
-            }
-        }
-        /**
-         * @api {post} /Auth/Logout Logout
-         * @apiVersion 0.1.0
-         * @apiName Logout
-         * @apiGroup Auth
-         *
-         *@apiSuccess {String} status User succesfully logged out
-         *@apiSuccessExample Success-Response:
-         * HTTP/1.1 200 OK
-          *     {
-          *     "status":"logout"
-          *     }
-         */
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            await _userService.SignOut();
-            return Json(new { status = "logout" });
-        }
         /**
          * @api {post} /Auth/CheckOut CheckOut
-         * @apiVersion 0.1.0
+         * @apiVersion 0.1.4
          * @apiName CheckOut
          * @apiGroup Auth
          *
@@ -201,6 +87,7 @@ namespace HotelManagementSystem.Controllers
           *  { 
           *     "status":"invalidInput"
           *  }
+
           *  
           *  @apiError TransactionFailed Some data cannot be requested by server, try again later or contact administrator
           *  @apiErrorExample Error-Response:
@@ -218,9 +105,8 @@ namespace HotelManagementSystem.Controllers
                 {
                     try
                     {
-                        Room room = _context.Rooms.First(q => q.Number == checkOutModel.roomNumber);
-                        User guestAccount = _context.Users
-                            .First(p => p.Email == checkOutModel.emailOrLogin || p.UserName == checkOutModel.emailOrLogin);
+                        Room room = await _context.Rooms.FirstAsync(q => q.Number == checkOutModel.roomNumber);
+                        User guestAccount = await _userService.GetUserByUsername(checkOutModel.emailOrLogin);
 
                         if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))
                         {
@@ -238,7 +124,6 @@ namespace HotelManagementSystem.Controllers
                         }
 
                         guestAccount.Room = null;
-                        guestAccount.Room = null;
 
                         room.User = null;
                         room.Occupied = false;
@@ -246,20 +131,21 @@ namespace HotelManagementSystem.Controllers
                         _context.Rooms.Attach(room);
                         _context.Entry(room).State = EntityState.Modified;
 
-                        await _context.SaveChangesAsync();
-
                         _context.Users.Attach(guestAccount);
                         _context.Entry(guestAccount).State = EntityState.Modified;
 
                         await _context.SaveChangesAsync();
                         safeTransaction.Commit();
+
+
                         return Ok(new { status = "checkedOut" });
                     }
                     catch (Exception ex)
                     {
-                        safeTransaction.Rollback();
                         _logger.LogError(ex.Message, ex);
-                        return NotFound(new {status="transactionFailed" });
+                        safeTransaction.Rollback();
+                        return BadRequest(new { status = "transactionFailed" });
+
                     }
                 }
             }
@@ -268,7 +154,7 @@ namespace HotelManagementSystem.Controllers
 
         /**
       * @api {post} /Auth/CheckIn CheckIn
-      * @apiVersion 0.1.0
+      * @apiVersion 0.1.4
       * @apiName CheckIn
       * @apiGroup Auth
       *
@@ -308,13 +194,6 @@ namespace HotelManagementSystem.Controllers
        *     "status":"invalidInput"
        *  }
        *  
-       *  @apiError InvalidInput If Room or User cannot be found
-       *  @apiErrorExample Error-Response:
-       *  HTTP/1.1 400 BadRequest
-       *  { 
-       *     "status":"invalidInput"
-       *  }
-       *  
        *  @apiError TransactionFailed Some data on server cannot be requested, try again later or contact with Administrator
        *  @apiErrorExample Error-Response
        *  HTTP/1.1 404 NotFound
@@ -331,9 +210,9 @@ namespace HotelManagementSystem.Controllers
                 {
                     try
                     {
-                        Room room = _context.Rooms.First(q => q.Number == checkInModel.roomNumber);
-                        User guestAccount = _context.Users
-                            .First(p => p.Email == checkInModel.emailOrLogin || p.UserName == checkInModel.emailOrLogin);
+                        Room room = await _context.Rooms.FirstAsync(q => q.Number == checkInModel.roomNumber);
+                        User guestAccount = await _userService.GetUserByUsername(checkInModel.emailOrLogin);
+
 
                         if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
                         {
@@ -357,13 +236,13 @@ namespace HotelManagementSystem.Controllers
                         _context.Rooms.Attach(room);
                         _context.Entry(room).State = EntityState.Modified;
 
-                        await _context.SaveChangesAsync();
-
                         _context.Users.Attach(guestAccount);
                         _context.Entry(guestAccount).State = EntityState.Modified;
 
                         await _context.SaveChangesAsync();
                         safeTransaction.Commit();
+
+
                         return Ok(new { status = "checkedIn" });
                     }
                     catch (Exception ex)
@@ -379,7 +258,7 @@ namespace HotelManagementSystem.Controllers
 
         /**
       * @api {post} /Auth/Register Register
-      * @apiVersion 0.1.0
+      * @apiVersion 0.1.4
       * @apiName Register
       * @apiGroup Auth
       *
@@ -400,22 +279,29 @@ namespace HotelManagementSystem.Controllers
        *     }
        *@apiError InvalidInput One of entries is not valid
        * @apiErrorExample Error-Response:
-       * HTTP/1.1 200 OK
+       * HTTP/1.1 400 BadRequest
        * { 
        *     "status":"failure"
        * }
        * 
        * @apiError EmailNotUnique Email address have to be unique
        * @apiErrorExample Error-Response:
-       * HTTP/1.1 200 OK
+       * HTTP/1.1 400 BadRequest
        * { 
        *    "status":"userIdentifierNotUnique"
        *    }
        *@apiError RoleNameInvalid Role Name must be valid with existing roles
        * @apiErrorExample Error-Response:
-       * HTTP/1.1 200 OK
+       * HTTP/1.1 400 BadRequest
        * {
        *    "status":"roleNameInvalid"
+       *    }
+       * 
+       * @apiError TransactionFailed Internal Server Error
+       * @apiErrorExample Error-Response:
+       * HTTP/1.1 400 BadRequest
+       * {
+       *    "status":"transactionFailed"
        *    }
       */
         [HttpPost]
@@ -424,39 +310,53 @@ namespace HotelManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User
+                using (var safeTransaction = await _context.Database.BeginTransactionAsync())
                 {
-                    UserName = registerModel.Login,
-                    PhoneNumber = registerModel.PhoneNumber,
-                    LastName = registerModel.LastName,
-                    FirstName = registerModel.FirstName,
-                    Email = registerModel.Email,
-                    ReceivedTasks = new List<Models.Entities.Storage.Task>(),
-                    ListenedTasks = new List<Models.Entities.Storage.Task>(),
-                    Shifts = new List<Shift>(),
-                    IssuedTasks = new List<Models.Entities.Storage.Task>(),
-                    NormalizedEmail = registerModel.Email,
-                    WorkerType = (WorkerType)System.Enum.Parse(typeof(WorkerType), registerModel.WorkerType, true)
-                };
-                var result = await _userService.CreateUser(user, registerModel.Password);
-                if (result.Succeeded)
-                {
-                    var roleResult = await _userService.AddUserToRole(registerModel.RoleName, user.Id);
-                    if (roleResult.Succeeded)
+                    try
                     {
-                        return Json(new { status = "registered" });
+                        var user = new User
+                        {
+                            UserName = registerModel.Login,
+                            PhoneNumber = registerModel.PhoneNumber,
+                            LastName = registerModel.LastName,
+                            FirstName = registerModel.FirstName,
+                            Email = registerModel.Email,
+                            ReceivedTasks = new List<Models.Entities.Storage.Task>(),
+                            ListenedTasks = new List<Models.Entities.Storage.Task>(),
+                            Shifts = new List<Shift>(),
+                            IssuedTasks = new List<Models.Entities.Storage.Task>(),
+                            NormalizedEmail = registerModel.Email,
+                            WorkerType = (WorkerType)System.Enum.Parse(typeof(WorkerType), registerModel.WorkerType, true)
+                        };
+                        var result = await _userService.CreateUser(user, registerModel.Password);
+                        if (result.Succeeded)
+                        {
+                            var roleResult = await _userService.AddUserToRole(registerModel.RoleName, user.Id);
+                            if (roleResult.Succeeded)
+                            {
+                                safeTransaction.Commit();
+                                return Ok(new { status = "registered" });
+                            }
+                            else
+                            {
+                                safeTransaction.Rollback();
+                                return BadRequest(new { status = "roleNameInvalid" });
+                            }
+                        }
+                        else
+                        {
+                            return BadRequest(new { status = "userIdentifierNotUnique" });
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        return Json(new { status = "roleNameInvalid" });
+                        safeTransaction.Rollback();
+                        _logger.LogError(ex.Message, ex);
+                        return BadRequest(new { status = "transactionFailed" });
                     }
-                }
-                else
-                {
-                    return Json(new { status = "userIdentifierNotUnique" });
                 }
             }
-            return Json(new { status = "failure" });
+            return BadRequest(new { status = "failure" });
         }
 
         /**
@@ -545,7 +445,7 @@ namespace HotelManagementSystem.Controllers
                                 Email = user.Email,
                                 WorkerType = Enum.GetName(typeof(WorkerType), user.WorkerType),
                                 Roles = await _userService.GetUserRoles(user),
-                                Room = user.Room
+                                Room = await _userService.GetRoomAsync(user)
                             }
                         });
                     }
@@ -621,18 +521,18 @@ namespace HotelManagementSystem.Controllers
             }
         }
         /**
-   * @api {post} /Auth/GetUserRoles GetUserID
-   * @apiVersion 0.1.3
-   * @apiName GetUserID
-   * @apiGroup Auth
-   * 
-   *  @apiSuccess {GUID} id ID of currently logged user
-   *  @apiSuccessExample Success-Response
-   *   HTTP/1.1 200 OK
+    * @api {post} /Auth/GetUserRoles GetUserID
+    * @apiVersion 0.1.3
+    * @apiName GetUserID
+    * @apiGroup Auth
+    * 
+    *  @apiSuccess {GUID} id ID of currently logged user
+    *  @apiSuccessExample Success-Response
+    *   HTTP/1.1 200 OK
      *     {
      *       "id":"some29299guid"
      *     }
-   */
+*/
         [HttpGet]
         public async Task<IActionResult> GetUserID()
         {

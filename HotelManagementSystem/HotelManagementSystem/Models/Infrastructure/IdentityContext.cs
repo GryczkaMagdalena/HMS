@@ -11,6 +11,14 @@ namespace HotelManagementSystem.Models.Infrastructure
 {
     public class IdentityContext : IdentityDbContext<User>
     {
+        public IdentityContext()
+        {
+            if (Database.GetPendingMigrations().Any())
+            {
+                Database.EnsureDeleted();
+                Database.Migrate();
+            }
+        }
         public new DbSet<User> Users { get; set; }
         // public new DbSet<Role> Roles { get; set; }
         public DbSet<Shift> Shifts { get; set; }

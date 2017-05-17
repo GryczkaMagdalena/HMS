@@ -94,7 +94,7 @@ define({ "api": [
     "type": "post",
     "url": "/Auth/CheckIn",
     "title": "CheckIn",
-    "version": "0.1.0",
+    "version": "0.1.4",
     "name": "CheckIn",
     "group": "Auth",
     "parameter": {
@@ -163,28 +163,39 @@ define({ "api": [
             "optional": false,
             "field": "InvalidInput",
             "description": "<p>If Room or User cannot be found</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "TransactionFailed",
+            "description": "<p>Internal Server Error</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{ \n    \"status\":\"invalidRole\"\n}",
+          "content": "HTTP/1.1 400 BadRequest\n{ \n    \"status\":\"invalidRole\"\n}",
           "type": "json"
         },
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n   \"status\":\"userAlreadyCheckedIn\"\n}",
+          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"userAlreadyCheckedIn\"\n}",
           "type": "json"
         },
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n   \"status\":\"roomAlreadyOccupied\"\n}",
+          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"roomAlreadyOccupied\"\n}",
           "type": "json"
         },
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{ \n   \"status\":\"invalidInput\"\n}",
+          "content": "HTTP/1.1 400 BadRequest\n{ \n   \"status\":\"invalidInput\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"transactionFailed\"\n   }",
           "type": "json"
         }
       ]
@@ -196,7 +207,7 @@ define({ "api": [
     "type": "post",
     "url": "/Auth/CheckOut",
     "title": "CheckOut",
-    "version": "0.1.0",
+    "version": "0.1.4",
     "name": "CheckOut",
     "group": "Auth",
     "parameter": {
@@ -265,61 +276,39 @@ define({ "api": [
             "optional": false,
             "field": "InvalidInput",
             "description": "<p>If Room or User cannot be found</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{ \n    \"status\":\"invalidRole\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n   \"status\":\"userAlreadyCheckedOut\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n   \"status\":\"roomNotOccupied\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{ \n   \"status\":\"invalidInput\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
-    "groupTitle": "Auth"
-  },
-  {
-    "deprecated": {
-      "content": "do not use it."
-    },
-    "type": "get",
-    "url": "/Auth/Login",
-    "title": "Login - clear cookie",
-    "version": "0.1.1",
-    "name": "GetLogin",
-    "group": "Auth",
-    "success": {
-      "fields": {
-        "Success 200": [
+          },
           {
-            "group": "Success 200",
-            "type": "String",
+            "group": "Error 4xx",
             "optional": false,
-            "field": "status",
-            "description": "<p>Message about cleared cookie.</p>"
+            "field": "TransactionFailed",
+            "description": "<p>Internal Server Error</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"status\": \"clear\",\n}",
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{ \n    \"status\":\"invalidRole\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"userAlreadyCheckedOut\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"roomNotOccupied\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{ \n   \"status\":\"invalidInput\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"transactionFailed\"\n   }",
           "type": "json"
         }
       ]
@@ -414,164 +403,9 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/Auth/Logout",
-    "title": "Logout",
-    "version": "0.1.0",
-    "name": "Logout",
-    "group": "Auth",
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "status",
-            "description": "<p>User succesfully logged out</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n    {\n    \"status\":\"logout\"\n    }",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
-    "groupTitle": "Auth"
-  },
-  {
-    "deprecated": {
-      "content": "use now (#Auth:Token)."
-    },
-    "type": "post",
-    "url": "/Auth/Login",
-    "title": "Login",
-    "version": "0.1.1",
-    "name": "PostLogin",
-    "group": "Auth",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "Login",
-            "description": "<p>Email or login of user</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "Password",
-            "description": "<p>User's password</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "firstName",
-            "description": "<p>First name of user.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "lastName",
-            "description": "<p>Last name of user.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "email",
-            "description": "<p>Optional email address of user</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "phoneNumber",
-            "description": "<p>Optional phone number of user</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "workerType",
-            "description": "<p>One of available types (Cleaner,Technician,None).</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Array",
-            "optional": false,
-            "field": "role",
-            "description": "<p>All roles that particular user have</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "GUID",
-            "optional": false,
-            "field": "roomID",
-            "description": "<p>Optional parameter - only guests have this not-null</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n\"firstName\":\"Abraham\",\n\"lastName\":\"Lincoln\",\n\"email\":\"president@usa.pl\",\n\"phoneNumber\":\"123-908-123\",\n\"workerType\":\"Technician\",\n\"role\":[\"Worker\"]\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "MissingData",
-            "description": "<p>Login or Password are missing.</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "Unathorized",
-            "description": "<p>This User does not exist or password is invalid.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n \"status\":\"fail\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"status\":\"unauthorized\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "HotelManagementSystem/Controllers/AuthController.cs",
-    "groupTitle": "Auth"
-  },
-  {
-    "type": "post",
     "url": "/Auth/Register",
     "title": "Register",
-    "version": "0.1.0",
+    "version": "0.1.4",
     "name": "Register",
     "group": "Auth",
     "parameter": {
@@ -676,23 +510,34 @@ define({ "api": [
             "optional": false,
             "field": "RoleNameInvalid",
             "description": "<p>Role Name must be valid with existing roles</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "TransactionFailed",
+            "description": "<p>Internal Server Error</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{ \n    \"status\":\"failure\"\n}",
+          "content": "HTTP/1.1 400 BadRequest\n{ \n    \"status\":\"failure\"\n}",
           "type": "json"
         },
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{ \n   \"status\":\"userIdentifierNotUnique\"\n   }",
+          "content": "HTTP/1.1 400 BadRequest\n{ \n   \"status\":\"userIdentifierNotUnique\"\n   }",
           "type": "json"
         },
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n   \"status\":\"roleNameInvalid\"\n   }",
+          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"roleNameInvalid\"\n   }",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"transactionFailed\"\n   }",
           "type": "json"
         }
       ]
@@ -2189,6 +2034,40 @@ define({ "api": [
           "type": "json"
         }
       ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "Title",
+            "description": "<p>Title of case to be attached</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "Email",
+            "description": "<p>Email of issuer</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "Describe",
+            "description": "<p>Description of task (to be visualised for manager for ex.), can contain Description from Case and Number of Room</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "RoomNumber",
+            "description": "<p>Number of room from which task is issued</p>"
+          }
+        ]
+      }
     },
     "error": {
       "fields": {
