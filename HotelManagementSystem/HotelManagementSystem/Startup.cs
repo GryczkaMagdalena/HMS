@@ -40,7 +40,10 @@ namespace HotelManagementSystem
              options.UseSqlServer(Configuration.GetConnectionString("Storage")));
 
             services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<IdentityContext>();
+                .AddEntityFrameworkStores<IdentityContext, string>()
+                .AddUserStore<ApplicationUserStore>()
+                .AddUserManager<ApplicationUserManager>();
+
             // Add framework services.
             services.AddMvc().AddJsonOptions(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

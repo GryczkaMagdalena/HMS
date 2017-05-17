@@ -17,7 +17,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-
+using Microsoft.AspNetCore.Owin;
 namespace HotelManagementSystem.Controllers
 {
 
@@ -28,19 +28,21 @@ namespace HotelManagementSystem.Controllers
     public class AuthController : Controller
     {
         private UserService _userService;
-        private IdentityContext _context = new IdentityContext();
+        private IdentityContext _context;
         private readonly ILogger _logger;
 
         public AuthController(
-            UserManager<User> userManager,
             SignInManager<User> signInManager,
             IPasswordHasher<User> hash,
             RoleManager<IdentityRole> roleManager,
-            ILogger<AuthController> logger
+            ILogger<AuthController> logger,
+            ApplicationUserManager userManager,
+            IdentityContext context
             )
         {
-            _userService = new UserService(_context, userManager, signInManager, hash, roleManager);
-            this._logger = logger;
+            _userService = new UserService(userManager, signInManager, hash, roleManager);
+            _logger = logger;
+            _context = context;
         }
         /**
             * @apiDeprecated do not use it.  
@@ -299,50 +301,54 @@ namespace HotelManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> CheckIn([FromBody] string emailOrLogin, string roomNumber)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                using (var safeTransaction = await _context.Database.BeginTransactionAsync())
                 {
-                    Room room = _context.Rooms.First(q => q.Number == roomNumber);
-                    User guestAccount = _context.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
-
-                    if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
+                    try
                     {
-                        return Json(new { status = "invalidRole" });
-                    }
+                        Room room = _context.Rooms.First(q => q.Number == roomNumber);
+                        User guestAccount = _context.Users.First(p => p.Email == emailOrLogin || p.UserName == emailOrLogin);
 
-                    if (guestAccount.Room != null)
+                        if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
+                        {
+                            return BadRequest(new { status = "invalidRole" });
+                        }
+
+                        if (guestAccount.Room != null)
+                        {
+                            return BadRequest(new { status = "userAlreadyCheckedIn" });
+                        }
+
+                        if (room.Occupied)
+                        {
+                            return BadRequest(new { status = "roomAlreadyOccupied" });
+                        }
+
+                        guestAccount.Room = room;
+                        room.User = guestAccount;
+                        room.Occupied = true;
+
+                        _context.Rooms.Attach(room);
+                        _context.Entry(room).State = EntityState.Modified;
+
+                        await _context.SaveChangesAsync();
+
+                        _context.Users.Attach(guestAccount);
+                        _context.Entry(guestAccount).State = EntityState.Modified;
+
+                        await _context.SaveChangesAsync();
+
+                        return Ok(new { status = "checkedIn" });
+                    }
+                    catch (Exception ex)
                     {
-                        return Json(new { status = "userAlreadyCheckedIn" });
+                        _logger.LogError(ex.Message, ex);
+                        return NotFound(new { status = "internalError" });
                     }
-
-                    if (room.Occupied)
-                    {
-                        return Json(new { status = "roomAlreadyOccupied" });
-                    }
-
-                    guestAccount.Room = room;
-                    room.User = guestAccount;
-                    room.Occupied = true;
-
-                    _context.Rooms.Attach(room);
-                    _context.Entry(room).State = EntityState.Modified;
-
-                    await _context.SaveChangesAsync();
-
-                    _context.Users.Attach(guestAccount);
-                    _context.Entry(guestAccount).State = EntityState.Modified;
-
-                    await _context.SaveChangesAsync();
-
-                    return Json(new { status = "checkedIn" });
                 }
-                return Json(new { status = "invalidInput" });
             }
-            catch (Exception ex)
-            {
-                return Json(ex);
-            }
+            return BadRequest(new { status = "invalidInput" });
         }
 
         /**
@@ -399,10 +405,10 @@ namespace HotelManagementSystem.Controllers
                     LastName = registerModel.LastName,
                     FirstName = registerModel.FirstName,
                     Email = registerModel.Email,
-                    ReceivedTasks=new List<Models.Entities.Storage.Task>(),
-                    ListenedTasks=new List<Models.Entities.Storage.Task>(),
+                    ReceivedTasks = new List<Models.Entities.Storage.Task>(),
+                    ListenedTasks = new List<Models.Entities.Storage.Task>(),
                     Shifts = new List<Shift>(),
-                    IssuedTasks=new List<Models.Entities.Storage.Task>(),
+                    IssuedTasks = new List<Models.Entities.Storage.Task>(),
                     NormalizedEmail = registerModel.Email,
                     WorkerType = (WorkerType)System.Enum.Parse(typeof(WorkerType), registerModel.WorkerType, true)
                 };
@@ -589,24 +595,24 @@ namespace HotelManagementSystem.Controllers
             }
         }
         /**
-   * @api {post} /Auth/GetUserRoles GetUserID
-   * @apiVersion 0.1.3
-   * @apiName GetUserID
-   * @apiGroup Auth
-   * 
-   *  @apiSuccess {GUID} id ID of currently logged user
-   *  @apiSuccessExample Success-Response
-   *   HTTP/1.1 200 OK
+    * @api {post} /Auth/GetUserRoles GetUserID
+    * @apiVersion 0.1.3
+    * @apiName GetUserID
+    * @apiGroup Auth
+    * 
+    *  @apiSuccess {GUID} id ID of currently logged user
+    *  @apiSuccessExample Success-Response
+    *   HTTP/1.1 200 OK
      *     {
      *       "id":"some29299guid"
      *     }
-   */
+*/
         [HttpGet]
         public async Task<IActionResult> GetUserID()
         {
             var login = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userService.GetUserByUsername(login);
-            return Ok(new {id=user.Id });
+            return Ok(new { id = user.Id });
         }
         private Task<User> GetCurrentUserAsync(ClaimsPrincipal user) => _userService.GetUserAsync(user);
         /**

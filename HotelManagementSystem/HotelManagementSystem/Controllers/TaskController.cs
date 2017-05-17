@@ -27,11 +27,11 @@ namespace HotelManagementSystem.Controllers
         private readonly IdentityContext _context;
         private readonly UserService userService;
         private readonly TaskDisposer _taskDisposer;
-        public TaskController(IdentityContext context, UserManager<User> manager,
+        public TaskController(IdentityContext context, ApplicationUserManager manager,
             RoleManager<IdentityRole> roles, IPasswordHasher<User> hash, SignInManager<User> signInManager, ILogger<TaskController> logger)
         {
             _context = context;
-            userService = new UserService(context, manager, signInManager, hash, roles);
+            userService = new UserService( manager, signInManager, hash, roles);
             _taskDisposer = new TaskDisposer(userService, _context);
             _logger = logger;
         }
@@ -181,6 +181,11 @@ namespace HotelManagementSystem.Controllers
        * @apiSuccess {String} email User Email
        * @apiSuccess {String} numer Numer of room
        * @apiSuccess {String} title title of case
+       * 
+       * @apiParam {String} Title Title of case to be attached
+       * @apiParam {String} Email Email of issuer
+       * @apiParam {String} Describe Description of task (to be visualised for manager for ex.), can contain Description from Case and Number of Room
+       * @apiParam {String} RoomNumber Number of room from which task is issued
        * 
          *@apiSuccess {String} status task was created 
          *@apiSuccessExample Success-Response:

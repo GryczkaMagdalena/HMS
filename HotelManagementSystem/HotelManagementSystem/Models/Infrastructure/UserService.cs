@@ -7,12 +7,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
 
 namespace HotelManagementSystem.Models.Infrastructure
 {
-    public class UserService
+    public class UserService 
     {
-        private UserManager<User> _userManager;
+        private ApplicationUserManager _userManager;
         private SignInManager<User> _signInManager;
         private IPasswordHasher<User> _passwordHasher;
         private RoleManager<IdentityRole> _roleManager;
@@ -25,7 +29,7 @@ namespace HotelManagementSystem.Models.Infrastructure
         {
             return await _signInManager.PasswordSignInAsync(user.Login, password, true, false);
         }
-        public UserService(IdentityContext context,UserManager<User> userManager, SignInManager<User> signInManager, IPasswordHasher<User> hasher,RoleManager<IdentityRole> roleManager)
+        public UserService(ApplicationUserManager userManager, SignInManager<User> signInManager, IPasswordHasher<User> hasher,RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -89,7 +93,7 @@ namespace HotelManagementSystem.Models.Infrastructure
         {
             return await _userManager.GetClaimsAsync(user);
         }
-
+        
         public async Task<bool> IsInRoleAsync(User guestAccount, string role)
         {
             return await _userManager.IsInRoleAsync(guestAccount, role);
@@ -100,4 +104,37 @@ namespace HotelManagementSystem.Models.Infrastructure
             return _userManager.GetUserAsync(user);
         }
     }
+
+    public class ApplicationUserLogin : IdentityUserLogin<Guid>
+    {
+    }
+    public class ApplicationUserClaim : IdentityUserClaim<Guid>
+    {
+    }
+    public class ApplicationRoleClaim : IdentityRoleClaim<Guid>
+    {
+    }
+
+    public class ApplicationUserStore : UserStore<User, IdentityRole, IdentityContext, string>
+    {
+        public ApplicationUserStore(IdentityContext context, IdentityErrorDescriber describer =null)
+            :base(context, describer)
+        {
+
+        }
+    }
+
+    public class ApplicationUserManager : UserManager<User>
+    {
+        public ApplicationUserManager(IUserStore<User> store, IOptions<IdentityOptions> optionsAccessor, 
+            IPasswordHasher<User> passwordHasher, IEnumerable<IUserValidator<User>> userValidators, 
+            IEnumerable<IPasswordValidator<User>> passwordValidators, ILookupNormalizer keyNormalizer, 
+            IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<User>> logger) 
+            : base(store, optionsAccessor, passwordHasher, 
+                  userValidators, passwordValidators, 
+                  keyNormalizer, errors, services, logger)
+        {
+        }
+    }
+
 }
