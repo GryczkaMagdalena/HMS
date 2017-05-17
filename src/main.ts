@@ -30,7 +30,7 @@ export function configure(aurelia: Aurelia) {
   http.configure(config => {
     config
       .useStandardConfiguration()
-      .withBaseUrl('http://hotelmanagementsystem.azurewebsites.net')
+      .withBaseUrl('https://hotelmanagementsystem.azurewebsites.net')
       .withDefaults({
         credentials: 'same-origin',
         headers: {

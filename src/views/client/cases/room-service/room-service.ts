@@ -5,17 +5,18 @@ import {CasesService} from '../../../../services/cases-service';
 @inject(CasesService)
 export class RoomService {
   cases: {}[];
-  selectedId: number;
+  selectedCase: {};
 
   constructor(private casesService: CasesService) {
     casesService.getCleanerCases().then(res => {
-      this.cases = JSON.parse(JSON.stringify(res));
+      let tmpCases = JSON.parse(JSON.stringify(res));
+      this.cases = tmpCases;
+      console.log('this.cases', this.cases);
     });
   }
 
   selectCase(selectedCase) {
-    this.selectedId = selectedCase.CaseID;
-    console.log(selectedCase);
-    // return true;
+    this.selectedCase = selectedCase;
+    console.log('this.selectedCase ', this.selectedCase);
   }
 }

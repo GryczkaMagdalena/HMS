@@ -6,43 +6,23 @@ import {CasesService} from '../../../../services/cases-service';
 
 @inject(DialogService, CasesService)
 export class TechnicalIssue {
-  cases;
-  selectedId: number;
+  cases: {}[];
+  selectedCase: {};
 
   constructor(private dialogService: DialogService, private casesService: CasesService) {
     casesService.getTechnicianCases().then(res => {
       let tmpCases = JSON.parse(JSON.stringify(res));
-      this.cases = tmpCases.cases;
-      console.log('this.cases', this.cases);
+      this.cases = tmpCases;
     });
-
-    this.cases = [
-      {
-        id: 1,
-        text: 'Wymiana żarówki'
-      },
-      {
-        id: 2,
-        text: 'Naprawa łóżka'
-      },
-      {
-        id: 3,
-        text: 'Naprawa telewizora'
-      },
-      {
-        id: 4,
-        text: 'Inne'
-      }
-    ];
   }
 
   selectCase(selectedCase) {
-    this.selectedId = selectedCase.caseID;
-    console.log(selectedCase);
-    // return true;
+    this.selectedCase = selectedCase;
+    console.log('this.selectedCase ', this.selectedCase);
   }
 
   confirmDialog(){
     this.dialogService.open({ viewModel: ConfirmDialog, model: ''});
   }
+
 }

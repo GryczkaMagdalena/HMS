@@ -4,61 +4,47 @@ import {inject} from 'aurelia-framework';
 
 @inject(HttpFetch)
 export class CasesService {
-  cases: {}[];
+  technicanCases: {}[];
+  cleanerCases: {}[];
 
   constructor(private httpFetch: HttpFetch) {
-    this.cases = [
-      {
-        caseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273801",
-        title:"Wymiana żarówki",
-        description:'Wymiana żarówki',
-        workerType:"Technician"
-      },
-      {
-        caseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273802",
-        title:"Naprawa łóżka",
-        description:'Naprawa łóżka',
-        workerType:"Technician"
-      },
-      {
-        caseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273803",
-        title:"Naprawa telewizora",
-        description:'Naprawa telewizora',
-        workerType:"Technician"
-      },
-      {
-        caseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273804",
-        title:"Inne",
-        description:'Inne',
-        workerType:"Technician"
-      },
-      {
-        caseID:"4ba83f3c-4ea4-4da4-9c06-e986a8273805",
-        title:"ExampleCase",
-        description:"Clean something",
-        workerType:"Technician"
-      }
-    ]
+    this.technicanCases = [];
+    this.cleanerCases = [];
   }
 
   getTechnicianCases() {
     return new Promise((resolve, reject) => {
-      this.httpFetch.fetch('/api/Case')
-        .then(response => response.json())
-        .then(data => resolve(data))
-        .catch(err => reject(err));
+      if (this.technicanCases.length < 1) {
+        this.httpFetch.fetch('/api/Case/Filter/Technician')
+          .then(response => response.json())
+          .then(data => {
+            let tmp = JSON.parse(JSON.stringify(data));
+            this.technicanCases = tmp.cases;
+            resolve(this.technicanCases);
+          })
+          .catch(err => reject(err));
+      } else {
+        resolve(this.technicanCases);
+      }
+
     });
-    // return new Promise((resolve, reject) => {
-    //   resolve(this.cases);
-    // });
   }
 
   getCleanerCases() {
     return new Promise((resolve, reject) => {
-      this.httpFetch.fetch('/api/Case')
-        .then(response => response.json())
-        .then(data => resolve(data))
-        .catch(err => reject(err));
+      if (this.cleanerCases.length < 1) {
+        this.httpFetch.fetch('/api/Case/Filter/Cleaner')
+          .then(response => response.json())
+          .then(data => {
+            let tmp = JSON.parse(JSON.stringify(data));
+            this.cleanerCases = tmp.cases;
+            resolve(this.cleanerCases);
+          })
+          .catch(err => reject(err));
+      } else {
+        resolve(this.cleanerCases);
+      }
+
     });
   }
 }
