@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using HotelManagementSystem.Models.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using HotelManagementSystem.Models.Infrastructure.IdentityBase;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -28,7 +29,8 @@ namespace HotelManagementSystem.Controllers
         private readonly UserService userService;
         private readonly TaskDisposer _taskDisposer;
         public TaskController(IdentityContext context, ApplicationUserManager manager,
-            RoleManager<IdentityRole> roles, IPasswordHasher<User> hash, SignInManager<User> signInManager, ILogger<TaskController> logger)
+            RoleManager<IdentityRole> roles, IPasswordHasher<User> hash, 
+            SignInManager<User> signInManager, ILogger<TaskController> logger)
         {
             _context = context;
             userService = new UserService( manager, signInManager, hash, roles);

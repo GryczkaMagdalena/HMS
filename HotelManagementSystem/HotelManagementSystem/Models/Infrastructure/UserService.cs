@@ -7,10 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Http;
+using HotelManagementSystem.Models.Entities.Storage;
+using Microsoft.EntityFrameworkCore;
+using HotelManagementSystem.Models.Infrastructure.IdentityBase;
 
 namespace HotelManagementSystem.Models.Infrastructure
 {
@@ -75,6 +74,8 @@ namespace HotelManagementSystem.Models.Infrastructure
         }
         public async Task<User> GetUserByUsername(string username)
         {
+            if (username.Contains("@"))
+                return await _userManager.FindByEmailAsync(username);
             return await _userManager.FindByNameAsync(username);
         }
 
@@ -84,9 +85,19 @@ namespace HotelManagementSystem.Models.Infrastructure
             return await _userManager.CreateAsync(user, password);
         }
 
+        public async Task<Room> GetRoomAsync(User user)
+        {
+           var entity = await _userManager.Users.Include(q => q.Room).FirstAsync(u=>u.Id==user.Id);
+            return entity.Room;
+        }
+
         public PasswordVerificationResult VerifyHashedPassword(User user,string password)
         {
             return _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+        }
+        public async Task<IdentityResult> UpdateUserAsync(User user)
+        {
+            return await _userManager.UpdateAsync(user);
         }
 
         public async Task<IList<Claim>> GetClaims(User user)
@@ -104,37 +115,4 @@ namespace HotelManagementSystem.Models.Infrastructure
             return _userManager.GetUserAsync(user);
         }
     }
-
-    public class ApplicationUserLogin : IdentityUserLogin<Guid>
-    {
-    }
-    public class ApplicationUserClaim : IdentityUserClaim<Guid>
-    {
-    }
-    public class ApplicationRoleClaim : IdentityRoleClaim<Guid>
-    {
-    }
-
-    public class ApplicationUserStore : UserStore<User, IdentityRole, IdentityContext, string>
-    {
-        public ApplicationUserStore(IdentityContext context, IdentityErrorDescriber describer =null)
-            :base(context, describer)
-        {
-
-        }
-    }
-
-    public class ApplicationUserManager : UserManager<User>
-    {
-        public ApplicationUserManager(IUserStore<User> store, IOptions<IdentityOptions> optionsAccessor, 
-            IPasswordHasher<User> passwordHasher, IEnumerable<IUserValidator<User>> userValidators, 
-            IEnumerable<IPasswordValidator<User>> passwordValidators, ILookupNormalizer keyNormalizer, 
-            IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<User>> logger) 
-            : base(store, optionsAccessor, passwordHasher, 
-                  userValidators, passwordValidators, 
-                  keyNormalizer, errors, services, logger)
-        {
-        }
-    }
-
 }

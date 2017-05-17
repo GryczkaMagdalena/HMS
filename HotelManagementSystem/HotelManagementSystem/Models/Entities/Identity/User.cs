@@ -13,6 +13,8 @@ namespace HotelManagementSystem.Models.Entities.Identity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public Guid? RoomID { get; set; }
+        [ForeignKey("RoomID")]
         public virtual Room Room { get; set; }
         [DefaultValue(2)]
         public WorkerType? WorkerType { get; set; }
