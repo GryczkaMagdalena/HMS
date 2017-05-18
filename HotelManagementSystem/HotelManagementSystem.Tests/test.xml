@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<assemblies timestamp="05/18/2017 14:36:19">
+  <assembly name="HotelManagementSystem.Tests.dll" environment="64-bit .NET Standard [collection-per-class, parallel (4 threads)]" test-framework="xUnit.net 2.3.0.3683" run-date="2017-05-18" run-time="14:36:15" total="3" passed="3" failed="0" skipped="0" time="3.346" errors="0">
+    <errors />
+    <collection total="3" passed="3" failed="0" skipped="0" name="Test collection for HMS.Tests.CaseControllerTest" time="3.054">
+      <test name="HMS.Tests.CaseControllerTest.AnyCaseExists" type="HMS.Tests.CaseControllerTest" method="AnyCaseExists" time="2.6018458" result="Pass" />
+      <test name="HMS.Tests.CaseControllerTest.MoreThan4Cases" type="HMS.Tests.CaseControllerTest" method="MoreThan4Cases" time="0.1966693" result="Pass" />
+      <test name="HMS.Tests.CaseControllerTest.GetTaskByID" type="HMS.Tests.CaseControllerTest" method="GetTaskByID" time="0.2556585" result="Pass" />
+    </collection>
+  </assembly>
+</assemblies>
