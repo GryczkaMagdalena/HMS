@@ -12,4 +12,8 @@
 /HotelManagementSystem/doc
 /HotelManagementSystem/apidoc
 /HotelManagementSystem/.vs/config/applicationhost.config
-/HotelManagementSystem/HotelManagementSystem.Tests
+/HotelManagementSystem/HMS.Tests/bin/Release/netcoreapp1.1/win7-x64
+/HotelManagementSystem/HMS.Tests/obj/Release/netcoreapp1.1/win7-x64
+/HotelManagementSystem/HotelManagementSystem.Tests/bin
+/HotelManagementSystem/HotelManagementSystem.Tests/obj
+/HotelManagementSystem/HotelManagementSystem.Tests/test.xml

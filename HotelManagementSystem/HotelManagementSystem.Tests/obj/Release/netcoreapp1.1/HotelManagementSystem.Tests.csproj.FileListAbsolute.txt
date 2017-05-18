@@ -1,0 +1,14 @@
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\bin\Release\netcoreapp1.1\xunit.runner.visualstudio.dotnetcore.testadapter.dll
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\bin\Release\netcoreapp1.1\xunit.runner.utility.netstandard15.dll
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\bin\Release\netcoreapp1.1\xunit.runner.reporters.netstandard15.dll
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\bin\Release\netcoreapp1.1\HotelManagementSystem.Tests.deps.json
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\bin\Release\netcoreapp1.1\HotelManagementSystem.Tests.runtimeconfig.json
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\bin\Release\netcoreapp1.1\HotelManagementSystem.Tests.runtimeconfig.dev.json
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\bin\Release\netcoreapp1.1\HotelManagementSystem.Tests.dll
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\bin\Release\netcoreapp1.1\HotelManagementSystem.dll
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\bin\Release\netcoreapp1.1\HotelManagementSystem.pdb
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\obj\Release\netcoreapp1.1\HotelManagementSystem.Tests.csprojResolveAssemblyReference.cache
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\obj\Release\netcoreapp1.1\HotelManagementSystem.Tests.AssemblyInfo.cs
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\bin\Release\netcoreapp1.1\HotelManagementSystem.Tests.pdb
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\obj\Release\netcoreapp1.1\HotelManagementSystem.Tests.dll
+C:\Users\malody\Source\Repos\HMSRepo\HotelManagementSystem\HotelManagementSystem.Tests\obj\Release\netcoreapp1.1\HotelManagementSystem.Tests.pdb
