@@ -14,7 +14,6 @@ namespace HMS.Tests
     public class CaseControllerTest
     {
         private IdentityContext _context;
-        private UserService _userService;
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.

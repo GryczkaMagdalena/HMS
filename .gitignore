@@ -17,3 +17,5 @@
 /HotelManagementSystem/HotelManagementSystem.Tests/bin
 /HotelManagementSystem/HotelManagementSystem.Tests/obj
 /HotelManagementSystem/HotelManagementSystem.Tests/test.xml
+/HotelManagementSystem/HMS.Tests/obj
+/HotelManagementSystem/HMS.Tests/bin/Debug/netcoreapp1.1
