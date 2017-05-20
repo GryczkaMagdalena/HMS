@@ -451,8 +451,9 @@ namespace HotelManagementSystem.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message, ex);
                 return NotFound(new { status = "failed" });
             }
             return BadRequest(new { status = "failedToLogin" });

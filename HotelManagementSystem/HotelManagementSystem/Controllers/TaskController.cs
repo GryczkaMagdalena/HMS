@@ -15,6 +15,7 @@ using HotelManagementSystem.Models.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using HotelManagementSystem.Models.Infrastructure.IdentityBase;
+using HotelManagementSystem.Models.Helpers;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -29,11 +30,11 @@ namespace HotelManagementSystem.Controllers
         private readonly UserService userService;
         private readonly TaskDisposer _taskDisposer;
         public TaskController(IdentityContext context, ApplicationUserManager manager,
-            RoleManager<IdentityRole> roles, IPasswordHasher<User> hash, 
+            RoleManager<IdentityRole> roles, IPasswordHasher<User> hash,
             SignInManager<User> signInManager, ILogger<TaskController> logger)
         {
             _context = context;
-            userService = new UserService( manager, signInManager, hash, roles);
+            userService = new UserService(manager, signInManager, hash, roles);
             _taskDisposer = new TaskDisposer(userService, _context);
             _logger = logger;
         }
@@ -60,18 +61,16 @@ namespace HotelManagementSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            List<Models.Entities.Storage.Task> tasks = await _context.Tasks.Include(q => q.Case)
-                .Include(p => p.Issuer).Include(q => q.Listener).Include(q => q.Receiver).ToListAsync();
-
+            List<Models.Entities.Storage.Task> tasks = await _context.LazyLoadTasks();
 
             return Ok(tasks.Select(q => new
             {
                 TaskID = q.TaskID,
                 Describe = q.Describe,
                 Room = q.Room,
-                Issuer = q.Issuer,
-                Receiver = q.Receiver,
-                Listener = q.Listener,
+                Issuer = q.Issuer.ToJson(),
+                Receiver = q.Receiver.ToJson(),
+                Listener = q.Listener.ToJson(),
                 Case = q.Case,
             }));
         }
@@ -111,14 +110,23 @@ namespace HotelManagementSystem.Controllers
             Models.Entities.Storage.Task rule = null;
             try
             {
-                rule = await _context.Tasks.FindAsync(id);
+                rule = await _context.LazyLoadTask(id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return NotFound(new { status = "notFound" });
             }
-            return Ok(rule);
+            return Ok(new
+            {
+                TaskID =rule.TaskID,
+                Describe = rule.Describe,
+                Room = rule.Room,
+                Issuer = rule.Issuer.ToJson(),
+                Receiver = rule.Receiver.ToJson(),
+                Listener = rule.Listener.ToJson(),
+                Case = rule.Case
+            });
         }
         /**
         * @api {put} /task?TaskID Update
@@ -151,27 +159,68 @@ namespace HotelManagementSystem.Controllers
 
         // PUT: api/Task/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] Models.Entities.Storage.Task value)
+        [Authorize(Roles = "Administrator,Manager")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] TaskViewModel value)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                using (var safeTransaction = await _context.Database.BeginTransactionAsync())
                 {
-                    value.TaskID = id;
-                    _context.Tasks.Attach(value);
-                    _context.Entry(value).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
-                    return Ok(new { status = "updated" });
-                }
-                else
-                {
-                    return BadRequest(new { status = "failure" });
+                    try
+                    {
+                        var user = await _context.LazyLoadUserByEmail(value.Email);
+                        var room = await _context.Rooms.Include(q => q.User)
+                            .FirstAsync(q => q.Number == value.RoomNumber);
+                        var case_in_task = await _context.Cases.FirstAsync(q => q.Title == value.Title);
+
+                        if (user == null) return NotFound(new { status = "userNotFound" });
+                        if (room == null) return NotFound(new { status = "roomNotFound" });
+
+                        var receiver = await _taskDisposer.FindWorker(case_in_task);
+                        var listener = await _taskDisposer.AttachListeningManager(case_in_task, receiver);
+
+                        if (receiver == null) return BadRequest(new { status = "All workers busy. Try again later" });
+
+                        var taskToUpdate = await _context.LazyLoadTask(id);
+
+                        taskToUpdate.Listener.ListenedTasks.Remove(taskToUpdate);
+                        taskToUpdate.Receiver.ReceivedTasks.Remove(taskToUpdate);
+                        taskToUpdate.Issuer.IssuedTasks.Remove(taskToUpdate);
+
+                        taskToUpdate = new Models.Entities.Storage.Task()
+                        {
+                            TaskID = id,
+                            Describe = value.Describe,
+                            Room = room,
+                            Issuer = user,
+                            Receiver = receiver,
+                            Listener = listener,
+                            Case = case_in_task,
+                        };
+
+                        receiver.ReceivedTasks.Add(taskToUpdate);
+                        user.IssuedTasks.Add(taskToUpdate);
+
+                        _context.Entry(taskToUpdate).State = EntityState.Modified;
+                        _context.Entry(user).State = EntityState.Modified;
+                        _context.Entry(receiver).State = EntityState.Modified;
+
+
+                        await _context.SaveChangesAsync();
+                        safeTransaction.Commit();
+                        return Ok(new { status = "created" });
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.Message, ex);
+                        safeTransaction.Rollback();
+                        return BadRequest(new { status = "failure" });
+                    }
                 }
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex.Message, ex);
-                return NotFound(new { status = "notFound" });
+                return BadRequest(new { status = "failure" });
             }
         }
         /**
@@ -233,8 +282,8 @@ namespace HotelManagementSystem.Controllers
                 {
                     try
                     {
-                        var user = await _context.Users.FirstAsync(q => q.Email == value.Email);
-                        var room = await _context.Rooms.FirstAsync(q => q.Number == value.RoomNumber);
+                        var user = await _context.LazyLoadUserByEmail(value.Email);
+                        var room = await _context.Rooms.Include(q => q.User).FirstAsync(q => q.Number == value.RoomNumber);
                         var case_in_task = await _context.Cases.FirstAsync(q => q.Title == value.Title);
 
                         if (user == null) return NotFound(new { status = "userNotFound" });
@@ -312,12 +361,13 @@ namespace HotelManagementSystem.Controllers
           * }
    */
         // DELETE: api/Task/{id}
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             try
             {
-                Models.Entities.Storage.Task toDelete = await _context.Tasks.FindAsync(id);
+                Models.Entities.Storage.Task toDelete = await _context.LazyLoadTask(id);
                 if (toDelete != null)
                 {
                     _context.Tasks.Attach(toDelete);
@@ -340,6 +390,7 @@ namespace HotelManagementSystem.Controllers
         {
             return _context.Tasks.Any(e => e.TaskID == id);
         }
+
+
     }
 }
- 

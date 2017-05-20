@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using HotelManagementSystem.Models.Helpers;
 namespace HotelManagementSystem.Models.Infrastructure
 {
     public class TaskDisposer
@@ -21,7 +21,7 @@ namespace HotelManagementSystem.Models.Infrastructure
         private async Task<List<User>> GetWorkersByType(WorkerType type)
         {
             List<User> resultList = new List<User>();
-            var users = await identityContext.Users.Include(q => q.Shifts).ToListAsync();
+            var users = await identityContext.LazyLoadUsers();
             foreach (var user in users)
             {
                 if (await userService.IsInRoleAsync(user, "Worker") && user.WorkerType == type)

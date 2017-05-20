@@ -317,6 +317,7 @@ namespace HotelManagementSystem.Controllers
                 Case toDelete = await _context.Cases.FindAsync(CaseID);
                 if (toDelete != null)
                 {
+                    _context.ChangeTracker.DetectChanges();
                     _context.Cases.Attach(toDelete);
                     _context.Entry(toDelete).State = EntityState.Deleted;
                     await _context.SaveChangesAsync();

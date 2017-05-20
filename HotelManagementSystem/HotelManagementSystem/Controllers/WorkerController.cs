@@ -9,6 +9,7 @@ using HotelManagementSystem.Models.Infrastructure;
 using Microsoft.AspNetCore.Cors;
 using HotelManagementSystem.Models.Entities.Identity;
 using Microsoft.Extensions.Logging;
+using HotelManagementSystem.Models.Helpers;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -35,7 +36,7 @@ namespace HotelManagementSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            List<User> users = await _context.Users.ToListAsync();
+            List<User> users = await _context.LazyLoadUsers();
 
             return Ok(users.Select(q => new
             {
@@ -64,7 +65,7 @@ namespace HotelManagementSystem.Controllers
 
             try
             {
-                user = await _context.Users.FindAsync(id);
+                user = await _context.LazyLoadUser(id);
                 if (user == null) throw new Exception();
             }
             catch (Exception ex)

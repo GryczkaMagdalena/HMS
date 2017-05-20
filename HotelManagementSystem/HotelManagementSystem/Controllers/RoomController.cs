@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using HotelManagementSystem.Models.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using HotelManagementSystem.Models.Infrastructure.IdentityBase;
+using HotelManagementSystem.Models.Helpers;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -25,13 +26,10 @@ namespace HotelManagementSystem.Controllers
     {
         private IdentityContext _context;
         private ILogger _logger;
-        private UserService _userService;
-        public RoomController(ILogger<RoomController> logger, IdentityContext context,
-            ApplicationUserManager userManager,IPasswordHasher<User> hasher,RoleManager<IdentityRole> roleManager,SignInManager<User> signInManager)
+        public RoomController(ILogger<RoomController> logger, IdentityContext context)
         {
             _context = context;
             _logger = logger;
-            _userService = new UserService( userManager, signInManager, hasher, roleManager);
         }
 
         /**
@@ -47,13 +45,9 @@ namespace HotelManagementSystem.Controllers
      * [
      *    { 
      *    "roomID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-     *    "user":{
-     *      "userID":"4ba83f3c-4ea4-4da4-9c06-e986a827230",
-     *      "lastName":"Franz",
-     *      "firstName":"Artur",
-     *    },
+     *    "userID":"4ba83f3c-4ea4-4da4-9c06-e986a827230",
      *    "number":9,
-     *    "occupied":false
+     *    "occupied":true
      *    }
      * ]
      * 
@@ -62,35 +56,15 @@ namespace HotelManagementSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            List<Room> rooms = await _context.Rooms.ToListAsync();
-            if (rooms.Any(q => q.User == null))
+            List<Room> rooms = await _context.LazyLoadRooms();
+            var roomsObjectified = rooms.Select(q => new
             {
-                var roomsObjectified = rooms.Select(q => new
-                {
-                    RoomID = q.RoomID,
-                    User = q,
-                    Number = q.Number,
-                    Occupied = q.Occupied
-                });
-                return Ok(roomsObjectified);
-            }
-            else
-            {
-                var roomsObjectified = rooms.Select(q => new
-                {
-                    RoomID = q.RoomID,
-                    User = new
-                    {
-                        UserID = q.UserID,
-                        FirstName = q.User.FirstName,
-                        LastName = q.User.LastName
-                    },
-                    Number = q.Number,
-                    Occupied = q.Occupied
-                });
-                return Ok(roomsObjectified);
-            }
-            
+                RoomID = q.RoomID,
+                UserID = q.UserID,
+                Number = q.Number,
+                Occupied = q.Occupied
+            });
+            return Ok(roomsObjectified);
         }
         /**
    * @api {get} /Room?RoomID Read
@@ -103,8 +77,6 @@ namespace HotelManagementSystem.Controllers
    * 
    * @apiSuccess {String} roomID Room identifier
    * @apiSuccess {GUID} userID If room is occupied here will be id of client
-   * @apiSuccess {String} firstName If room is occupied - first name of client
-   * @apiSuccess {String} lastName If room is occupied - last name of client
    * @apiSuccess {Boolean} Occupied Is room free
    * @apiSuccess {Number} Number Number of room
    * 
@@ -112,11 +84,7 @@ namespace HotelManagementSystem.Controllers
    * HTTP/1.1 200 OK
     *   { 
      *    "roomID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-     *    "user":{
-     *      "userID":"4ba83f3c-4ea4-4da4-9c06-e986a827230",
-     *      "lastName":"Franz",
-     *      "firstName":"Artur",
-     *    },
+     *    "userID":"4ba83f3c-4ea4-4da4-9c06-e986a827230",
      *    "number":9,
      *    "occupied":false
      *    }
@@ -134,37 +102,20 @@ namespace HotelManagementSystem.Controllers
             Room room = null;
             try
             {
-                room = await _context.Rooms.FindAsync(RoomID);
-            }catch(Exception ex)
+                room = await _context.LazyLoadRoom(RoomID);
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return NotFound(new { status = "notFound" });
             }
-            if (room.User == null)
+            return Ok(new
             {
-                return Ok(new
-                {
-                    RoomID = room.RoomID,
-                    User = room.User,
-                    Number = room.Number,
-                    Occupied = room.Occupied
-                });
-            }
-            else
-            {
-                return Ok(new
-                {
-                    RoomID = room.RoomID,
-                    User = new
-                    {
-                        UserID = room.UserID,
-                        FirstName = room.User.FirstName,
-                        LastName = room.User.LastName
-                    },
-                    Number = room.Number,
-                    Occupied = room.Occupied
-                });
-            }
+                RoomID = room.RoomID,
+                UserID = room.UserID,
+                Number = room.Number,
+                Occupied = room.Occupied
+            });
         }
 
         /**
@@ -197,7 +148,7 @@ namespace HotelManagementSystem.Controllers
    */
         // POST api/Room
         [HttpPost]
-        public async Task<IActionResult> Create ([FromBody] Room room)
+        public async Task<IActionResult> Create([FromBody] Room room)
         {
             try
             {
@@ -212,7 +163,8 @@ namespace HotelManagementSystem.Controllers
                 {
                     return BadRequest(new { status = "failure" });
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return NotFound(new { status = "notFound" });
@@ -255,7 +207,7 @@ namespace HotelManagementSystem.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var origin = await _context.Rooms.FindAsync(RoomID);
+                    var origin = await _context.LazyLoadRoom(RoomID);
                     if (origin == null) return Json(new { status = "notFound" });
                     origin = room;
                     origin.RoomID = RoomID;
@@ -268,7 +220,8 @@ namespace HotelManagementSystem.Controllers
                 {
                     return BadRequest(new { status = "failure" });
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return NotFound(new { status = "notFound" });
@@ -304,15 +257,31 @@ namespace HotelManagementSystem.Controllers
          * {
          *   "status":"failure"
          * }
+         * 
+         * @apiError RoomOccupied Room is occupied, cannot be deleted
+         *@apiErrorExample Error-Response:
+         * HTTP/1.1 400 BadRequest
+         * {
+         *   "status":"Room occupied, check user out before deletion",
+             "userID":"guidOfCheckedUser"
+         * }
     */
         [HttpDelete("{RoomID}")]
-        public async Task<IActionResult> Delete (Guid RoomID)
+        public async Task<IActionResult> Delete(Guid RoomID)
         {
             try
             {
-                Room toDelete = await _context.Rooms.FindAsync(RoomID);
+                Room toDelete = await _context.LazyLoadRoom(RoomID);
                 if (toDelete != null)
                 {
+                    if (toDelete.Occupied)
+                    {
+                        return BadRequest(new
+                        {
+                            status = "Room occupied, check user out before deletion",
+                            UserID = toDelete.UserID
+                        });
+                    }
                     _context.Rooms.Attach(toDelete);
                     _context.Entry(toDelete).State = EntityState.Deleted;
                     await _context.SaveChangesAsync();
@@ -322,7 +291,8 @@ namespace HotelManagementSystem.Controllers
                 {
                     return NotFound(new { status = "notFound" });
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return BadRequest(new { status = "failure" });
@@ -353,21 +323,87 @@ namespace HotelManagementSystem.Controllers
         *   "status":"userNotCheckedIn"
         * }
         * 
-        */ 
-        [Authorize(Roles ="Customer")]
+        */
+        [Authorize(Roles = "Customer")]
         [HttpGet("RoomNumber")]
         public async Task<IActionResult> RoomNumber()
         {
-            var login = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userService.GetUserByUsername(login);
-                if (user.Room != null)
+            var email = this.User.FindFirstValue(ClaimTypes.Email);
+            var user = await _context.LazyLoadUserByEmail(email);
+            if (user.Room != null)
+            {
+                return Ok(new { roomNumber = user.Room.Number });
+            }
+            else
+            {
+                return NotFound(new { status = "userNotCheckedIn" });
+            }
+        }
+        /**
+       * @api {get} /Room/GetClient/{RoomID} GetClient
+       * @apiVersion 0.1.0
+       * @apiName GetClient
+       * @apiGroup Room
+       * 
+       *@apiParam {GUID} RoomID ID of room
+       * 
+       * @apiSuccess {GUID} userID Id of client
+       * @apiSuccess {String} firstName First Name of client
+       *@apiSuccess {String} lastName Last Name of client
+       * @apiSucces {String} email Email of client
+       *@apiSuccessExample Success-Response:
+       * HTTP/1.1 200 OK
+       * {
+       *   userID = "someGuid",
+       *   firstName = "Guy",
+       *   lastName = "Fawkes",
+       *   email = "guest@hms.com"
+       * }
+       * 
+       * @apiError BadRole Only user with role Administrator can access this method
+       * @apiErrorExample Error-Response:
+       * HTTP/1.1 403 Unauthorized
+       * 
+       * @apiError RoomNotOccpied Room is not occupied by any customer
+       * @apiErrorExample Error-Response:
+       * HTTP/1.1 400 BadRequest
+       * {
+       *   "status":"roomNotOccupied"
+       * }
+       *  @apiError RoomNotFound Given ID not found in repository
+       * @apiErrorExample Error-Response:
+       * HTTP/1.1 404 NotFound
+       * {
+       *   "status":"notFound"
+       * }
+       */
+        [Authorize(Roles = "Administrator")]
+        [HttpGet("GetClient/{RoomID}")]
+        public async Task<IActionResult> GetClient([FromRoute] Guid RoomID)
+        {
+            try
+            {
+                Room room = await _context.LazyLoadRoom(RoomID);
+                if (!room.Occupied)
                 {
-                    return Ok(new { roomNumber = user.Room.Number });
+                    return BadRequest(new { status = "roomNotOccupied" });
                 }
                 else
                 {
-                    return NotFound(new { status = "userNotCheckedIn" });
+                    return Ok(new
+                    {
+                        UserID = room.UserID,
+                        FirstName = room.User.FirstName,
+                        LastName = room.User.LastName,
+                        Email = room.User.Email
+                    });
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new { status = "notFound" });
+            }
         }
     }
 }

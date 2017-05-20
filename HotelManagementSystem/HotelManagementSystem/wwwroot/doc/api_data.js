@@ -168,7 +168,7 @@ define({ "api": [
             "group": "Error 4xx",
             "optional": false,
             "field": "TransactionFailed",
-            "description": "<p>Internal Server Error</p>"
+            "description": "<p>Some data on server cannot be requested, try again later or contact with Administrator</p>"
           }
         ]
       },
@@ -194,8 +194,8 @@ define({ "api": [
           "type": "json"
         },
         {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"transactionFailed\"\n   }",
+          "title": "Error-Response",
+          "content": "HTTP/1.1 404 NotFound\n{\n  \"status\":\"transactionFailed\"\n}",
           "type": "json"
         }
       ]
@@ -281,7 +281,7 @@ define({ "api": [
             "group": "Error 4xx",
             "optional": false,
             "field": "TransactionFailed",
-            "description": "<p>Internal Server Error</p>"
+            "description": "<p>Some data cannot be requested by server, try again later or contact administrator</p>"
           }
         ]
       },
@@ -308,7 +308,7 @@ define({ "api": [
         },
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"transactionFailed\"\n   }",
+          "content": "HTTP/1.1 404 NotFound\n{\n   \"status\":\"transactionFailed\"\n}",
           "type": "json"
         }
       ]
@@ -1761,6 +1761,12 @@ define({ "api": [
             "optional": false,
             "field": "InvalidData",
             "description": "<p>Reference or object was not correct</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "RoomOccupied",
+            "description": "<p>Room is occupied, cannot be deleted</p>"
           }
         ]
       },
@@ -1773,6 +1779,169 @@ define({ "api": [
         {
           "title": "Error-Response:",
           "content": "HTTP/1.1 400 BadRequest\n{\n  \"status\":\"failure\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n  \"status\":\"Room occupied, check user out before deletion\",\n             \"userID\":\"guidOfCheckedUser\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/RoomController.cs",
+    "groupTitle": "Room"
+  },
+  {
+    "type": "get",
+    "url": "/Room/GetClient/{RoomID}",
+    "title": "GetClient",
+    "version": "0.1.0",
+    "name": "GetClient",
+    "group": "Room",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "GUID",
+            "optional": false,
+            "field": "RoomID",
+            "description": "<p>ID of room</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "GUID",
+            "optional": false,
+            "field": "userID",
+            "description": "<p>Id of client</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "firstName",
+            "description": "<p>First Name of client</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "lastName",
+            "description": "<p>Last Name of client</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  userID = \"someGuid\",\n  firstName = \"Guy\",\n  lastName = \"Fawkes\",\n  email = \"guest@hms.com\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "BadRole",
+            "description": "<p>Only user with role Administrator can access this method</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "RoomNotOccpied",
+            "description": "<p>Room is not occupied by any customer</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "RoomNotFound",
+            "description": "<p>Given ID not found in repository</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 403 Unauthorized",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n  \"status\":\"roomNotOccupied\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 NotFound\n{\n  \"status\":\"notFound\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/RoomController.cs",
+    "groupTitle": "Room"
+  },
+  {
+    "type": "get",
+    "url": "/Room/RoomNumber",
+    "title": "GetRoomNumber",
+    "version": "0.1.0",
+    "name": "GetRoomNumber",
+    "group": "Room",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "roomNumber",
+            "description": "<p>Number of room</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"roomNumber\":\"1\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "BadRole",
+            "description": "<p>Only user with role Customer can access this method</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "UserNotCheckedIn",
+            "description": "<p>Current user is not checked in any room</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 403 Unauthorized",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n  \"status\":\"userNotCheckedIn\"\n}",
           "type": "json"
         }
       ]
@@ -1802,7 +1971,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n   { \n   \"roomID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n   \"user\":{\n     \"userID\":\"4ba83f3c-4ea4-4da4-9c06-e986a827230\",\n     \"lastName\":\"Franz\",\n     \"firstName\":\"Artur\",\n   },\n   \"number\":9,\n   \"occupied\":false\n   }\n]",
+          "content": "HTTP/1.1 200 OK\n[\n   { \n   \"roomID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n   \"userID\":\"4ba83f3c-4ea4-4da4-9c06-e986a827230\",\n   \"number\":9,\n   \"occupied\":true\n   }\n]",
           "type": "json"
         }
       ]
@@ -1849,20 +2018,6 @@ define({ "api": [
           },
           {
             "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "firstName",
-            "description": "<p>If room is occupied - first name of client</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "lastName",
-            "description": "<p>If room is occupied - last name of client</p>"
-          },
-          {
-            "group": "Success 200",
             "type": "Boolean",
             "optional": false,
             "field": "Occupied",
@@ -1880,7 +2035,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n  { \n   \"roomID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n   \"user\":{\n     \"userID\":\"4ba83f3c-4ea4-4da4-9c06-e986a827230\",\n     \"lastName\":\"Franz\",\n     \"firstName\":\"Artur\",\n   },\n   \"number\":9,\n   \"occupied\":false\n   }",
+          "content": "HTTP/1.1 200 OK\n  { \n   \"roomID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n   \"userID\":\"4ba83f3c-4ea4-4da4-9c06-e986a827230\",\n   \"number\":9,\n   \"occupied\":false\n   }",
           "type": "json"
         }
       ]
