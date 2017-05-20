@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HotelManagementSystem.Models.Infrastructure;
 using Microsoft.AspNetCore.Cors;
 using HotelManagementSystem.Models.Entities.Identity;
+using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.Extensions.Logging;
 using HotelManagementSystem.Models.Helpers;
 
@@ -66,7 +67,6 @@ namespace HotelManagementSystem.Controllers
             try
             {
                 user = await _context.LazyLoadUser(id);
-                if (user == null) throw new Exception();
             }
             catch (Exception ex)
             {
@@ -85,6 +85,41 @@ namespace HotelManagementSystem.Controllers
                 ReceivedTasks = user.ReceivedTasks,
                 Shifts = user.Shifts,
             });
+        }
+
+        /**
+        * @api {get} /Worker/{id} Tasks
+        * @apiVersion 0.1.3
+        * @apiName Read
+        * @apiGroup Worker
+        */
+        // GET: api/Worker/Tasks/{id}
+        [HttpGet("Tasks/{id}")]
+        public async Task<IActionResult> Tasks([FromRoute] string id)
+        {
+            User user = null;
+            //List<User> tasks = null;
+
+            try
+            {
+                user = await _context.LazyLoadUser(id);
+                var tasks = user.ReceivedTasks.Select(q => new
+                      {
+                        TaskID = q.TaskID,
+                        Describe = q.Describe,
+                        RoomID = q.RoomID,
+                        Listener = q.Listener,
+                        Issuer = q.Issuer.ToJson(),
+                        Case = q.Case,
+                }
+                ).OrderBy(q => q.Describe);
+                return Ok(tasks);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new { status = "notFound" });
+            }
         }
 
         /**
