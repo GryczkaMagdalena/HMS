@@ -1,15 +1,16 @@
 import {inject} from 'aurelia-framework';
 import {DialogService} from 'aurelia-dialog';
+import {Router, RouterConfiguration} from 'aurelia-router';
 import {ConfirmDialog} from '../confirmDialog';
 import {CasesService} from '../../../../services/cases-service';
 
 
-@inject(DialogService, CasesService)
+@inject(DialogService, CasesService, Router)
 export class TechnicalIssue {
   cases: {}[];
   selectedCase: {};
 
-  constructor(private dialogService: DialogService, private casesService: CasesService) {
+  constructor(private dialogService: DialogService, private casesService: CasesService, private router: Router) {
     casesService.getTechnicianCases().then(res => {
       let tmpCases = JSON.parse(JSON.stringify(res));
       this.cases = tmpCases;
@@ -25,4 +26,7 @@ export class TechnicalIssue {
     this.dialogService.open({ viewModel: ConfirmDialog, model: ''});
   }
 
+  returnToMainPanel(){
+    this.router.navigateToRoute('base');
+  }
 }
