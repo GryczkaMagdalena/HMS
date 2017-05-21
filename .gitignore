@@ -19,3 +19,6 @@
 /HotelManagementSystem/HotelManagementSystem.Tests/test.xml
 /HotelManagementSystem/HMS.Tests/obj
 /HotelManagementSystem/HMS.Tests/bin/Debug/netcoreapp1.1
+HotelManagementSystem/HotelManagementSystem.Tests/obj/Debug/netcoreapp1.1/CoreCompileInputs.cache
+HotelManagementSystem/HotelManagementSystem.Tests/obj/HotelManagementSystem.Tests.csproj.nuget.g.props
+HotelManagementSystem/HotelManagementSystem.Tests/obj/project.assets.json
