@@ -2,6 +2,49 @@
   "version": 2,
   "targets": {
     ".NETCoreApp,Version=v1.1": {
+      "Castle.Core/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.AppContext": "4.1.0",
+          "System.Collections.Specialized": "4.0.1",
+          "System.ComponentModel.TypeConverter": "4.0.1",
+          "System.Console": "4.0.0",
+          "System.Diagnostics.Debug": "4.0.11",
+          "System.Diagnostics.Tools": "4.0.1",
+          "System.Diagnostics.TraceSource": "4.0.0",
+          "System.Dynamic.Runtime": "4.0.11",
+          "System.Globalization": "4.0.11",
+          "System.IO.FileSystem": "4.0.1",
+          "System.Linq": "4.1.0",
+          "System.ObjectModel": "4.0.12",
+          "System.Reflection": "4.1.0",
+          "System.Reflection.Emit": "4.0.1",
+          "System.Reflection.Emit.Lightweight": "4.0.1",
+          "System.Reflection.Extensions": "4.0.1",
+          "System.Reflection.TypeExtensions": "4.1.0",
+          "System.Resources.ResourceManager": "4.0.1",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Runtime.InteropServices": "4.1.0",
+          "System.Threading": "4.0.11",
+          "System.Xml.XmlDocument": "4.0.1",
+          "System.Xml.XmlSerializer": "4.0.11"
+        },
+        "compile": {
+          "lib/netstandard1.3/Castle.Core.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/Castle.Core.dll": {}
+        }
+      },
+      "FluentScheduler/5.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard1.4/FluentScheduler.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.4/FluentScheduler.dll": {}
+        }
+      },
       "jQuery/3.1.1": {
         "type": "package"
       },
@@ -2081,6 +2124,38 @@
           }
         }
       },
+      "Moq/4.7.10": {
+        "type": "package",
+        "dependencies": {
+          "Castle.Core": "4.0.0",
+          "System.Collections": "4.0.11",
+          "System.Collections.Concurrent": "4.0.12",
+          "System.Diagnostics.Debug": "4.0.11",
+          "System.Diagnostics.Tools": "4.0.1",
+          "System.Globalization": "4.0.11",
+          "System.Linq": "4.1.0",
+          "System.Linq.Expressions": "4.1.0",
+          "System.Linq.Queryable": "4.0.1",
+          "System.Reflection": "4.1.0",
+          "System.Reflection.Emit": "4.0.1",
+          "System.Reflection.Emit.ILGeneration": "4.0.1",
+          "System.Reflection.Extensions": "4.0.1",
+          "System.Reflection.Primitives": "4.0.1",
+          "System.Reflection.TypeExtensions": "4.1.0",
+          "System.Resources.ResourceManager": "4.0.1",
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Text.RegularExpressions": "4.1.0",
+          "System.Threading": "4.0.11",
+          "System.Threading.Tasks": "4.0.11"
+        },
+        "compile": {
+          "lib/netstandard1.3/Moq.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/Moq.dll": {}
+        }
+      },
       "NETStandard.Library/1.6.1": {
         "type": "package",
         "dependencies": {
@@ -2392,6 +2467,21 @@
             "assetType": "native",
             "rid": "win7-x86"
           }
+        }
+      },
+      "StructureMap/4.4.5": {
+        "type": "package",
+        "dependencies": {
+          "NETStandard.Library": "1.6.0",
+          "System.Collections.Concurrent": "4.0.12",
+          "System.Reflection.TypeExtensions": "4.1.0",
+          "System.Runtime.Loader": "4.0.0"
+        },
+        "compile": {
+          "lib/netstandard1.5/StructureMap.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.5/StructureMap.dll": {}
         }
       },
       "System.AppContext/4.3.0": {
@@ -4460,7 +4550,7 @@
           "System.Xml.XmlDocument": "4.0.1"
         },
         "compile": {
-          "ref/netstandard1.3/_._": {}
+          "ref/netstandard1.3/System.Xml.XmlSerializer.dll": {}
         },
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlSerializer.dll": {}
@@ -4620,6 +4710,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v1.1",
         "dependencies": {
+          "FluentScheduler": "5.2.1",
           "Microsoft.ApplicationInsights.AspNetCore": "2.0.0",
           "Microsoft.AspNetCore": "1.1.2",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "1.1.2",
@@ -4638,12 +4729,49 @@
           "Microsoft.TestPlatform.TestHost": "15.0.0",
           "Microsoft.VisualStudio.Web.BrowserLink": "1.1.2",
           "System.IdentityModel.Tokens.Jwt": "5.1.3",
-          "jQuery": "3.1.1"
+          "jQuery": "3.1.1",
+          "structuremap": "4.4.5"
         }
       }
     }
   },
   "libraries": {
+    "Castle.Core/4.0.0": {
+      "sha512": "iLINpMFc07bcb0d075AB0mcXV/MT8J8oyBarDSeyrLM03UoCVOuvYu87LI4511XHfy7XEhHtMDum5gt2s56xDg==",
+      "type": "package",
+      "path": "castle.core/4.0.0",
+      "files": [
+        "ASL - Apache Software Foundation License.txt",
+        "CHANGELOG.md",
+        "LICENSE",
+        "castle.core.4.0.0.nupkg.sha512",
+        "castle.core.nuspec",
+        "lib/net35/Castle.Core.dll",
+        "lib/net35/Castle.Core.xml",
+        "lib/net40-client/Castle.Core.dll",
+        "lib/net40-client/Castle.Core.xml",
+        "lib/net45/Castle.Core.dll",
+        "lib/net45/Castle.Core.xml",
+        "lib/netstandard1.3/Castle.Core.dll",
+        "lib/netstandard1.3/Castle.Core.xml",
+        "readme.txt"
+      ]
+    },
+    "FluentScheduler/5.2.1": {
+      "sha512": "OCPkEq3sppXI6LetjZTuIJrrY78GmpUzoUgIEYtV8GmcwIYmGDcrYtyDjmbk9BHRMJQTNNQTCsQXF5jp21LC2g==",
+      "type": "package",
+      "path": "fluentscheduler/5.2.1",
+      "files": [
+        "fluentscheduler.5.2.1.nupkg.sha512",
+        "fluentscheduler.nuspec",
+        "lib/net40/FluentScheduler.dll",
+        "lib/net40/FluentScheduler.pdb",
+        "lib/net40/FluentScheduler.xml",
+        "lib/netstandard1.4/FluentScheduler.dll",
+        "lib/netstandard1.4/FluentScheduler.pdb",
+        "lib/netstandard1.4/FluentScheduler.xml"
+      ]
+    },
     "jQuery/3.1.1": {
       "sha512": "XGsgwse025NxNPHjY7GE8HMFNzjqsa7a/PmNS1S5bVU++pNpZmiTnzUBK6OmECnqG/fIMVaAYHTnfoYd/Wz28g==",
       "type": "package",
@@ -6372,6 +6500,19 @@
         "runtimes/win/lib/netstandard1.3/Microsoft.Win32.Registry.dll"
       ]
     },
+    "Moq/4.7.10": {
+      "sha512": "nJIcN826e7//HUrnfyTzy+s0zS98bdQI27wBr3/+C+rpY1d6HIboVg+j1s7JkVZtwOCOZbsquuAYViGTl9wuJQ==",
+      "type": "package",
+      "path": "moq/4.7.10",
+      "files": [
+        "lib/net45/Moq.dll",
+        "lib/net45/Moq.xml",
+        "lib/netstandard1.3/Moq.dll",
+        "lib/netstandard1.3/Moq.xml",
+        "moq.4.7.10.nupkg.sha512",
+        "moq.nuspec"
+      ]
+    },
     "NETStandard.Library/1.6.1": {
       "sha512": "WcSp3+vP+yHNgS8EV5J7pZ9IRpeDuARBPN28by8zqff1wJQXm26PVU8L3/fYLBJVU7BtDyqNVWq2KlCVvSSR4A==",
       "type": "package",
@@ -6665,6 +6806,21 @@
         "runtime.win7-x86.runtime.native.system.data.sqlclient.sni.4.3.0.nupkg.sha512",
         "runtime.win7-x86.runtime.native.system.data.sqlclient.sni.nuspec",
         "runtimes/win7-x86/native/sni.dll"
+      ]
+    },
+    "StructureMap/4.4.5": {
+      "sha512": "UK9YHYduRqu57oASoan6JYWm5W/wyaEalACUQO9jO0QJF04tIKE7W6FVkep8TF30SpEu5OGRC422pymjMxWicw==",
+      "type": "package",
+      "path": "structuremap/4.4.5",
+      "files": [
+        "lib/net45/StructureMap.dll",
+        "lib/net45/StructureMap.xml",
+        "lib/netstandard1.3/StructureMap.dll",
+        "lib/netstandard1.3/StructureMap.xml",
+        "lib/netstandard1.5/StructureMap.dll",
+        "lib/netstandard1.5/StructureMap.xml",
+        "structuremap.4.4.5.nupkg.sha512",
+        "structuremap.nuspec"
       ]
     },
     "System.AppContext/4.3.0": {
@@ -11826,6 +11982,7 @@
       "Microsoft.AspNetCore.Mvc >= 1.1.3",
       "Microsoft.NET.Test.Sdk >= 15.0.0",
       "Microsoft.NETCore.App >= 1.1.1",
+      "Moq >= 4.7.10",
       "xunit >= 2.3.0-beta2-build3683",
       "xunit.runner.visualstudio >= 2.2.0"
     ]
@@ -11864,6 +12021,10 @@
           "xunit.runner.visualstudio": {
             "target": "Package",
             "version": "2.2.0"
+          },
+          "Moq": {
+            "target": "Package",
+            "version": "4.7.10"
           },
           "Microsoft.NETCore.App": {
             "target": "Package",

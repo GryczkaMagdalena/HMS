@@ -29,6 +29,7 @@ namespace HotelManagementSystem.Models.Helpers
             };
         }
         
+
         public static async  Task<User> LazyLoadUser(this IdentityContext context,string UserID)
         {
             return await context.Users.Include(p => p.Roles).Include(p => p.Shifts)
@@ -69,6 +70,30 @@ namespace HotelManagementSystem.Models.Helpers
         public static async Task<List<Room>> LazyLoadRooms (this IdentityContext context)
         {
             return await context.Rooms.Include(q => q.User).ToListAsync();
+        }
+
+        public static async Task<List<User>> LazyLoadWorkers(this IdentityContext context)
+        {
+            return await context.Users.Include(q=>q.ReceivedTasks)
+                .Include(q=>q.Shifts)
+                .Where(q => q.WorkerType == WorkerType.Cleaner || q.WorkerType == WorkerType.Technician)
+                .ToListAsync();
+        }
+
+        public static Shift CurrentShift (this User worker)
+        {
+            try
+            {
+                var now = DateTime.Now;
+                if (worker.Shifts != null)
+                    return worker.Shifts.First(q => q.StartTime < now && q.EndTime > now);
+                else
+                    return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

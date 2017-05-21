@@ -13,6 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using HotelManagementSystem.Models.Infrastructure.IdentityBase;
+using HotelManagementSystem.Models.Abstract;
+using FluentScheduler;
+using HotelManagementSystem.Models.Infrastructure.Scheduler;
 
 namespace HotelManagementSystem
 {
@@ -42,6 +45,7 @@ namespace HotelManagementSystem
                 .AddUserManager<ApplicationUserManager>();
 
             // Add framework services.
+            services.AddScoped<IUserService, UserService>();
             services.AddMvc().AddJsonOptions(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
@@ -80,7 +84,7 @@ namespace HotelManagementSystem
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IdentityContext iContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IdentityContext iContext ,IUserService userService)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -113,6 +117,8 @@ namespace HotelManagementSystem
             app.UseMvc();
             //   DbInitializer.Initialize(context);
             DbInitializer.Initialize(iContext);
+            JobManager.Initialize(new JobScheduler(iContext,userService));
+
         }
     }
 }

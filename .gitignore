@@ -22,3 +22,17 @@
 HotelManagementSystem/HotelManagementSystem.Tests/obj/Debug/netcoreapp1.1/CoreCompileInputs.cache
 HotelManagementSystem/HotelManagementSystem.Tests/obj/HotelManagementSystem.Tests.csproj.nuget.g.props
 HotelManagementSystem/HotelManagementSystem.Tests/obj/project.assets.json
+*.dll
+*.pdb
+HotelManagementSystem/HotelManagementSystem.Tests/bin/Debug/netcoreapp1.1/HotelManagementSystem.Tests.deps.json
+HotelManagementSystem/HotelManagementSystem.Tests/bin/Debug/netcoreapp1.1/HotelManagementSystem.Tests.dll.config
+HotelManagementSystem/HotelManagementSystem.Tests/bin/Debug/netcoreapp1.1/HotelManagementSystem.Tests.runtimeconfig.dev.json
+HotelManagementSystem/HotelManagementSystem.Tests/bin/Debug/netcoreapp1.1/HotelManagementSystem.Tests.runtimeconfig.json
+HotelManagementSystem/HotelManagementSystem.Tests/obj/Debug/netcoreapp1.1/CoreCompileInputs.cache
+HotelManagementSystem/HotelManagementSystem.Tests/obj/Debug/netcoreapp1.1/HotelManagementSystem.Tests.AssemblyInfo.cs
+HotelManagementSystem/HotelManagementSystem.Tests/obj/Debug/netcoreapp1.1/HotelManagementSystem.Tests.csproj.FileListAbsolute.txt
+HotelManagementSystem/HotelManagementSystem.Tests/obj/Debug/netcoreapp1.1/HotelManagementSystem.Tests.csproj.HotelManagementSystem.Tests.dll.config
+HotelManagementSystem/HotelManagementSystem.Tests/obj/HotelManagementSystem.Tests.csproj.nuget.g.props
+HotelManagementSystem/HotelManagementSystem.Tests/obj/project.assets.json
+HotelManagementSystem/HotelManagementSystem.Tests/obj/Release/netcoreapp1.1/CoreCompileInputs.cache
+HotelManagementSystem/HotelManagementSystem.Tests/obj/Release/netcoreapp1.1/HotelManagementSystem.Tests.AssemblyInfo.cs

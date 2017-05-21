@@ -7,24 +7,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HotelManagementSystem.Models.Helpers;
+using HotelManagementSystem.Models.Abstract;
+
 namespace HotelManagementSystem.Models.Infrastructure
 {
     public class TaskDisposer
     {
-        private IdentityContext identityContext;
-        private readonly UserService userService;
-        public TaskDisposer(UserService userService, IdentityContext context)
+        private IdentityContext _context;
+        private readonly IUserService _userService;
+        public TaskDisposer(IUserService userService, IdentityContext context)
         {
-            this.userService = userService;
-            identityContext = context;
+            this._userService = userService;
+            _context = context;
         }
         private async Task<List<User>> GetWorkersByType(WorkerType type)
         {
             List<User> resultList = new List<User>();
-            var users = await identityContext.LazyLoadUsers();
+            var users = await _context.LazyLoadUsers();
             foreach (var user in users)
             {
-                if (await userService.IsInRoleAsync(user, "Worker") && user.WorkerType == type)
+                if (await _userService.IsInRoleAsync(user, "Worker") && user.WorkerType == type)
                 {
                     resultList.Add(user);
                 }

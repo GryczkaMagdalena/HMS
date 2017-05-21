@@ -20,7 +20,6 @@ namespace HotelManagementSystem.Models.Infrastructure
             }
         }
         public new DbSet<User> Users { get; set; }
-        // public new DbSet<Role> Roles { get; set; }
         public DbSet<Shift> Shifts { get; set; }
         public DbSet<Rule> Rules { get; set; }
         public DbSet<Room> Rooms { get; set; }

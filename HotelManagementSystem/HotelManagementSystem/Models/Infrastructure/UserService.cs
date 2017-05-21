@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.EntityFrameworkCore;
 using HotelManagementSystem.Models.Infrastructure.IdentityBase;
+using HotelManagementSystem.Models.Abstract;
 
 namespace HotelManagementSystem.Models.Infrastructure
 {
-    public class UserService 
+    public class UserService : IUserService
     {
         private ApplicationUserManager _userManager;
         private SignInManager<User> _signInManager;
@@ -56,13 +57,13 @@ namespace HotelManagementSystem.Models.Infrastructure
             return await _userManager.GetRolesAsync(user);
         }
 
-        public async Task<IdentityResult> RemoveFromRole(string roleName,String userID)
+        public async Task<IdentityResult> RemoveFromRole(string roleName,string userID)
         {
             var user = await _userManager.FindByIdAsync(userID);
             return await _userManager.RemoveFromRoleAsync(user, roleName);
         }
 
-        public async Task<IdentityResult> AddUserToRole(string roleName,String UserID)
+        public async Task<IdentityResult> AddUserToRole(string roleName,string UserID)
         {
             var user = await _userManager.FindByIdAsync(UserID);
             return await _userManager.AddToRoleAsync(user, roleName);
@@ -110,9 +111,10 @@ namespace HotelManagementSystem.Models.Infrastructure
             return await _userManager.IsInRoleAsync(guestAccount, role);
         }
 
-        internal Task<User> GetUserAsync(ClaimsPrincipal user)
+        public Task<User> GetUserAsync(ClaimsPrincipal user)
         {
             return _userManager.GetUserAsync(user);
         }
+
     }
 }
