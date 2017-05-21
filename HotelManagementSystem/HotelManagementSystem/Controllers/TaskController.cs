@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using HotelManagementSystem.Models.Infrastructure.IdentityBase;
 using HotelManagementSystem.Models.Helpers;
+using HotelManagementSystem.Models.Abstract;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -27,15 +28,14 @@ namespace HotelManagementSystem.Controllers
     {
         private readonly ILogger _logger;
         private readonly IdentityContext _context;
-        private readonly UserService userService;
+        private readonly IUserService _userService;
         private readonly TaskDisposer _taskDisposer;
-        public TaskController(IdentityContext context, ApplicationUserManager manager,
-            RoleManager<IdentityRole> roles, IPasswordHasher<User> hash,
-            SignInManager<User> signInManager, ILogger<TaskController> logger)
+        public TaskController(IdentityContext context,
+            IUserService userService, ILogger<TaskController> logger)
         {
             _context = context;
-            userService = new UserService(manager, signInManager, hash, roles);
-            _taskDisposer = new TaskDisposer(userService, _context);
+            _userService = userService;
+            _taskDisposer = new TaskDisposer(_userService, _context);
             _logger = logger;
         }
 
@@ -119,7 +119,7 @@ namespace HotelManagementSystem.Controllers
             }
             return Ok(new
             {
-                TaskID =rule.TaskID,
+                TaskID = rule.TaskID,
                 Describe = rule.Describe,
                 Room = rule.Room,
                 Issuer = rule.Issuer.ToJson(),

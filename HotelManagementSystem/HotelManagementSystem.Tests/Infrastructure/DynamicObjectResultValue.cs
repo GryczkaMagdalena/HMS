@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace HMS.Tests.Infrastructure
+namespace HotelManagementSystem.Tests.Infrastructure
 {
     class DynamicObjectResultValue : DynamicObject, IEquatable<DynamicObjectResultValue>
     {

@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Cors;
 using HotelManagementSystem.Models.Entities.Identity;
 using Microsoft.Extensions.Logging;
 using HotelManagementSystem.Models.Helpers;
+using HotelManagementSystem.Models.Abstract;
+using System.Threading;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -21,10 +23,21 @@ namespace HotelManagementSystem.Controllers
     {
         private IdentityContext _context;
         private ILogger _logger;
-        public WorkerController(IdentityContext context, ILogger<WorkerController> logger)
+        private TaskDisposer _taskDisposer;
+        private IUserService _userService;
+        public WorkerController(IdentityContext context, ILogger<WorkerController> logger,IUserService userService)
         {
             _logger = logger;
             _context = context;
+            _userService = userService;
+            _taskDisposer = new TaskDisposer(_userService, _context);
+
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                PassNotFinishedTasks();
+                Thread.Sleep(TimeSpan.FromMinutes(5));
+            }).Start();
         }
         // GET: api/Worker
         /**
@@ -37,7 +50,6 @@ namespace HotelManagementSystem.Controllers
         public async Task<IActionResult> List()
         {
             List<User> users = await _context.LazyLoadUsers();
-
             return Ok(users.Select(q => new
             {
                 Id = q.Id,
@@ -66,7 +78,6 @@ namespace HotelManagementSystem.Controllers
             try
             {
                 user = await _context.LazyLoadUser(id);
-                if (user == null) throw new Exception();
             }
             catch (Exception ex)
             {
@@ -114,6 +125,41 @@ namespace HotelManagementSystem.Controllers
             var result = await DbInitializer.AddWorkerShifts(_context);
             if (result) return Ok(new { status = "success" });
             return BadRequest(new { status = "this action is not needed" });
+        }
+
+        public async void PassNotFinishedTasks()
+        {
+            foreach(var worker in await _context.LazyLoadWorkers())
+            {
+                if (worker.ReceivedTasks.Any() && worker.CurrentShift() == null)
+                {
+                    // Here status of tasks should be checked as well
+                    List<KeyValuePair<Models.Entities.Storage.Task, User>> tasksToRemove =
+                        new List<KeyValuePair<Models.Entities.Storage.Task, User>>();
+                    
+                    foreach(var unifinishedTask in worker.ReceivedTasks)
+                    {
+                        var newWorker = await _taskDisposer.FindWorker(unifinishedTask.Case);
+                        if (newWorker != null)
+                        {
+                            tasksToRemove
+                                .Add(new KeyValuePair<Models.Entities.Storage.Task, User>(unifinishedTask,newWorker));
+                        }
+                    }
+
+                    foreach (var pair in tasksToRemove)
+                    {
+                        pair.Value.ReceivedTasks.Add(pair.Key);
+                        pair.Key.Receiver = pair.Value;
+                        _context.Entry(pair.Value).State = EntityState.Modified;
+                        _context.Entry(pair.Key).State = EntityState.Modified;
+                        worker.ReceivedTasks.Remove(pair.Key);
+                        _context.Entry(worker).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                        _logger.LogInformation("Task moved to another worker", pair);
+                    }
+                }
+            }
         }
     }
 }

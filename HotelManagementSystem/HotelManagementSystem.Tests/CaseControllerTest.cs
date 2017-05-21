@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Logging;
 using Xunit;
-using HMS.Tests.Infrastructure;
+using HotelManagementSystem.Tests.Infrastructure;
 using System.Collections.Generic;
 
-namespace HMS.Tests
+namespace HotelManagementSystem.Tests
 {
     
     public class CaseControllerTest
@@ -25,7 +25,6 @@ namespace HMS.Tests
             _context = new IdentityContext();
         }
         
-       
         [Fact]
         public async System.Threading.Tasks.Task AnyCaseExists()
         {

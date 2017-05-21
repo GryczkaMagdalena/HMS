@@ -15,9 +15,8 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using HotelManagementSystem.Models.Infrastructure.IdentityBase;
+using HotelManagementSystem.Models.Abstract;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -28,20 +27,20 @@ namespace HotelManagementSystem.Controllers
     [Route("api/Auth/[action]")]
     public class AuthController : Controller
     {
-        private UserService _userService;
+        private IUserService _userService;
         private IdentityContext _context;
         private readonly ILogger _logger;
-
+        //SignInManager<User> signInManager,
+        //IPasswordHasher<User> hash,
+        //RoleManager<IdentityRole> roleManager,
+        //ApplicationUserManager userManager,
         public AuthController(
-            SignInManager<User> signInManager,
-            IPasswordHasher<User> hash,
-            RoleManager<IdentityRole> roleManager,
-            ILogger<AuthController> logger,
-            ApplicationUserManager userManager,
-            IdentityContext context
+            IUserService userService,
+            IdentityContext context,
+            ILogger<AuthController> logger
             )
         {
-            _userService = new UserService(userManager, signInManager, hash, roleManager);
+            _userService = userService;
             _logger = logger;
             _context = context;
         }

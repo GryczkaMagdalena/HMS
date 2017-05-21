@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HMS.Tests.Infrastructure
+namespace HotelManagementSystem.Tests.Infrastructure
 {
-
+    
     public class MockLogger<T> : ILogger<T>
     {
         public IDisposable BeginScope<TState>(TState state)
@@ -20,7 +20,8 @@ namespace HMS.Tests.Infrastructure
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            throw new NotImplementedException();
+
+            Console.Error.WriteLine(exception.Message);
         }
     }
 }

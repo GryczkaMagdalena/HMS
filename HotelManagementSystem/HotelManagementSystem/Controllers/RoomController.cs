@@ -10,10 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
-using HotelManagementSystem.Models.Entities.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using HotelManagementSystem.Models.Infrastructure.IdentityBase;
 using HotelManagementSystem.Models.Helpers;
 
 namespace HotelManagementSystem.Controllers
