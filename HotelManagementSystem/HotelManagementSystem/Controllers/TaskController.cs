@@ -72,6 +72,7 @@ namespace HotelManagementSystem.Controllers
                 Receiver = q.Receiver.ToJson(),
                 Listener = q.Listener.ToJson(),
                 Case = q.Case,
+                TimeOfCreation = q.TimeOfCreation,
             }));
         }
         /**
@@ -125,7 +126,8 @@ namespace HotelManagementSystem.Controllers
                 Issuer = rule.Issuer.ToJson(),
                 Receiver = rule.Receiver.ToJson(),
                 Listener = rule.Listener.ToJson(),
-                Case = rule.Case
+                Case = rule.Case,
+                TimeOfCreation = rule.TimeOfCreation
             });
         }
         /**
@@ -303,6 +305,7 @@ namespace HotelManagementSystem.Controllers
                             Receiver = receiver,
                             Listener = listener,
                             Case = case_in_task,
+                            TimeOfCreation = DateTime.Now,
                         };
 
                         receiver.ReceivedTasks.Add(newTask);

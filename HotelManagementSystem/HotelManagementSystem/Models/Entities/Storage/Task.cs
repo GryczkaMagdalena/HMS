@@ -20,5 +20,6 @@ namespace HotelManagementSystem.Models.Entities.Storage
         public virtual User Receiver { get; set; }
         public virtual Case Case { get; set; }
         public Guid? CaseID { get; set; }
+        public DateTime TimeOfCreation { get; set; }
     }
 }

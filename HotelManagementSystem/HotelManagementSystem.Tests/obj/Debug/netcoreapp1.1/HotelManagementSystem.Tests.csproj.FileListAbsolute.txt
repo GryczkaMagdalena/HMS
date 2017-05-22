@@ -383,3 +383,7 @@ C:\Users\Magdalena\Desktop\HMS\HotelManagementSystem\HotelManagementSystem.Tests
 C:\Users\Magdalena\Desktop\HMS\HotelManagementSystem\HotelManagementSystem.Tests\obj\Debug\netcoreapp1.1\HotelManagementSystem.Tests.AssemblyInfo.cs
 C:\Users\Magdalena\Desktop\HMS\HotelManagementSystem\HotelManagementSystem.Tests\obj\Debug\netcoreapp1.1\HotelManagementSystem.Tests.dll
 C:\Users\Magdalena\Desktop\HMS\HotelManagementSystem\HotelManagementSystem.Tests\obj\Debug\netcoreapp1.1\HotelManagementSystem.Tests.pdb
+C:\Users\Magdalena\Desktop\HMS\HotelManagementSystem\HotelManagementSystem.Tests\bin\Debug\netcoreapp1.1\Castle.Core.dll
+C:\Users\Magdalena\Desktop\HMS\HotelManagementSystem\HotelManagementSystem.Tests\bin\Debug\netcoreapp1.1\FluentScheduler.dll
+C:\Users\Magdalena\Desktop\HMS\HotelManagementSystem\HotelManagementSystem.Tests\bin\Debug\netcoreapp1.1\Moq.dll
+C:\Users\Magdalena\Desktop\HMS\HotelManagementSystem\HotelManagementSystem.Tests\bin\Debug\netcoreapp1.1\StructureMap.dll
