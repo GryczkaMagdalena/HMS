@@ -166,6 +166,8 @@ namespace HotelManagementSystem.Migrations.Identity
 
                     b.Property<Guid>("RoomID");
 
+                    b.Property<DateTime>("TimeOfCreation");
+
                     b.HasKey("TaskID");
 
                     b.HasIndex("CaseID");

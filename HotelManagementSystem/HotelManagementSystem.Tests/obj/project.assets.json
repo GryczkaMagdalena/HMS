@@ -8257,16 +8257,16 @@
       ]
     },
     "System.Interactive.Async/3.0.0": {
-      "sha512": "UEM+WmG1Oq0bNbPx/E1jaIQ83QOrPfVDUyuYBtG6D6DpB77ytv9flPterMujumpHuoRjSc0ilSB8w41fQc05dw==",
+      "sha512": "iyrgkZz9Dzm0fiPouQszFC3SO/46k6AYd/jG9bu+/o0AoDMaRXtlo3TIuWVNtOuJFd1noL963QouroJ0T3rImw==",
       "type": "package",
       "path": "system.interactive.async/3.0.0",
       "files": [
-        "System.Interactive.Async.3.0.0.nupkg.sha512",
-        "System.Interactive.Async.nuspec",
         "lib/net45/System.Interactive.Async.dll",
         "lib/net45/System.Interactive.Async.xml",
         "lib/netstandard1.0/System.Interactive.Async.dll",
-        "lib/netstandard1.0/System.Interactive.Async.xml"
+        "lib/netstandard1.0/System.Interactive.Async.xml",
+        "system.interactive.async.3.0.0.nupkg.sha512",
+        "system.interactive.async.nuspec"
       ]
     },
     "System.IO/4.3.0": {
@@ -11988,15 +11988,15 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\tirur\\.nuget\\packages\\": {}
+    "C:\\Users\\Magdalena\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\tirur\\Source\\Repos\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem.Tests\\HotelManagementSystem.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\Magdalena\\Desktop\\HMS\\HotelManagementSystem\\HotelManagementSystem.Tests\\HotelManagementSystem.Tests.csproj",
       "projectName": "HotelManagementSystem.Tests",
-      "projectPath": "C:\\Users\\tirur\\Source\\Repos\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem.Tests\\HotelManagementSystem.Tests.csproj",
-      "outputPath": "C:\\Users\\tirur\\Source\\Repos\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem.Tests\\obj\\",
+      "projectPath": "C:\\Users\\Magdalena\\Desktop\\HMS\\HotelManagementSystem\\HotelManagementSystem.Tests\\HotelManagementSystem.Tests.csproj",
+      "outputPath": "C:\\Users\\Magdalena\\Desktop\\HMS\\HotelManagementSystem\\HotelManagementSystem.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"
@@ -12004,8 +12004,8 @@
       "frameworks": {
         "netcoreapp1.1": {
           "projectReferences": {
-            "C:\\Users\\tirur\\Source\\Repos\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem.csproj": {
-              "projectPath": "C:\\Users\\tirur\\Source\\Repos\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem.csproj"
+            "C:\\Users\\Magdalena\\Desktop\\HMS\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem.csproj": {
+              "projectPath": "C:\\Users\\Magdalena\\Desktop\\HMS\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem.csproj"
             }
           }
         }
