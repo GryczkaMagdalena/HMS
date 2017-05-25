@@ -22,11 +22,22 @@ export class TechnicalIssue {
     console.log('this.selectedCase ', this.selectedCase);
   }
 
-  confirmDialog(){
-    this.dialogService.open({ viewModel: ConfirmDialog, model: ''});
+  confirmDialog() {
+    if (this.selectedCase) {
+      this.dialogService.open({viewModel: ConfirmDialog, model: ''})
+        .whenClosed(response => {
+          if (!response.wasCancelled) {
+            console.log('good');
+            //POST the task here
+            //       .then(redirect) --> this.router.navigateToRoute('base');
+            this.router.navigateToRoute('base');
+          }
+        });
+    }
+
   }
 
-  returnToMainPanel(){
+  returnToMainPanel() {
     this.router.navigateToRoute('base');
   }
 }

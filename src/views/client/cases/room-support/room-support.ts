@@ -4,7 +4,7 @@ import {CasesService} from '../../../../services/cases-service';
 
 
 @inject(CasesService, Router)
-export class RoomService {
+export class RoomSupport {
   cases: {}[];
   selectedCase: {};
 
@@ -12,7 +12,6 @@ export class RoomService {
     casesService.getCleanerCases().then(res => {
       let tmpCases = JSON.parse(JSON.stringify(res));
       this.cases = tmpCases;
-      console.log('this.cases', this.cases);
     });
   }
 
