@@ -1,0 +1,6 @@
+.custom-box {
+  background-color: transparentize($color-primary-beige, 0.3);
+  border-radius: $box-radius;
+  margin-bottom: $spacing;
+  padding: $spacing;
+}

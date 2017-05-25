@@ -1,10 +1,5 @@
-.button-anchor {
+@import "./common/variables";
+@import "./common/general";
+@import "./common/boxes";
 
-  &:hover {
-    text-decoration: none;
-  }
-}
-
-.margin-bottom {
-  margin-bottom: 20px;
-}
+@import "./components/jumbotron";
