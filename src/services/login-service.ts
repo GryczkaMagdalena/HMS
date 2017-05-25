@@ -9,18 +9,11 @@ export class LoginService {
   }
 
   logIn(userInfo) {
-    //hardcoded for now; remove it in the future
-    // let userObj = {
-    //   Login: "guest1",
-    //   Password: "Gue$t1"
-    // };
 
     let userObj = {
       Login: userInfo.username,
       Password: userInfo.password
     };
-
-    console.log("TO WYSYŁAM: ", userObj);
 
     return new Promise((resolve, reject) => {
       this.httpFetch
@@ -33,14 +26,13 @@ export class LoginService {
           let tmpResponse = JSON.parse(JSON.stringify(data));
           this.userObject = tmpResponse.user;
 
-          console.log('tmpResponse z logowania: ', tmpResponse);
+          sessionStorage.setItem('session_token', ('Bearer ' + tmpResponse.token));
+
           sessionStorage.setItem('worker_type', tmpResponse.user.workerType);
+
           if (tmpResponse.user.workerType === 'None') {
             sessionStorage.setItem('room_id', tmpResponse.user.room.roomID);
           }
-
-          // let token = 'Bearer ' + tmpResponse.token;
-          sessionStorage.setItem('session_token', ('Bearer ' + tmpResponse.token));
 
           resolve(data);
         })
