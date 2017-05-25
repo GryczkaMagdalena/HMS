@@ -1,0 +1,21 @@
+body {
+  font-size: $font-size;
+  color: $font-color;
+  background: url(/src/assets/wallpaper2.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+//why is that even there?
+.button-anchor {
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.margin-bottom {
+  margin-bottom: 20px;
+}

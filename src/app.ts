@@ -29,7 +29,8 @@ export class App {
         title: 'Hello Guest!',
         name: 'base',
         settings: {
-          auth: true
+          auth: true,
+          clientOnly: true,
         }
       },
       {
@@ -38,7 +39,8 @@ export class App {
         title: 'Hotel Rules',
         name: 'hotelRules',
         settings: {
-          auth: true
+          auth: true,
+          clientOnly: true,
         }
       },
       {
@@ -47,9 +49,20 @@ export class App {
         title: 'Cases',
         name: 'cases',
         settings: {
-          auth: true
+          auth: true,
+          clientOnly: true,
         }
-      }
+      },
+      {
+        route: 'employee/main-panel',
+        moduleId: 'views/employee/main-panel/main-panel',
+        title: 'Employee Main Panel',
+        name: 'employeeMainPanel',
+        settings: {
+          auth: true,
+          employeeOnly: true,
+        }
+      },
     ]);
     config.addPipelineStep('authorize', AuthorizeStep);
 
@@ -60,6 +73,11 @@ export class App {
   attached() {
     this.eventAggregator.subscribe('login::loggedIn', (data) => {
       AuthorizeStep.auth.isAuthenticated = data.loggedIn;
+      if (data.workerType === 'None') {
+        AuthorizeStep.auth.isClient = true;
+      } else {
+        AuthorizeStep.auth.isEmployee = true;
+      }
     });
   }
 
@@ -69,25 +87,46 @@ export class App {
 class AuthorizeStep {
 
   static auth = {
-    isAuthenticated: !!sessionStorage.getItem('session_token')
+    isAuthenticated: !!sessionStorage.getItem('session_token'),
+    isEmployee: sessionStorage.getItem('worker_type') === 'Cleaner' || sessionStorage.getItem('worker_type') === 'Technician',
+    isClient: sessionStorage.getItem('worker_type') === 'None'
   };
 
   run(navigationInstruction: NavigationInstruction, next: Next) {
     let isLoggedIn = AuthorizeStep.auth.isAuthenticated;
+    let isClient = AuthorizeStep.auth.isClient;
+    let isEmployee = AuthorizeStep.auth.isEmployee;
 
     // currently active route config
     let currentRoute = navigationInstruction.config;
 
     // settings object will be preserved during navigation
+    //if currentRoute is auth=true and user isLoggedIn=false -> redirect to the login
     let loginRequired = currentRoute.settings && currentRoute.settings.auth === true;
-
     if (isLoggedIn === false && loginRequired === true) {
       return next.cancel(new Redirect('login'));
     }
 
+    //if currentRoute is publicOnly=true (means login-view) -> redirect to the employee view or client view
     let publicOnly = currentRoute.settings && currentRoute.settings.publicOnly === true;
     if (isLoggedIn === true && publicOnly === true) {
+      if (isClient) {
+        return next.cancel(new Redirect('client/base'));
+      } else if (isEmployee) {
+        return next.cancel(new Redirect('employee/main-panel'));
+      }
+    }
+
+    // if currentRoute is employeeOnly -> redirect to the client view
+    let employeeOnly = currentRoute.settings && currentRoute.settings.employeeOnly === true;
+    if (isLoggedIn === true && employeeOnly === true && isClient) {
       return next.cancel(new Redirect('client/base'));
+    }
+
+    // if currentRoute is clientOnly and user is logged as employee -> redirect to the employee view
+    let clientOnly = currentRoute.settings && currentRoute.settings.clientOnly === true;
+    if (isLoggedIn === true && clientOnly === true && isEmployee) {
+      return next.cancel(new Redirect('employee/main-panel'));
     }
 
     return next();

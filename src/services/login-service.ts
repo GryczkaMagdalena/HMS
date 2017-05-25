@@ -8,33 +8,17 @@ export class LoginService {
   constructor(public httpFetch: HttpFetch, private eventAggregator: EventAggregator) {
   }
 
-  private checkIn() {
-    let userObj = {
-      emailOrLogin: this.userObject.email,
-      roomNumber: 7
-    };
-    console.log('to idzie metodą checkin: ', userObj);
-    return new Promise((resolve, reject) => {
-      this.httpFetch.fetch('/api/Auth/CheckIn', {
-        method: 'post',
-        body: json(userObj)
-      })
-        .then(response => response.json())
-        .then(data => console.log(data));
-    })
-  }
-
   logIn(userInfo) {
     //hardcoded for now; remove it in the future
-    let userObj = {
-      Login: "guest1",
-      Password: "Gue$t1"
-    };
-
     // let userObj = {
-    //   Login: userInfo.username,
-    //   Password: userInfo.password
+    //   Login: "guest1",
+    //   Password: "Gue$t1"
     // };
+
+    let userObj = {
+      Login: userInfo.username,
+      Password: userInfo.password
+    };
 
     console.log("TO WYSYŁAM: ", userObj);
 
@@ -47,13 +31,16 @@ export class LoginService {
         .then((response) => response.json())
         .then(data => {
           let tmpResponse = JSON.parse(JSON.stringify(data));
+          this.userObject = tmpResponse.user;
 
           console.log('tmpResponse z logowania: ', tmpResponse);
-          this.userObject = tmpResponse.user;
-          this.checkIn();
+          sessionStorage.setItem('worker_type', tmpResponse.user.workerType);
+          if (tmpResponse.user.workerType === 'None') {
+            sessionStorage.setItem('room_id', tmpResponse.user.room.roomID);
+          }
 
-          let token = 'Bearer ' + tmpResponse.token;
-          sessionStorage.setItem('session_token', token);
+          // let token = 'Bearer ' + tmpResponse.token;
+          sessionStorage.setItem('session_token', ('Bearer ' + tmpResponse.token));
 
           resolve(data);
         })

@@ -9,6 +9,7 @@ export class LoginView {
 
   loggedIn: boolean;
   userInfo: UserInfo;
+  workerType: string;
 
   constructor(public eventAggregator: EventAggregator, public router: Router, public loginService: LoginService) {
     this.loggedIn = false;
@@ -18,9 +19,15 @@ export class LoginView {
     this.loginService.logIn(this.userInfo)
       .then(res => {
         console.log('login.ts -> logIn() -> res: ', res);
+        let tmpRes = JSON.parse(JSON.stringify(res));
         this.loggedIn = true;
-        this.eventAggregator.publish('login::loggedIn', {loggedIn: this.loggedIn});
-        this.router.navigateToRoute('base');
+        this.workerType = tmpRes.user.workerType;
+        this.eventAggregator.publish('login::loggedIn', {loggedIn: this.loggedIn, workerType: this.workerType});
+        if (this.workerType === 'None') {
+          this.router.navigateToRoute('base');
+        } else if (this.workerType === 'Cleaner' || this.workerType === 'Technician') {
+          this.router.navigateToRoute('employeeMainPanel');
+        }
       })
       .catch(err => console.log(err));
   }

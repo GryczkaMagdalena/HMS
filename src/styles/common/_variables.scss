@@ -1,0 +1,24 @@
+//colors
+$color-white: #ffffff;
+$color-light-grey: #EFF2E9;
+$color-grey: #BCC7C3;
+$color-dark-grey: #414D40;
+$color-primary-beige: rgb(249, 240, 199);
+$color-secondary-beige: rgb(227, 218, 185);
+
+//sizes
+$spacing: 16px;
+$spacing-bigger: $spacing + 4px;
+$spacing-smaller: $spacing - 4px;
+$box-radius: 6px;
+
+//typography
+$font-family: Helvetica, sans-serif;
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-bold: 700;
+$font-color: $color-dark-grey;
+$font-size-small: 8px;
+$font-size: 12px;
+$font-size-medium: 14px;
+$font-size-large: 16px;
