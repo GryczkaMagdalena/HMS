@@ -1,16 +1,17 @@
 import {inject} from 'aurelia-framework';
-import {DialogService} from 'aurelia-dialog';
 import {Router, RouterConfiguration} from 'aurelia-router';
+import {DialogService} from 'aurelia-dialog';
 import {ConfirmDialog} from '../confirmDialog';
 import {CasesService} from '../../../../services/cases-service';
+import {TasksService} from '../../../../services/tasks-service';
 
 
-@inject(DialogService, CasesService, Router)
+@inject(DialogService, CasesService, TasksService, Router)
 export class TechnicalIssue {
   cases: {}[];
   selectedCase: {};
 
-  constructor(private dialogService: DialogService, private casesService: CasesService, private router: Router) {
+  constructor(private dialogService: DialogService, private casesService: CasesService, private tasksService: TasksService, private router: Router) {
     casesService.getTechnicianCases().then(res => {
       let tmpCases = JSON.parse(JSON.stringify(res));
       this.cases = tmpCases;
@@ -28,13 +29,17 @@ export class TechnicalIssue {
         .whenClosed(response => {
           if (!response.wasCancelled) {
             console.log('good');
-            //POST the task here
-            //       .then(redirect) --> this.router.navigateToRoute('base');
-            this.router.navigateToRoute('base');
+            this.tasksService.createTask(this.selectedCase)
+              .then(response => {
+                console.log('response tuuu', response);
+                this.router.navigateToRoute('base');
+              })
+              .catch(err => {
+                alert(err.status);
+              });
           }
         });
     }
-
   }
 
   returnToMainPanel() {

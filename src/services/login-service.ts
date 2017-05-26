@@ -31,7 +31,8 @@ export class LoginService {
           sessionStorage.setItem('worker_type', tmpResponse.user.workerType);
 
           if (tmpResponse.user.workerType === 'None') {
-            sessionStorage.setItem('room_id', tmpResponse.user.room.roomID);
+            sessionStorage.setItem('room_number', tmpResponse.user.room.number);
+            sessionStorage.setItem('user_email', tmpResponse.user.email);
           }
 
           resolve(data);
