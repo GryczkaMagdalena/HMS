@@ -10,7 +10,6 @@ export class ConfirmDialog {
 
 	yes(){
 		this.dialogController.ok();
-		this.router.navigateToRoute('base');
 	}
 
 	no(){

@@ -7,12 +7,12 @@ import {TasksService} from '../../../../services/tasks-service';
 
 
 @inject(DialogService, CasesService, TasksService, Router)
-export class TechnicalIssue {
+export class RoomSupport {
   cases: {}[];
   selectedCase: {};
 
   constructor(private dialogService: DialogService, private casesService: CasesService, private tasksService: TasksService, private router: Router) {
-    casesService.getTechnicianCases().then(res => {
+    casesService.getCleanerCases().then(res => {
       let tmpCases = JSON.parse(JSON.stringify(res));
       this.cases = tmpCases;
     });
@@ -42,7 +42,7 @@ export class TechnicalIssue {
     }
   }
 
-  returnToMainPanel() {
+  returnToMainPanel(){
     this.router.navigateToRoute('base');
   }
 }

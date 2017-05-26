@@ -18,7 +18,6 @@ export class LoginView {
   logIn() {
     this.loginService.logIn(this.userInfo)
       .then(res => {
-        console.log('login.ts -> logIn() -> res: ', res);
         let tmpRes = JSON.parse(JSON.stringify(res));
         this.loggedIn = true;
         this.workerType = tmpRes.user.workerType;

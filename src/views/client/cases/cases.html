@@ -1,14 +1,19 @@
 <template>
 
   <div class="row">
-    <div class="col-xs-12" style="margin-bottom: 20px;">
-      <ul class="nav nav-pills  nav-justified">
-        <li repeat.for="route of router.navigation" class="${route.isActive ? 'active' : ''}">
-          <a href.bind="route.href">${route.title}</a>
-        </li>
-      </ul>
+    <div class="col-xs-12 custom-box">
+      <div class="row">
+        <div class="col-xs-12" style="margin-bottom: 20px;">
+          <ul class="nav nav-pills  nav-justified">
+            <li repeat.for="route of router.navigation" class="${route.isActive ? 'active' : ''}">
+              <a href.bind="route.href">${route.title}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <router-view></router-view>
     </div>
   </div>
 
-  <router-view></router-view>
 </template>

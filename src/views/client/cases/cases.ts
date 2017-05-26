@@ -8,10 +8,10 @@ export class Cases {
   configureRouter(config: RouterConfiguration, router: Router) {
     config.map([
       {
-        route: ['room-service', ''],
-        name: 'roomService',
+        route: ['room-support', ''],
+        name: 'roomSupport',
         title: 'Room Service',
-        moduleId: 'views/client/cases/room-service/room-service',
+        moduleId: 'views/client/cases/room-support/room-support',
         nav: true
       },
       {
