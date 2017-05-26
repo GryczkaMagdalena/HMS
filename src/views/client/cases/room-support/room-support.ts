@@ -1,7 +1,7 @@
 import {inject} from 'aurelia-framework';
 import {Router, RouterConfiguration} from 'aurelia-router';
 import {DialogService} from 'aurelia-dialog';
-import {ConfirmDialog} from '../confirmDialog';
+import {ConfirmDialogComponent} from '../../../../components/confirm-dialog/confirm-dialog-component';
 import {CasesService} from '../../../../services/cases-service';
 import {TasksService} from '../../../../services/tasks-service';
 
@@ -25,7 +25,7 @@ export class RoomSupport {
 
   confirmDialog() {
     if (this.selectedCase) {
-      this.dialogService.open({viewModel: ConfirmDialog, model: ''})
+      this.dialogService.open({viewModel: ConfirmDialogComponent, model: ''})
         .whenClosed(response => {
           if (!response.wasCancelled) {
             console.log('good');

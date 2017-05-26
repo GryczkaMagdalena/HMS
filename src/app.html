@@ -1,6 +1,12 @@
 <template>
   <require from="bootstrap/css/bootstrap.css"></require>
   <require from="./styles/main.css"></require>
+
+  <compose if.bind="router.currentInstruction.config.name !== 'login'"
+           view-model='components/logout/logout-component'
+           view.bind='components/logout/logout-component.html'>
+  </compose>
+
   <div class="container">
     <div class="row">
       <div class="col-xs-12">
