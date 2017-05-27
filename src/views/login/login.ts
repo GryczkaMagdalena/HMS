@@ -28,7 +28,7 @@ export class LoginView {
           this.router.navigateToRoute('employeeMainPanel');
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => err.json().then(res => console.log(res)));
   }
 }
 

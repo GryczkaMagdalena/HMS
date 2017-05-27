@@ -1,18 +1,21 @@
-import {HttpClient as HttpFetch} from 'aurelia-fetch-client';
 import {inject} from 'aurelia-framework';
+import {HttpClient as HttpFetch} from 'aurelia-fetch-client';
+import {LoadHandlerService} from "./load-handler-service";
 
 
-@inject(HttpFetch)
+@inject(HttpFetch, LoadHandlerService)
 export class CasesService {
   technicanCases: {}[];
   cleanerCases: {}[];
 
-  constructor(private httpFetch: HttpFetch) {
+  constructor(private httpFetch: HttpFetch, private loadHandlerService: LoadHandlerService) {
     this.technicanCases = [];
     this.cleanerCases = [];
   }
 
   getTechnicianCases() {
+    this.loadHandlerService.setBusy();
+
     return new Promise((resolve, reject) => {
       if (this.technicanCases.length < 1) {
         this.httpFetch.fetch('/api/Case/Filter/Technician')
@@ -22,8 +25,10 @@ export class CasesService {
             this.technicanCases = tmp.cases;
             resolve(this.technicanCases);
           })
-          .catch(err => reject(err));
+          .catch(err => reject(err))
+          .then(() => this.loadHandlerService.setFree());
       } else {
+        this.loadHandlerService.setFree();
         resolve(this.technicanCases);
       }
 
@@ -31,6 +36,8 @@ export class CasesService {
   }
 
   getCleanerCases() {
+    this.loadHandlerService.setBusy();
+
     return new Promise((resolve, reject) => {
       if (this.cleanerCases.length < 1) {
         this.httpFetch.fetch('/api/Case/Filter/Cleaner')
@@ -40,8 +47,10 @@ export class CasesService {
             this.cleanerCases = tmp.cases;
             resolve(this.cleanerCases);
           })
-          .catch(err => reject(err));
+          .catch(err => reject(err))
+          .then(() => this.loadHandlerService.setFree());
       } else {
+        this.loadHandlerService.setFree();
         resolve(this.cleanerCases);
       }
 

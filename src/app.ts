@@ -1,14 +1,15 @@
 import {Redirect, NavigationInstruction, RouterConfiguration, Router, Next} from 'aurelia-router';
 import {inject} from 'aurelia-framework';
 import {EventAggregator} from 'aurelia-event-aggregator';
+import {LoadHandlerService} from "./services/load-handler-service";
 
-@inject(EventAggregator)
+@inject(EventAggregator, LoadHandlerService)
 export class App {
 
   loggedIn: boolean;
   router: Router;
 
-  constructor(public eventAggregator: EventAggregator) {
+  constructor(public eventAggregator: EventAggregator, public loadHandlerService: LoadHandlerService) {
   }
 
   configureRouter(config: RouterConfiguration, router: Router) {
@@ -20,7 +21,9 @@ export class App {
         title: 'Login',
         name: 'login',
         settings: {
-          publicOnly: true
+          publicOnly: true,
+          clientOnly: false,
+          employeeOnly: false,
         }
       },
       {
@@ -72,10 +75,13 @@ export class App {
 
   attached() {
     this.eventAggregator.subscribe('login::loggedIn', (data) => {
+      AuthorizeStep.auth.isClient = false;
+      AuthorizeStep.auth.isEmployee = false;
+
       AuthorizeStep.auth.isAuthenticated = data.loggedIn;
-      if (data.workerType === 'None') {
+      if (data.workerType == 'None') {
         AuthorizeStep.auth.isClient = true;
-      } else {
+      } else if (data.workerType == 'Technician' || data.workerType === 'Cleaner'){
         AuthorizeStep.auth.isEmployee = true;
       }
     });
@@ -88,8 +94,8 @@ class AuthorizeStep {
 
   static auth = {
     isAuthenticated: !!sessionStorage.getItem('session_token'),
-    isEmployee: sessionStorage.getItem('worker_type') === 'Cleaner' || sessionStorage.getItem('worker_type') === 'Technician',
-    isClient: sessionStorage.getItem('worker_type') === 'None'
+    isClient: sessionStorage.getItem('worker_type') == 'None',
+    isEmployee: (sessionStorage.getItem('worker_type') == 'Cleaner') || (sessionStorage.getItem('worker_type') == 'Technician'),
   };
 
   run(navigationInstruction: NavigationInstruction, next: Next) {
@@ -119,13 +125,13 @@ class AuthorizeStep {
 
     // if currentRoute is employeeOnly -> redirect to the client view
     let employeeOnly = currentRoute.settings && currentRoute.settings.employeeOnly === true;
-    if (isLoggedIn === true && employeeOnly === true && isClient) {
+    if (isClient && (isLoggedIn === true) && (employeeOnly === true)) {
       return next.cancel(new Redirect('client/base'));
     }
 
     // if currentRoute is clientOnly and user is logged as employee -> redirect to the employee view
     let clientOnly = currentRoute.settings && currentRoute.settings.clientOnly === true;
-    if (isLoggedIn === true && clientOnly === true && isEmployee) {
+    if (isEmployee && (isLoggedIn === true) && (clientOnly === true)) {
       return next.cancel(new Redirect('employee/main-panel'));
     }
 
