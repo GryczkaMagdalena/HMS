@@ -2,6 +2,8 @@
   <require from="bootstrap/css/bootstrap.css"></require>
   <require from="./styles/main.css"></require>
 
+  <loading-indicator loading.bind="loadHandlerService.isRequesting || router.isNavigating"></loading-indicator>
+
   <compose if.bind="router.currentInstruction.config.name !== 'login'"
            view-model='components/logout/logout-component'
            view.bind='components/logout/logout-component.html'>

@@ -1,38 +1,47 @@
-import {HttpClient as HttpFetch} from 'aurelia-fetch-client';
 import {inject} from 'aurelia-framework';
+import {HttpClient as HttpFetch} from 'aurelia-fetch-client';
+import {LoadHandlerService} from "./load-handler-service";
 
 
-@inject(HttpFetch)
+@inject(HttpFetch, LoadHandlerService)
 export class HotelRulesService {
-	data;
+  data;
 
-	constructor(private httpFetch: HttpFetch) {
-	}
+  constructor(private httpFetch: HttpFetch, private loadHandlerService: LoadHandlerService) {
+  }
 
-	getRules(){
-		let promise = new Promise((resolve, reject) => {
-			if(!this.data){
-				this.httpFetch.fetch('/api/Home')
-				.then(response => response.json())
-				.then(data => {
-					this.data = data;
-					resolve(data);
-				}).catch(err => reject(err));
-			}
-			else
-				resolve(this.data);
-		});
-		return promise;
-	}
+  getRules() {
+    this.loadHandlerService.setBusy();
 
-	getRule(ruleID){
-		let promise = new Promise((resolve, reject) =>{
-			this.httpFetch.fetch('/api/Home/' + String(ruleID))
-			.then(response => response.json())
-			.then(data => {
-				resolve(data);
-			}).catch(err => reject(err));
-		});
-		return promise;
-	}
+    let promise = new Promise((resolve, reject) => {
+      if (!this.data) {
+        this.httpFetch.fetch('/api/Home')
+          .then(response => response.json())
+          .then(data => {
+            this.data = data;
+            resolve(data);
+          })
+          .catch(err => reject(err))
+          .then(() => this.loadHandlerService.setFree());
+      }
+      else
+        resolve(this.data);
+    });
+    return promise;
+  }
+
+  getRule(ruleID) {
+    this.loadHandlerService.setBusy();
+
+    let promise = new Promise((resolve, reject) => {
+      this.httpFetch.fetch('/api/Home/' + String(ruleID))
+        .then(response => response.json())
+        .then(data => {
+          resolve(data);
+        })
+        .catch(err => reject(err))
+        .then(() => this.loadHandlerService.setFree());
+    });
+    return promise;
+  }
 }

@@ -1,14 +1,16 @@
 import {inject} from 'aurelia-framework';
 import {HttpClient as HttpFetch, json} from 'aurelia-fetch-client';
 import {EventAggregator} from 'aurelia-event-aggregator';
+import {LoadHandlerService} from "./load-handler-service";
 
-@inject(HttpFetch, EventAggregator)
+@inject(HttpFetch, EventAggregator, LoadHandlerService)
 export class LoginService {
   userObject: any;
-  constructor(public httpFetch: HttpFetch, private eventAggregator: EventAggregator) {
+  constructor(public httpFetch: HttpFetch, private eventAggregator: EventAggregator, private loadHandlerService: LoadHandlerService) {
   }
 
   logIn(userInfo) {
+    this.loadHandlerService.setBusy();
 
     let userObj = {
       Login: userInfo.username,
@@ -38,6 +40,7 @@ export class LoginService {
           resolve(data);
         })
         .catch(err => reject(err))
+        .then(() => this.loadHandlerService.setFree());
     });
   }
 }

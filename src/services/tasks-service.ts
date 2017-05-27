@@ -1,13 +1,16 @@
 import {HttpClient as HttpFetch, json} from 'aurelia-fetch-client';
 import {inject} from 'aurelia-framework';
+import {LoadHandlerService} from "./load-handler-service";
 
 
-@inject(HttpFetch)
+@inject(HttpFetch, LoadHandlerService)
 export class TasksService {
 
-  constructor(private httpFetch: HttpFetch) { }
+  constructor(private httpFetch: HttpFetch, private loadHandlerService: LoadHandlerService) { }
 
   createTask(taskObj) {
+    this.loadHandlerService.setBusy();
+
     let task = {
       title: taskObj.title,
       describe: taskObj.description,
@@ -24,8 +27,8 @@ export class TasksService {
         .then(response => resolve(response))
         .catch(err => {
           err.json().then(status => reject(status));
-        });
-        // .catch(err => reject(err.json()));
+        })
+        .then(() => this.loadHandlerService.setFree());
     })
   }
 }
