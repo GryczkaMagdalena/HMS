@@ -33,12 +33,6 @@ namespace HotelManagementSystem.Controllers
             _userService = userService;
             _taskDisposer = new TaskDisposer(_userService, _context);
 
-            new Thread(() =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-                PassNotFinishedTasks();
-                Thread.Sleep(TimeSpan.FromMinutes(5));
-            }).Start();
         }
         // GET: api/Worker
         /**
@@ -163,39 +157,5 @@ namespace HotelManagementSystem.Controllers
             return BadRequest(new { status = "this action is not needed" });
         }
 
-        public async void PassNotFinishedTasks()
-        {
-            foreach(var worker in await _context.LazyLoadWorkers())
-            {
-                if (worker.ReceivedTasks.Any() && worker.CurrentShift() == null)
-                {
-                    // Here status of tasks should be checked as well
-                    List<KeyValuePair<Models.Entities.Storage.Task, User>> tasksToRemove =
-                        new List<KeyValuePair<Models.Entities.Storage.Task, User>>();
-                    
-                    foreach(var unifinishedTask in worker.ReceivedTasks)
-                    {
-                        var newWorker = await _taskDisposer.FindWorker(unifinishedTask.Case);
-                        if (newWorker != null)
-                        {
-                            tasksToRemove
-                                .Add(new KeyValuePair<Models.Entities.Storage.Task, User>(unifinishedTask,newWorker));
-                        }
-                    }
-
-                    foreach (var pair in tasksToRemove)
-                    {
-                        pair.Value.ReceivedTasks.Add(pair.Key);
-                        pair.Key.Receiver = pair.Value;
-                        _context.Entry(pair.Value).State = EntityState.Modified;
-                        _context.Entry(pair.Key).State = EntityState.Modified;
-                        worker.ReceivedTasks.Remove(pair.Key);
-                        _context.Entry(worker).State = EntityState.Modified;
-                        await _context.SaveChangesAsync();
-                        _logger.LogInformation("Task moved to another worker", pair);
-                    }
-                }
-            }
-        }
     }
 }
