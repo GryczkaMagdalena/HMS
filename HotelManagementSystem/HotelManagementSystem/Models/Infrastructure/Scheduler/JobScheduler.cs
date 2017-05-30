@@ -17,6 +17,12 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler
                 HandleNotFinishedTasks job = new HandleNotFinishedTasks(context, userService);
                 job.Execute();
             }).ToRunNow().AndEvery(5).Minutes();
+
+            Schedule(() =>
+            {
+                UpdatePriority job = new UpdatePriority(context);
+                job.Execute();
+            }).ToRunNow().AndEvery(10).Minutes();
         }
     }
 }

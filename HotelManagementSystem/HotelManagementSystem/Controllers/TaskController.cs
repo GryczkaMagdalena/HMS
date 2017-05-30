@@ -198,6 +198,7 @@ namespace HotelManagementSystem.Controllers
                             Receiver = receiver,
                             Listener = listener,
                             Case = case_in_task,
+                            TimeOfCreation=DateTime.Now
                         };
 
                         receiver.ReceivedTasks.Add(taskToUpdate);
