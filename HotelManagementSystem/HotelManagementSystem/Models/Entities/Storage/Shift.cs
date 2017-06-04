@@ -15,6 +15,5 @@ namespace HotelManagementSystem.Models.Entities.Storage
         public TimeSpan ActualTime { get; set; }
         [DefaultValue(false)]
         public Boolean Break { get; set; }
-        public string UserID { get; set; }
     }
 }

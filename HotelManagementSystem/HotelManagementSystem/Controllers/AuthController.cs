@@ -105,7 +105,7 @@ namespace HotelManagementSystem.Controllers
                     try
                     {
                         Room room = await _context.Rooms.FirstAsync(q => q.Number == checkOutModel.roomNumber);
-                        User guestAccount = await _userService.GetUserByUsername(checkOutModel.emailOrLogin);
+                        Customer guestAccount = await _userService.GetUserByUsername(checkOutModel.emailOrLogin) as Customer;
 
                         if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))
                         {
@@ -210,7 +210,7 @@ namespace HotelManagementSystem.Controllers
                     try
                     {
                         Room room = await _context.Rooms.FirstAsync(q => q.Number == checkInModel.roomNumber);
-                        User guestAccount = await _userService.GetUserByUsername(checkInModel.emailOrLogin);
+                        Customer guestAccount = await _userService.GetUserByUsername(checkInModel.emailOrLogin) as Customer;
 
 
                         if (!(await _userService.IsInRoleAsync(guestAccount, "Customer")))  //Only hotel customer can be checked in
@@ -313,39 +313,123 @@ namespace HotelManagementSystem.Controllers
                 {
                     try
                     {
-                        var user = new User
+                        IdentityResult result = null;
+                        switch (registerModel.RoleName)
                         {
-                            UserName = registerModel.Login,
-                            PhoneNumber = registerModel.PhoneNumber,
-                            LastName = registerModel.LastName,
-                            FirstName = registerModel.FirstName,
-                            Email = registerModel.Email,
-                            ReceivedTasks = new List<Models.Entities.Storage.Task>(),
-                            ListenedTasks = new List<Models.Entities.Storage.Task>(),
-                            Shifts = new List<Shift>(),
-                            IssuedTasks = new List<Models.Entities.Storage.Task>(),
-                            NormalizedEmail = registerModel.Email,
-                            WorkerType = (WorkerType)System.Enum.Parse(typeof(WorkerType), registerModel.WorkerType, true)
-                        };
-                        var result = await _userService.CreateUser(user, registerModel.Password);
-                        if (result.Succeeded)
-                        {
-                            var roleResult = await _userService.AddUserToRole(registerModel.RoleName, user.Id);
-                            if (roleResult.Succeeded)
-                            {
-                                safeTransaction.Commit();
-                                return Ok(new { status = "registered" });
-                            }
-                            else
-                            {
-                                safeTransaction.Rollback();
-                                return BadRequest(new { status = "roleNameInvalid" });
-                            }
+                            case "Administrator":
+                                Administrator admin = new Administrator()
+                                {
+                                    UserName = registerModel.Login,
+                                    PhoneNumber = registerModel.PhoneNumber,
+                                    LastName = registerModel.LastName,
+                                    FirstName = registerModel.FirstName,
+                                    Email = registerModel.Email,
+                                    NormalizedEmail = registerModel.Email,
+                                };
+                                result = await _userService.CreateUser(admin, registerModel.Password);
+                                if (result.Succeeded)
+                                {
+                                    var roleResult = await _userService.AddUserToRole(registerModel.RoleName, admin.Id);
+                                    if (roleResult.Succeeded)
+                                    {
+                                        safeTransaction.Commit();
+                                        return Ok(new { status = "registered" });
+                                    }
+                                    else
+                                    {
+                                        safeTransaction.Rollback();
+                                        return BadRequest(new { status = "roleNameInvalid" });
+                                    }
+                                }
+                                break;
+                            case "Manager":
+                                Manager manager = new Manager()
+                                {
+                                    UserName = registerModel.Login,
+                                    PhoneNumber = registerModel.PhoneNumber,
+                                    LastName = registerModel.LastName,
+                                    FirstName = registerModel.FirstName,
+                                    Email = registerModel.Email,
+                                    NormalizedEmail = registerModel.Email,
+                                    Shifts = new List<Shift>(),
+                                    ListenedTasks = new List<Models.Entities.Storage.Task>()
+                                };
+                                result = await _userService.CreateUser(manager, registerModel.Password);
+                                if (result.Succeeded)
+                                {
+                                    var roleResult = await _userService.AddUserToRole(registerModel.RoleName, manager.Id);
+                                    if (roleResult.Succeeded)
+                                    {
+                                        safeTransaction.Commit();
+                                        return Ok(new { status = "registered" });
+                                    }
+                                    else
+                                    {
+                                        safeTransaction.Rollback();
+                                        return BadRequest(new { status = "roleNameInvalid" });
+                                    }
+                                }
+                                break;
+                            case "Worker":
+                                Worker user = new Worker()
+                                {
+                                    UserName = registerModel.Login,
+                                    PhoneNumber = registerModel.PhoneNumber,
+                                    LastName = registerModel.LastName,
+                                    FirstName = registerModel.FirstName,
+                                    Email = registerModel.Email,
+                                    NormalizedEmail = registerModel.Email,
+                                    Shifts = new List<Shift>(),
+                                    ReceivedTasks = new List<Models.Entities.Storage.Task>(),
+                                    WorkerType = (WorkerType)System.Enum.Parse(typeof(WorkerType), registerModel.WorkerType, true)
+                                };
+                                result = await _userService.CreateUser(user, registerModel.Password);
+                                if (result.Succeeded)
+                                {
+                                    var roleResult = await _userService.AddUserToRole(registerModel.RoleName, user.Id);
+                                    if (roleResult.Succeeded)
+                                    {
+                                        safeTransaction.Commit();
+                                        return Ok(new { status = "registered" });
+                                    }
+                                    else
+                                    {
+                                        safeTransaction.Rollback();
+                                        return BadRequest(new { status = "roleNameInvalid" });
+                                    }
+                                }
+                                break;
+                            case "Customer":
+                                Customer customer = new Customer()
+                                {
+                                    UserName = registerModel.Login,
+                                    PhoneNumber = registerModel.PhoneNumber,
+                                    LastName = registerModel.LastName,
+                                    FirstName = registerModel.FirstName,
+                                    Email = registerModel.Email,
+                                    NormalizedEmail = registerModel.Email,
+                                    IssuedTasks = new List<Models.Entities.Storage.Task>(),
+                                };
+                                result = await _userService.CreateUser(customer, registerModel.Password);
+                                if (result.Succeeded)
+                                {
+                                    var roleResult = await _userService.AddUserToRole(registerModel.RoleName, customer.Id);
+                                    if (roleResult.Succeeded)
+                                    {
+                                        safeTransaction.Commit();
+                                        return Ok(new { status = "registered" });
+                                    }
+                                    else
+                                    {
+                                        safeTransaction.Rollback();
+                                        return BadRequest(new { status = "roleNameInvalid" });
+                                    }
+                                }
+                                break;
                         }
-                        else
-                        {
-                            return BadRequest(new { status = "userIdentifierNotUnique" });
-                        }
+
+                        safeTransaction.Rollback();
+                        return BadRequest(new { status = "userIdentifierNotUnique" });
                     }
                     catch (Exception ex)
                     {
@@ -421,7 +505,6 @@ namespace HotelManagementSystem.Controllers
                                 new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
                                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                                 new Claim(ClaimTypes.Role,await _userService.MainRole(user)),
-                                new Claim(ClaimTypes.GroupSid,Enum.GetName(typeof(WorkerType),user.WorkerType))
                             }.Union(userClaims);
 
                         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("HotelowaMuffinka"));
@@ -442,9 +525,8 @@ namespace HotelManagementSystem.Controllers
                                 FirstName = user.FirstName,
                                 LastName = user.LastName,
                                 Email = user.Email,
-                                WorkerType = Enum.GetName(typeof(WorkerType), user.WorkerType),
                                 Roles = await _userService.GetUserRoles(user),
-                                Room = await _userService.GetRoomAsync(user)
+                                //Room = await _userService.GetRoomAsync(user)
                             }
                         });
                     }

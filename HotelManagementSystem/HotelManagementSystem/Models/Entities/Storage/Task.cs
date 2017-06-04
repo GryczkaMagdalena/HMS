@@ -14,16 +14,24 @@ namespace HotelManagementSystem.Models.Entities.Storage
         public Guid RoomID { get; set; }
         public virtual Room Room { get; set; }
         public string IssuerID { get; set; }
-        public virtual User Issuer { get; set; }
+        public virtual Customer Issuer { get; set; }
         public string ListenerID { get; set; }
-        public virtual User Listener { get; set; }
+        public virtual Manager Listener { get; set; }
         public string ReceiverID { get; set; }
-        public virtual User Receiver { get; set; }
+        public virtual Worker Receiver { get; set; }
         public virtual Case Case { get; set; }
         public Guid CaseID { get; set; }
         public DateTime TimeOfCreation { get; set; }
         [DefaultValue(Priority.Medium)]
         public Priority Priority { get; set; }
+        public Status Status { get; set; }
+    }
+    public enum Status
+    {
+        Unassigned,
+        Assigned,
+        Pending,
+        Done
     }
 
     public enum Priority

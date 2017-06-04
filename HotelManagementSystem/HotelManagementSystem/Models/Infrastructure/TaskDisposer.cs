@@ -20,13 +20,13 @@ namespace HotelManagementSystem.Models.Infrastructure
             this._userService = userService;
             _context = context;
         }
-        private async Task<List<User>> GetWorkersByType(WorkerType type)
+        private async Task<List<Worker>> GetWorkersByType(WorkerType type)
         {
-            List<User> resultList = new List<User>();
-            var users = await _context.LazyLoadUsers();
+            List<Worker> resultList = new List<Worker>();
+            var users = await _context.LazyLoadWorkers();
             foreach (var user in users)
             {
-                if (await _userService.IsInRoleAsync(user, "Worker") && user.WorkerType == type)
+                if (user.WorkerType == type)
                 {
                     resultList.Add(user);
                 }
@@ -34,9 +34,9 @@ namespace HotelManagementSystem.Models.Infrastructure
             return resultList;
         }
 
-        private List<User> GetWorkersWhoCanPerformTask(TimeSpan caseDuration, List<User> workers)
+        private List<Worker> GetWorkersWhoCanPerformTask(TimeSpan caseDuration, List<Worker> workers)
         {
-            List<User> workersWhoCanPerformTask = new List<User>();
+            List<Worker> workersWhoCanPerformTask = new List<Worker>();
             foreach (var worker in workers)
             {
                 if (TaskNotExceedsWorkingTime(worker, caseDuration))
@@ -46,7 +46,7 @@ namespace HotelManagementSystem.Models.Infrastructure
             }
             return workersWhoCanPerformTask;
         }
-        private bool TaskNotExceedsWorkingTime(User worker, TimeSpan caseDuration)
+        private bool TaskNotExceedsWorkingTime(Worker worker, TimeSpan caseDuration)
         {
             Shift shift = WorkerCurrentShift(worker);
             if (DateTime.Now.Add(caseDuration) < shift.EndTime)
@@ -58,9 +58,9 @@ namespace HotelManagementSystem.Models.Infrastructure
                 return false;
             }
         }
-        private List<User> GetWorkersInWork(List<User> workers)
+        private List<Worker> GetWorkersInWork(List<Worker> workers)
         {
-            List<User> workersInWork = new List<User>();
+            List<Worker> workersInWork = new List<Worker>();
             foreach (var worker in workers)
             {
                 if (CurrentlyInWork(worker))
@@ -70,7 +70,7 @@ namespace HotelManagementSystem.Models.Infrastructure
             }
             return workersInWork;
         }
-        private Shift WorkerCurrentShift(User worker)
+        private Shift WorkerCurrentShift(Worker worker)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace HotelManagementSystem.Models.Infrastructure
                 return null; 
             }
         }
-        private bool CurrentlyInWork(User worker)
+        private bool CurrentlyInWork(Worker worker)
         {
             var currentShift = WorkerCurrentShift(worker);
             if (currentShift != null)
@@ -98,14 +98,14 @@ namespace HotelManagementSystem.Models.Infrastructure
             }
         }
 
-        private bool CurrentlyHaveBreak(User worker)
+        private bool CurrentlyHaveBreak(Worker worker)
         {
             return WorkerCurrentShift(worker).Break;
         }
 
-        private List<User> FilterOnBreak(List<User> workers)
+        private List<Worker> FilterOnBreak(List<Worker> workers)
         {
-            List<User> NotOnBreak = new List<User>();
+            List<Worker> NotOnBreak = new List<Worker>();
             foreach(var worker in workers)
             {
                 if (!CurrentlyHaveBreak(worker))
@@ -115,10 +115,10 @@ namespace HotelManagementSystem.Models.Infrastructure
             }
             return NotOnBreak;
         }
-        public async Task<User> FindWorker(Case toDo)
+        public async Task<Worker> FindWorker(Case toDo)
         {
 
-            List<User> targetWorkers = new List<User>();
+            List<Worker> targetWorkers = new List<Worker>();
             var possibleWorkers = await GetWorkersByType(toDo.WorkerType);
             if (possibleWorkers.Count == 0) return null;
 
@@ -140,7 +140,7 @@ namespace HotelManagementSystem.Models.Infrastructure
             return targetWorkers.First();
         }
 
-        public async Task<User> AttachListeningManager(Case toDo, User worker)
+        public async Task<Manager> AttachListeningManager(Case toDo, Worker worker)
         {
             return null;
         }

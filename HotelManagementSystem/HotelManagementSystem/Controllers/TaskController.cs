@@ -170,7 +170,7 @@ namespace HotelManagementSystem.Controllers
                 {
                     try
                     {
-                        var user = await _context.LazyLoadUserByEmail(value.Email);
+                        var user = await _context.LazyLoadUserByEmail(value.Email) as Customer;
                         var room = await _context.Rooms.Include(q => q.User)
                             .FirstAsync(q => q.Number == value.RoomNumber);
                         var case_in_task = await _context.Cases.FirstAsync(q => q.Title == value.Title);
@@ -285,7 +285,7 @@ namespace HotelManagementSystem.Controllers
                 {
                     try
                     {
-                        var user = await _context.LazyLoadUserByEmail(value.Email);
+                        var user = await _context.LazyLoadUserByEmail(value.Email) as Customer;
                         var room = await _context.Rooms.Include(q => q.User).FirstAsync(q => q.Number == value.RoomNumber);
                         var case_in_task = await _context.Cases.FirstAsync(q => q.Title == value.Title);
 
