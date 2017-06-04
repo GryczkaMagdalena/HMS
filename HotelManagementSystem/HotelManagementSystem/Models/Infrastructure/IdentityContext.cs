@@ -19,6 +19,10 @@ namespace HotelManagementSystem.Models.Infrastructure
                 Database.Migrate();
             }
         }
+        public DbSet<Worker> Workers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Administrator> Administrators { get; set; }
+        public DbSet<Manager> Managers { get; set; }
         public new DbSet<User> Users { get; set; }
         public DbSet<Shift> Shifts { get; set; }
         public DbSet<Rule> Rules { get; set; }
@@ -36,6 +40,8 @@ namespace HotelManagementSystem.Models.Infrastructure
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<IdentityUserLogin<string>>().HasKey(q => new { q.UserId });
+            builder.Entity<Manager>().HasMany(q => q.Shifts);
+            builder.Entity<Worker>().HasMany(q => q.Shifts);
             base.OnModelCreating(builder);
         }
     }

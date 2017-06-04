@@ -29,8 +29,8 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler.Jobs
                 if (worker.ReceivedTasks.Any() && worker.CurrentShift() == null)
                 {
                     // Here status of tasks should be checked as well
-                    List<KeyValuePair<Models.Entities.Storage.Task, User>> tasksToRemove =
-                        new List<KeyValuePair<Models.Entities.Storage.Task, User>>();
+                    List<KeyValuePair<Models.Entities.Storage.Task, Worker>> tasksToRemove =
+                        new List<KeyValuePair<Models.Entities.Storage.Task, Worker>>();
 
                     foreach (var unifinishedTask in worker.ReceivedTasks)
                     {
@@ -39,7 +39,7 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler.Jobs
                         if (newWorker != null)
                         {
                             tasksToRemove
-                                .Add(new KeyValuePair<Models.Entities.Storage.Task, User>(unifinishedTask, newWorker));
+                                .Add(new KeyValuePair<Models.Entities.Storage.Task, Worker>(unifinishedTask, newWorker));
                         }
                     }
 

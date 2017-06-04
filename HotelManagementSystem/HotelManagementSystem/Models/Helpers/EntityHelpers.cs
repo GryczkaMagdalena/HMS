@@ -16,7 +16,7 @@ namespace HotelManagementSystem.Models.Helpers
             return shift.StartTime.ToString("dd/MM HH:mm") + " -> " + shift.EndTime.ToString("dd/MM HH:mm"); 
         }
 
-        public static object ToJson (this User user)
+        public static object ToJson (this Worker user)
         {
             if (user == null) return null;
             return new
@@ -28,18 +28,55 @@ namespace HotelManagementSystem.Models.Helpers
                 WorkerType = Enum.GetName(typeof(WorkerType), user.WorkerType),
             };
         }
-        
 
-        public static async  Task<User> LazyLoadUser(this IdentityContext context,string UserID)
+        public static object ToJson(this User user)
         {
-            return await context.Users.Include(p => p.Roles).Include(p => p.Shifts)
-                .Include(p => p.Room).Include(p => p.IssuedTasks).Include(p => p.ListenedTasks)
-                .Include(p => p.ReceivedTasks).FirstAsync(q => q.Id == UserID);
+            if (user == null) return null;
+            return new
+            {
+                UserID = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+            };
         }
-        public static async Task<List<User>> LazyLoadUsers(this IdentityContext context)
+
+        public static object ToJson(this Customer user)
         {
-            return await context.Users.Include(p => p.Roles).Include(p => p.Shifts)
-                .Include(p => p.Room).Include(p => p.IssuedTasks).Include(p => p.ListenedTasks)
+            if (user == null) return null;
+            return new
+            {
+                UserID = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Room = user.Room
+            };
+        }
+
+
+        public static async Task<Worker> LazyLoadWorker(this IdentityContext context, string UserID)
+        {
+            return await context.Workers.Include(p => p.Roles).Include(p => p.Shifts)
+              .Include(p => p.ReceivedTasks).FirstAsync(q => q.Id == UserID);
+        }
+
+        public static async Task<Customer> LazyLoadCustomer (this IdentityContext context, string UserID)
+        {
+            return await context.Customers.Include(p => p.Roles)
+               .Include(p => p.Room).Include(p => p.IssuedTasks)
+               .FirstAsync(q => q.Id == UserID);
+        }
+
+        public static async  Task<Manager> LazyLoadManager(this IdentityContext context,string UserID)
+        {
+            return await context.Managers.Include(p => p.Roles).Include(p => p.Shifts)
+                .Include(p => p.ListenedTasks)
+                .FirstAsync(q => q.Id == UserID);
+        }
+        public static async Task<List<Worker>> LazyLoadWorkers(this IdentityContext context)
+        {
+            return await context.Workers.Include(p => p.Roles).Include(p => p.Shifts)
                 .Include(p => p.ReceivedTasks).ToListAsync();
         }
 
@@ -57,9 +94,7 @@ namespace HotelManagementSystem.Models.Helpers
 
         public static async Task<User> LazyLoadUserByEmail(this IdentityContext context,string email)
         {
-            return await context.Users.Include(p => p.Roles).Include(p => p.Shifts)
-              .Include(p => p.Room).Include(p => p.IssuedTasks).Include(p => p.ListenedTasks)
-              .Include(p => p.ReceivedTasks).FirstAsync(q => q.Email == email);
+            return await context.Users.Include(p => p.Roles).FirstAsync(q => q.Email == email);
         }
 
         public static async Task<Room> LazyLoadRoom (this IdentityContext context, Guid RoomID)
@@ -72,15 +107,7 @@ namespace HotelManagementSystem.Models.Helpers
             return await context.Rooms.Include(q => q.User).ToListAsync();
         }
 
-        public static async Task<List<User>> LazyLoadWorkers(this IdentityContext context)
-        {
-            return await context.Users.Include(q=>q.ReceivedTasks)
-                .Include(q=>q.Shifts)
-                .Where(q => q.WorkerType == WorkerType.Cleaner || q.WorkerType == WorkerType.Technician)
-                .ToListAsync();
-        }
-
-        public static Shift CurrentShift (this User worker)
+        public static Shift CurrentShift (this Worker worker)
         {
             try
             {

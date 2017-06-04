@@ -1,3 +1,4 @@
+using HotelManagementSystem.Models.Abstract;
 using HotelManagementSystem.Models.Entities.Storage;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -18,21 +19,6 @@ namespace HotelManagementSystem.Models.Entities.Identity
         [JsonProperty(PropertyName ="lastName")]
         [JsonRequired]
         public string LastName { get; set; }
-        public Guid? RoomID { get; set; }
-        [ForeignKey("RoomID")]
-        public virtual Room Room { get; set; }
-        [DefaultValue(2)]
-        public WorkerType? WorkerType { get; set; }
-        [InverseProperty("Issuer")]
-        public virtual List<Storage.Task> IssuedTasks { get; set; }
-        [InverseProperty("Listener")]
-        public virtual List<Storage.Task> ListenedTasks { get; set; }
-        [InverseProperty("Receiver")]
-        public virtual List<Storage.Task> ReceivedTasks { get; set; }
-        public virtual List<Shift> Shifts { get; set; }
     }
-    public  enum WorkerType
-    {
-        Cleaner,Technician,None
-    }
+    
 }

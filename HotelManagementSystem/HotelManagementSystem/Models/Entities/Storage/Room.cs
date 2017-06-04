@@ -15,7 +15,7 @@ namespace HotelManagementSystem.Models.Entities.Storage
         public string UserID { get; set; }
         [ForeignKey("UserID")]
         [JsonIgnore]
-        public virtual User User { get; set; }
+        public virtual Customer User { get; set; }
         [DefaultValue(false)]
         public bool Occupied { get; set; }
     }

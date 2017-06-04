@@ -44,16 +44,13 @@ namespace HotelManagementSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            List<User> users = await _context.LazyLoadUsers();
+            List<Worker> users = await _context.LazyLoadWorkers();
             return Ok(users.Select(q => new
             {
                 Id = q.Id,
                 FirstName = q.FirstName,
                 LastName = q.LastName,
-                Room = q.Room,
                 WorkerType = q.WorkerType,
-                IssuedTasks = q.IssuedTasks,
-                ListenedTasks = q.ListenedTasks,
                 ReceivedTasks = q.ReceivedTasks,
                 Shifts = q.Shifts,
             }));
@@ -68,11 +65,11 @@ namespace HotelManagementSystem.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Read([FromRoute] string id)
         {
-            User user = null;
+            Worker user = null;
 
             try
             {
-                user = await _context.LazyLoadUser(id);
+                user = await _context.LazyLoadWorker(id);
             }
             catch (Exception ex)
             {
@@ -84,10 +81,7 @@ namespace HotelManagementSystem.Controllers
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Room = user.Room,
                 WorkerType = user.WorkerType,
-                IssuedTasks = user.IssuedTasks,
-                ListenedTasks = user.ListenedTasks,
                 ReceivedTasks = user.ReceivedTasks,
                 Shifts = user.Shifts,
             });
@@ -103,12 +97,12 @@ namespace HotelManagementSystem.Controllers
         [HttpGet("Tasks/{id}")]
         public async Task<IActionResult> Tasks([FromRoute] string id)
         {
-            User user = null;
+            Worker user = null;
             //List<User> tasks = null;
 
             try
             {
-                user = await _context.LazyLoadUser(id);
+                user = await _context.LazyLoadWorker(id);
                 var tasks = user.ReceivedTasks.Select(q => new
                       {
                         TaskID = q.TaskID,

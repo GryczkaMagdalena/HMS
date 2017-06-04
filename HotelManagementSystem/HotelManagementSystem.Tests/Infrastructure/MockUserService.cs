@@ -35,9 +35,9 @@ namespace HotelManagementSystem.Tests.Infrastructure
         {
             using (var context = new IdentityContext())
             {
-                if (user.RoomID != null)
+                if ((user as Customer).RoomID != null)
                 {
-                    var room = await context.Rooms.FindAsync(user.RoomID);
+                    var room = await context.Rooms.FindAsync((user as Customer).RoomID);
                     return room;
                 }
                 else

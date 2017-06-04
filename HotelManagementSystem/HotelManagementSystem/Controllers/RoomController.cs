@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using HotelManagementSystem.Models.Helpers;
+using HotelManagementSystem.Models.Entities.Identity;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -325,7 +326,7 @@ namespace HotelManagementSystem.Controllers
         public async Task<IActionResult> RoomNumber()
         {
             var email = this.User.FindFirstValue(ClaimTypes.Email);
-            var user = await _context.LazyLoadUserByEmail(email);
+            var user = await _context.LazyLoadUserByEmail(email) as Customer;
             if (user.Room != null)
             {
                 return Ok(new { roomNumber = user.Room.Number });

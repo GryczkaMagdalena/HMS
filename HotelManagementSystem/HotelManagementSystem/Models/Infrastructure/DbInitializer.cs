@@ -70,7 +70,7 @@ namespace HotelManagementSystem.Models.Infrastructure
         }
         public static async Task<bool> AddWorkerShifts(IdentityContext context)
         {
-            List<User> workers = await context.Users
+            List<Worker> workers = await context.Workers
                 .Where(q => q.WorkerType == WorkerType.Cleaner || q.WorkerType == WorkerType.Technician)
                 .Include(q=>q.Shifts).ToListAsync();
 
@@ -79,7 +79,7 @@ namespace HotelManagementSystem.Models.Infrastructure
                 var now = DateTime.Now;
                 for (int i = 0; i < workers.Count; i++)
                 {
-                    User worker = workers[i];
+                    Worker worker = workers[i];
                     int switcher = i % 3;
                     switch (switcher)
                     {
@@ -94,7 +94,6 @@ namespace HotelManagementSystem.Models.Infrastructure
                                     StartTime = RoundUp(startTime, TimeSpan.FromMinutes(30)),
                                     EndTime = RoundUp(startTime, TimeSpan.FromMinutes(30)).AddHours(8),
                                     ShiftID = Guid.NewGuid(),
-                                    UserID=worker.Id
                                 });
                             }
                             break;
@@ -109,7 +108,6 @@ namespace HotelManagementSystem.Models.Infrastructure
                                     StartTime = RoundUp(startTime, TimeSpan.FromMinutes(30)),
                                     EndTime = RoundUp(startTime, TimeSpan.FromMinutes(30)).AddHours(8),
                                     ShiftID = Guid.NewGuid(),
-                                    UserID = worker.Id
                                 });
                             }
                             break;
@@ -124,7 +122,6 @@ namespace HotelManagementSystem.Models.Infrastructure
                                     StartTime = RoundUp(startTime, TimeSpan.FromMinutes(30)),
                                     EndTime = RoundUp(startTime, TimeSpan.FromMinutes(30)).AddHours(8),
                                     ShiftID = Guid.NewGuid(),
-                                    UserID = worker.Id
                                 });
                             }
                             break;

@@ -88,8 +88,10 @@ namespace HotelManagementSystem.Models.Infrastructure
 
         public async Task<Room> GetRoomAsync(User user)
         {
-           var entity = await _userManager.Users.Include(q => q.Room).FirstAsync(u=>u.Id==user.Id);
-            return entity.Room;
+            var customer = await _userManager.Users.FirstAsync(q => q.Id == user.Id) as Customer;
+
+            //var entity = await _userManager.Users.Include(q => q.Room).FirstAsync(u=>u.Id==user.Id);
+           return customer.Room;
         }
 
         public PasswordVerificationResult VerifyHashedPassword(User user,string password)
