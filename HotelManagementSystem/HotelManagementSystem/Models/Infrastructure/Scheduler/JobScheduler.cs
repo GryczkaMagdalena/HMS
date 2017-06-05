@@ -10,7 +10,7 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler
 {
     public class JobScheduler : Registry
     {
-        public JobScheduler(IdentityContext context,IUserService userService)
+        public JobScheduler(IdentityContext context, IUserService userService)
         {
             Schedule(() =>
             {
@@ -29,6 +29,12 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler
                 CollectFinished job = new CollectFinished(context);
                 job.Execute();
             }).ToRunNow().AndEvery(15).Minutes();
+
+            Schedule(() =>
+            {
+                MoveOldAssigned job = new MoveOldAssigned(context, userService);
+                job.Execute();
+            }).ToRunNow().AndEvery(8).Minutes();
         }
     }
 }
