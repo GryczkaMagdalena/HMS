@@ -789,8 +789,8 @@ define({ "api": [
     "url": "",
     "version": "0.0.0",
     "filename": "HotelManagementSystem/wwwroot/doc/main.js",
-    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
-    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "group": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "groupTitle": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
     "name": ""
   },
   {
@@ -817,8 +817,8 @@ define({ "api": [
     "url": "",
     "version": "0.0.0",
     "filename": "HotelManagementSystem/wwwroot/doc/ping/main.js",
-    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
-    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
+    "group": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
+    "groupTitle": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
     "name": ""
   },
   {
@@ -2146,7 +2146,7 @@ define({ "api": [
     "type": "post",
     "url": "/Task",
     "title": "Create",
-    "version": "0.1.2",
+    "version": "0.1.5",
     "name": "Create",
     "group": "Task",
     "success": {
@@ -2236,12 +2236,6 @@ define({ "api": [
           {
             "group": "Error 4xx",
             "optional": false,
-            "field": "BusyWorkers",
-            "description": "<p>All workers are busy or too many not in work to take task</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "optional": false,
             "field": "NotFound",
             "description": "<p>User with specified ID was not found</p>"
           }
@@ -2251,11 +2245,6 @@ define({ "api": [
         {
           "title": "Error-Response:",
           "content": "HTTP/1.1 400 BadRequest\n{\n  \"status\":\"failure\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 400 BadRequest\n{\n  \"status\":\"All workers busy. Try again later\"\n}",
           "type": "json"
         },
         {
@@ -2350,7 +2339,7 @@ define({ "api": [
     "type": "get",
     "url": "/Task",
     "title": "List",
-    "version": "0.1.2",
+    "version": "0.1.5",
     "name": "List",
     "group": "Task",
     "success": {
@@ -2368,7 +2357,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n  [\n      {\n      \"taskID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"describe\":\"Describtion of task\",\n      \"roomID\":\"5ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"room\":\"Connected room\"\n      }\n  ]",
+          "content": "HTTP/1.1 200 OK\n  [\n      {\n                    \"taskID\": \"c49a6e23-e767-4904-b41a-4c31c3e80ac1\",\n                    \"describe\": \"Do something for me\",\n                    \"room\": {\n                      \"roomID\": \"d89fcd07-efba-4ee0-aa10-242c872454d1\",\n                      \"number\": \"1\",\n                      \"userID\": null,\n                      \"occupied\": false\n                    },\n                    \"issuer\": {\n                      \"userID\": \"377dcd34-bbff-4bdd-afc8-5e760ef1f1fd\",\n                      \"firstName\": \"Tom\",\n                      \"lastName\": \"Postman\",\n                      \"email\": \"guest1@hms.com\",\n                      \"room\": null\n                    },\n                    \"receiver\": {\n                      \"userID\": \"a03df2d1-f001-4848-973a-971033e5bb60\",\n                      \"firstName\": \"Alfons\",\n                      \"lastName\": \"Padlina\",\n                      \"email\": \"worker8@hms.com\",\n                      \"workerType\": \"Technician\"\n                    },\n                    \"listener\": null,\n                    \"case\": {\n                      \"caseID\": \"cee9dfb3-09f1-4846-aa32-3059ac6279e8\",\n                      \"title\": \"TestCase\",\n                      \"description\": \"Do something for me\",\n                      \"workerType\": 1,\n                      \"estimatedTime\": \"01:00:00\"\n                    },\n                    \"timeOfCreation\": \"2017-06-05T12:15:52.0584134\",\n                    \"status\": \"Done\",\n                    \"priority\": \"Emergency\"\n                  }\n  ]",
           "type": "json"
         }
       ]
@@ -2380,7 +2369,7 @@ define({ "api": [
     "type": "get",
     "url": "/Task/TaskID",
     "title": "Read",
-    "version": "0.1.2",
+    "version": "0.1.5",
     "name": "Read",
     "group": "Task",
     "parameter": {
@@ -2410,7 +2399,7 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "description",
+            "field": "describe",
             "description": "<p>of task</p>"
           },
           {
@@ -2425,14 +2414,63 @@ define({ "api": [
             "type": "Room",
             "optional": false,
             "field": "room",
+            "description": "<p>Room entity</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Customer",
+            "optional": false,
+            "field": "issuer",
+            "description": "<p>Customer entity</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Worker",
+            "optional": false,
+            "field": "receiver",
+            "description": "<p>Worker entity</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Manager",
+            "optional": false,
+            "field": "listener",
+            "description": "<p>Manager entity</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Case",
+            "optional": false,
+            "field": "case",
+            "description": "<p>Case entity</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "timeOfCreation",
             "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Status",
+            "optional": false,
+            "field": "status",
+            "description": "<p>Status of task</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Priority",
+            "optional": false,
+            "field": "priority",
+            "description": "<p>Priority of task</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n      {\n      \"taskID\":\"4ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"describe\":\"Describtion of task\",\n      \"roomID\":\"5ba83f3c-4ea4-4da4-9c06-e986a8273800\",\n      \"room\":\"Connected room\"\n      }",
+          "content": "HTTP/1.1 200 OK\n      {\n            \"taskID\": \"c49a6e23-e767-4904-b41a-4c31c3e80ac1\",\n            \"describe\": \"Do something for me\",\n            \"room\": {\n              \"roomID\": \"d89fcd07-efba-4ee0-aa10-242c872454d1\",\n              \"number\": \"1\",\n              \"userID\": null,\n              \"occupied\": false\n            },\n            \"issuer\": {\n              \"userID\": \"377dcd34-bbff-4bdd-afc8-5e760ef1f1fd\",\n              \"firstName\": \"Tom\",\n              \"lastName\": \"Postman\",\n              \"email\": \"guest1@hms.com\",\n              \"room\": null\n            },\n            \"receiver\": {\n              \"userID\": \"a03df2d1-f001-4848-973a-971033e5bb60\",\n              \"firstName\": \"Alfons\",\n              \"lastName\": \"Padlina\",\n              \"email\": \"worker8@hms.com\",\n              \"workerType\": \"Technician\"\n            },\n            \"listener\": null,\n            \"case\": {\n              \"caseID\": \"cee9dfb3-09f1-4846-aa32-3059ac6279e8\",\n              \"title\": \"TestCase\",\n              \"description\": \"Do something for me\",\n              \"workerType\": 1,\n              \"estimatedTime\": \"01:00:00\"\n            },\n            \"timeOfCreation\": \"2017-06-05T12:15:52.0584134\",\n            \"status\": \"Done\",\n            \"priority\": \"Emergency\"\n          }",
           "type": "json"
         }
       ]
@@ -2463,7 +2501,7 @@ define({ "api": [
     "type": "put",
     "url": "/task?TaskID",
     "title": "Update",
-    "version": "0.1.2",
+    "version": "0.1.5",
     "name": "Update",
     "group": "Task",
     "success": {
@@ -2512,6 +2550,86 @@ define({ "api": [
         {
           "title": "Error-Response:",
           "content": "HTTP/1.1 404 NotFound\n{\n \"status\":\"notFound\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "groupTitle": "Task"
+  },
+  {
+    "type": "post",
+    "url": "/Task/Status/{TaskID}",
+    "title": "UpdateStatus",
+    "version": "0.1.5",
+    "name": "UpdateStatus",
+    "group": "Task",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "GUID",
+            "optional": false,
+            "field": "TaskID",
+            "description": "<p>Task identifier</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "Status",
+            "description": "<p>Task status identifier - Unassigned, Assigned, Done, Pending</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>Task status changed</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"status\":\"StatusChanged\"\n      }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Task with specified ID was not found</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidInput",
+            "description": "<p>Status name is not correct</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 NotFound\n{\n \"status\":\"notFound\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 BadRequest\n{\n  \"status\":\"InvalidStatus\"\n}",
           "type": "json"
         }
       ]
@@ -2583,6 +2701,16 @@ define({ "api": [
     "type": "get",
     "url": "/Worker/{id}",
     "title": "Read",
+    "version": "0.1.3",
+    "name": "Read",
+    "group": "Worker",
+    "filename": "HotelManagementSystem/Controllers/WorkerController.cs",
+    "groupTitle": "Worker"
+  },
+  {
+    "type": "get",
+    "url": "/Worker/{id}",
+    "title": "Tasks",
     "version": "0.1.3",
     "name": "Read",
     "group": "Worker",
