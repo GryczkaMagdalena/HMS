@@ -555,7 +555,39 @@ namespace HotelManagementSystem.Controllers
                 return BadRequest(new { status = "InvalidStatus" });
             }
         }
-
-
+        /**
+     * @api {get} /Task/Status ListStatus
+     * @apiVersion 0.1.5
+     * @apiName ListAvailableStatus
+     * @apiGroup Task
+     * @apiDescription
+     * Gets all available statuses that can be assigned to task
+     * @apiSuccess {Array} Names List of every status by name 
+     * @apiSuccessExample Success-Response:
+     * HTTP/1.1 200 OK
+      *       {
+      *       "names":[
+      *         
+      *       ]
+      *       }
+     */
+        [HttpGet("Status")]
+        public IActionResult ListStatus()
+        {
+            try
+            {
+                List<string> names = new List<string>();
+                foreach(var status in Enum.GetNames(typeof(Status)))
+                {
+                    names.Add(status);
+                }
+               
+                return Ok(names);
+            }catch(Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return NotFound(new { status = "InternalError" });
+            }
+        }
     }
 }

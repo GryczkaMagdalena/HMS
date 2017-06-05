@@ -260,7 +260,9 @@ namespace HotelManagementSystem.Controllers
       * @apiVersion 0.1.4
       * @apiName Register
       * @apiGroup Auth
-      *
+      *@apiDescription 
+      * This method can take all parameters, however WorkerType field will only be used for Worker role
+      * 
       *@apiParam {String} login Login of user
       * @apiParam {String} password Password of user
       * @apiParam {String} firstName Optional user name
@@ -454,9 +456,7 @@ namespace HotelManagementSystem.Controllers
          * @apiSuccess {String} firstName First name of user.
          * @apiSuccess {String} lastName Last name of user.
          * @apiSuccess {String} email Optional email address of user
-         * @apiSuccess {String} workerType One of available types (Cleaner,Technician,None).
          * @apiSuccess {Array} role All roles that particular user have 
-         * @apiSuccess {GUID} roomID Optional parameter - only guests have this not-null 
          * @apiSuccess {Token} token Authentication token that should be send in every response as header (headerKey:Authenticate, headerValue: "bearer " + token)
           *@apiSuccess {DateTime} expiration Date when token expires
          * @apiSuccessExample Success-Response:
@@ -465,7 +465,6 @@ namespace HotelManagementSystem.Controllers
          *     "firstName":"Abraham",
          *     "lastName":"Lincoln",
          *     "email":"president@usa.pl",
-         *     "workerType":"Technician",
          *     "role":["Worker"]
          *     "token":"blablabla121212",
          *     "expiration":"2017-05-07T20:49:48Z"
