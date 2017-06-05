@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HotelManagementSystem.Models.Helpers;
+using HotelManagementSystem.Models.Entities.Storage;
+
 namespace HotelManagementSystem.Models.Infrastructure.Scheduler.Jobs
 {
     public class UpdatePriority : IJob
@@ -16,7 +18,7 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler.Jobs
 
         public void Execute()
         {
-            foreach (var task in _context.LazyLoadTasks().Result)
+            foreach (var task in _context.LazyLoadTasks().Result.Where(q => q.Priority < Priority.Compulsory)) 
             {
                 TimeSpan timeFromStart = DateTime.Now - task.TimeOfCreation;
                 if (timeFromStart > task.Case.EstimatedTime.Add(task.Case.EstimatedTime))

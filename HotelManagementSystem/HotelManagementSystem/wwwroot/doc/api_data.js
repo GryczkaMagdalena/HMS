@@ -408,6 +408,7 @@ define({ "api": [
     "version": "0.1.4",
     "name": "Register",
     "group": "Auth",
+    "description": "<p>This method can take all parameters, however WorkerType field will only be used for Worker role</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -689,24 +690,10 @@ define({ "api": [
           },
           {
             "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "workerType",
-            "description": "<p>One of available types (Cleaner,Technician,None).</p>"
-          },
-          {
-            "group": "Success 200",
             "type": "Array",
             "optional": false,
             "field": "role",
             "description": "<p>All roles that particular user have</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "GUID",
-            "optional": false,
-            "field": "roomID",
-            "description": "<p>Optional parameter - only guests have this not-null</p>"
           },
           {
             "group": "Success 200",
@@ -727,7 +714,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n\"firstName\":\"Abraham\",\n\"lastName\":\"Lincoln\",\n\"email\":\"president@usa.pl\",\n\"workerType\":\"Technician\",\n\"role\":[\"Worker\"]\n\"token\":\"blablabla121212\",\n\"expiration\":\"2017-05-07T20:49:48Z\"\n}",
+          "content": "HTTP/1.1 200 OK\n{\n\"firstName\":\"Abraham\",\n\"lastName\":\"Lincoln\",\n\"email\":\"president@usa.pl\",\n\"role\":[\"Worker\"]\n\"token\":\"blablabla121212\",\n\"expiration\":\"2017-05-07T20:49:48Z\"\n}",
           "type": "json"
         }
       ]
@@ -789,8 +776,8 @@ define({ "api": [
     "url": "",
     "version": "0.0.0",
     "filename": "HotelManagementSystem/wwwroot/doc/main.js",
-    "group": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
-    "groupTitle": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
     "name": ""
   },
   {
@@ -817,8 +804,8 @@ define({ "api": [
     "url": "",
     "version": "0.0.0",
     "filename": "HotelManagementSystem/wwwroot/doc/ping/main.js",
-    "group": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
-    "groupTitle": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
+    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
+    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
     "name": ""
   },
   {
@@ -2358,6 +2345,37 @@ define({ "api": [
         {
           "title": "Success-Response:",
           "content": "HTTP/1.1 200 OK\n  [\n      {\n                    \"taskID\": \"c49a6e23-e767-4904-b41a-4c31c3e80ac1\",\n                    \"describe\": \"Do something for me\",\n                    \"room\": {\n                      \"roomID\": \"d89fcd07-efba-4ee0-aa10-242c872454d1\",\n                      \"number\": \"1\",\n                      \"userID\": null,\n                      \"occupied\": false\n                    },\n                    \"issuer\": {\n                      \"userID\": \"377dcd34-bbff-4bdd-afc8-5e760ef1f1fd\",\n                      \"firstName\": \"Tom\",\n                      \"lastName\": \"Postman\",\n                      \"email\": \"guest1@hms.com\",\n                      \"room\": null\n                    },\n                    \"receiver\": {\n                      \"userID\": \"a03df2d1-f001-4848-973a-971033e5bb60\",\n                      \"firstName\": \"Alfons\",\n                      \"lastName\": \"Padlina\",\n                      \"email\": \"worker8@hms.com\",\n                      \"workerType\": \"Technician\"\n                    },\n                    \"listener\": null,\n                    \"case\": {\n                      \"caseID\": \"cee9dfb3-09f1-4846-aa32-3059ac6279e8\",\n                      \"title\": \"TestCase\",\n                      \"description\": \"Do something for me\",\n                      \"workerType\": 1,\n                      \"estimatedTime\": \"01:00:00\"\n                    },\n                    \"timeOfCreation\": \"2017-06-05T12:15:52.0584134\",\n                    \"status\": \"Done\",\n                    \"priority\": \"Emergency\"\n                  }\n  ]",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "groupTitle": "Task"
+  },
+  {
+    "type": "get",
+    "url": "/Task/Status",
+    "title": "ListStatus",
+    "version": "0.1.5",
+    "name": "ListAvailableStatus",
+    "group": "Task",
+    "description": "<p>Gets all available statuses that can be assigned to task</p>",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "Names",
+            "description": "<p>List of every status by name</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"names\":[\n        \n      ]\n      }",
           "type": "json"
         }
       ]

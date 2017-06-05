@@ -23,6 +23,12 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler
                 UpdatePriority job = new UpdatePriority(context);
                 job.Execute();
             }).ToRunNow().AndEvery(10).Minutes();
+
+            Schedule(() =>
+            {
+                CollectFinished job = new CollectFinished(context);
+                job.Execute();
+            }).ToRunNow().AndEvery(15).Minutes();
         }
     }
 }
