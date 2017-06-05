@@ -2375,7 +2375,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n      {\n      \"names\":[\n        \n      ]\n      }",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"names\":[\n         \"Unassigned\",\n                 \"Assigned\",\n                  \"Pending\",\n                  \"Done\"\n      ]\n      }",
           "type": "json"
         }
       ]

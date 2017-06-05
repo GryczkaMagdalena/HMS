@@ -567,7 +567,10 @@ namespace HotelManagementSystem.Controllers
      * HTTP/1.1 200 OK
       *       {
       *       "names":[
-      *         
+      *          "Unassigned",
+                 "Assigned",
+                  "Pending",
+                  "Done"
       *       ]
       *       }
      */
