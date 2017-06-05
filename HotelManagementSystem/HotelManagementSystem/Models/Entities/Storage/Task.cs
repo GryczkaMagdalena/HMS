@@ -22,7 +22,6 @@ namespace HotelManagementSystem.Models.Entities.Storage
         public virtual Case Case { get; set; }
         public Guid CaseID { get; set; }
         public DateTime TimeOfCreation { get; set; }
-        [DefaultValue(Priority.Medium)]
         public Priority Priority { get; set; }
         public Status Status { get; set; }
     }

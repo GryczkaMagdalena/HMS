@@ -41,7 +41,7 @@ namespace HotelManagementSystem.Controllers
 
         /**
        * @api {get} /Task List
-       * @apiVersion 0.1.2
+       * @apiVersion 0.1.5
        * @apiName List
        * @apiGroup Task
        *
@@ -50,11 +50,40 @@ namespace HotelManagementSystem.Controllers
        * HTTP/1.1 200 OK
         *   [
         *       {
-        *       "taskID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-        *       "describe":"Describtion of task",
-        *       "roomID":"5ba83f3c-4ea4-4da4-9c06-e986a8273800",
-        *       "room":"Connected room"
-        *       }
+                    "taskID": "c49a6e23-e767-4904-b41a-4c31c3e80ac1",
+                    "describe": "Do something for me",
+                    "room": {
+                      "roomID": "d89fcd07-efba-4ee0-aa10-242c872454d1",
+                      "number": "1",
+                      "userID": null,
+                      "occupied": false
+                    },
+                    "issuer": {
+                      "userID": "377dcd34-bbff-4bdd-afc8-5e760ef1f1fd",
+                      "firstName": "Tom",
+                      "lastName": "Postman",
+                      "email": "guest1@hms.com",
+                      "room": null
+                    },
+                    "receiver": {
+                      "userID": "a03df2d1-f001-4848-973a-971033e5bb60",
+                      "firstName": "Alfons",
+                      "lastName": "Padlina",
+                      "email": "worker8@hms.com",
+                      "workerType": "Technician"
+                    },
+                    "listener": null,
+                    "case": {
+                      "caseID": "cee9dfb3-09f1-4846-aa32-3059ac6279e8",
+                      "title": "TestCase",
+                      "description": "Do something for me",
+                      "workerType": 1,
+                      "estimatedTime": "01:00:00"
+                    },
+                    "timeOfCreation": "2017-06-05T12:15:52.0584134",
+                    "status": "Done",
+                    "priority": "Emergency"
+                  }
         *   ]
        */
         // GET: api/Task
@@ -73,11 +102,13 @@ namespace HotelManagementSystem.Controllers
                 Listener = q.Listener.ToJson(),
                 Case = q.Case,
                 TimeOfCreation = q.TimeOfCreation,
+                Status = Enum.GetName(typeof(Status), q.Status),
+                Priority = Enum.GetName(typeof(Priority), q.Priority)
             }));
         }
         /**
   * @api {get} /Task/TaskID Read
-  * @apiVersion 0.1.2
+  * @apiVersion 0.1.5
   * @apiName Read
   * @apiGroup Task
   *
@@ -85,17 +116,53 @@ namespace HotelManagementSystem.Controllers
   * 
   * 
   *@apiSuccess {String} taskID Task identifier
-  * @apiSuccess {String} description of task
+  * @apiSuccess {String} describe of task
   * @apiSuccess {String} roomID Room identifier
-  * @apiSuccess {Room} room
+  * @apiSuccess {Room} room Room entity
+  * @apiSuccess {Customer} issuer Customer entity
+  * @apiSuccess {Worker} receiver Worker entity
+  * @apiSuccess {Manager} listener Manager entity
+  * @apiSuccess {Case} case Case entity 
+  * @apiSuccess {DateTime} timeOfCreation 
+    @apiSuccess {Status} status Status of task
+    @apiSuccess {Priority} priority Priority of task
   *@apiSuccessExample Success-Response:
   * HTTP/1.1 200 OK
    *       {
-   *       "taskID":"4ba83f3c-4ea4-4da4-9c06-e986a8273800",
-   *       "describe":"Describtion of task",
-   *       "roomID":"5ba83f3c-4ea4-4da4-9c06-e986a8273800",
-   *       "room":"Connected room"
-   *       }
+            "taskID": "c49a6e23-e767-4904-b41a-4c31c3e80ac1",
+            "describe": "Do something for me",
+            "room": {
+              "roomID": "d89fcd07-efba-4ee0-aa10-242c872454d1",
+              "number": "1",
+              "userID": null,
+              "occupied": false
+            },
+            "issuer": {
+              "userID": "377dcd34-bbff-4bdd-afc8-5e760ef1f1fd",
+              "firstName": "Tom",
+              "lastName": "Postman",
+              "email": "guest1@hms.com",
+              "room": null
+            },
+            "receiver": {
+              "userID": "a03df2d1-f001-4848-973a-971033e5bb60",
+              "firstName": "Alfons",
+              "lastName": "Padlina",
+              "email": "worker8@hms.com",
+              "workerType": "Technician"
+            },
+            "listener": null,
+            "case": {
+              "caseID": "cee9dfb3-09f1-4846-aa32-3059ac6279e8",
+              "title": "TestCase",
+              "description": "Do something for me",
+              "workerType": 1,
+              "estimatedTime": "01:00:00"
+            },
+            "timeOfCreation": "2017-06-05T12:15:52.0584134",
+            "status": "Done",
+            "priority": "Emergency"
+          }
    *@apiError NotFound Given ID does not appeal to any of tasks
    *@apiErrorExample Error-Response:
    * HTTP/1.1 404 NotFound
@@ -127,16 +194,16 @@ namespace HotelManagementSystem.Controllers
                 Receiver = rule.Receiver.ToJson(),
                 Listener = rule.Listener.ToJson(),
                 Case = rule.Case,
-                TimeOfCreation = rule.TimeOfCreation
+                TimeOfCreation = rule.TimeOfCreation,
+                Status = Enum.GetName(typeof(Status), rule.Status),
+                Priority = Enum.GetName(typeof(Priority), rule.Priority)
             });
         }
         /**
         * @api {put} /task?TaskID Update
-        * @apiVersion 0.1.2
+        * @apiVersion 0.1.5
         * @apiName Update
         * @apiGroup Task
-        *
-        * 
         * 
         *@apiSuccess {String} status task was updated 
         *@apiSuccessExample Success-Response:
@@ -180,38 +247,64 @@ namespace HotelManagementSystem.Controllers
 
                         var receiver = await _taskDisposer.FindWorker(case_in_task);
                         var listener = await _taskDisposer.AttachListeningManager(case_in_task, receiver);
-
-                        if (receiver == null) return BadRequest(new { status = "All workers busy. Try again later" });
-
                         var taskToUpdate = await _context.LazyLoadTask(id);
 
-                        taskToUpdate.Listener.ListenedTasks.Remove(taskToUpdate);
-                        taskToUpdate.Receiver.ReceivedTasks.Remove(taskToUpdate);
-                        taskToUpdate.Issuer.IssuedTasks.Remove(taskToUpdate);
-
-                        taskToUpdate = new Models.Entities.Storage.Task()
+                        if (receiver == null)
                         {
-                            TaskID = id,
-                            Describe = value.Describe,
-                            Room = room,
-                            Issuer = user,
-                            Receiver = receiver,
-                            Listener = listener,
-                            Case = case_in_task,
-                            TimeOfCreation=DateTime.Now
-                        };
+                            taskToUpdate.Listener?.ListenedTasks.Remove(taskToUpdate);
+                            taskToUpdate.Receiver?.ReceivedTasks.Remove(taskToUpdate);
+                            taskToUpdate.Issuer.IssuedTasks.Remove(taskToUpdate);
 
-                        receiver.ReceivedTasks.Add(taskToUpdate);
-                        user.IssuedTasks.Add(taskToUpdate);
+                            taskToUpdate = new Models.Entities.Storage.Task()
+                            {
+                                TaskID = id,
+                                Describe = value.Describe,
+                                Room = room,
+                                Issuer = user,
+                                Receiver = receiver,
+                                Listener = listener,
+                                Case = case_in_task,
+                                TimeOfCreation = DateTime.Now,
+                                Status = Status.Unassigned,
+                                Priority = Priority.Compulsory
+                            };
 
-                        _context.Entry(taskToUpdate).State = EntityState.Modified;
-                        _context.Entry(user).State = EntityState.Modified;
-                        _context.Entry(receiver).State = EntityState.Modified;
+                            user.IssuedTasks.Add(taskToUpdate);
 
+                            _context.Entry(taskToUpdate).State = EntityState.Modified;
+                            _context.Entry(user).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            taskToUpdate.Listener?.ListenedTasks.Remove(taskToUpdate);
+                            taskToUpdate.Receiver?.ReceivedTasks.Remove(taskToUpdate);
+                            taskToUpdate.Issuer.IssuedTasks.Remove(taskToUpdate);
 
+                            taskToUpdate = new Models.Entities.Storage.Task()
+                            {
+                                TaskID = id,
+                                Describe = value.Describe,
+                                Room = room,
+                                Issuer = user,
+                                Receiver = receiver,
+                                Listener = listener,
+                                Case = case_in_task,
+                                TimeOfCreation = DateTime.Now,
+                                Status = Status.Assigned,
+                                Priority = Priority.Medium
+                            };
+
+                            receiver.ReceivedTasks.Add(taskToUpdate);
+                            user.IssuedTasks.Add(taskToUpdate);
+
+                            _context.Entry(taskToUpdate).State = EntityState.Modified;
+                            _context.Entry(user).State = EntityState.Modified;
+                            _context.Entry(receiver).State = EntityState.Modified;
+
+                        }
                         await _context.SaveChangesAsync();
                         safeTransaction.Commit();
-                        return Ok(new { status = "created" });
+                        return Ok(new { status = "updated" });
                     }
                     catch (Exception ex)
                     {
@@ -228,7 +321,7 @@ namespace HotelManagementSystem.Controllers
         }
         /**
          * @api {post} /Task Create
-         * @apiVersion 0.1.2
+         * @apiVersion 0.1.5
          * @apiName Create
          * @apiGroup Task
          *
@@ -252,13 +345,6 @@ namespace HotelManagementSystem.Controllers
           * HTTP/1.1 400 BadRequest
           * {
           *   "status":"failure"
-          * }
-          * 
-          * @apiError BusyWorkers All workers are busy or too many not in work to take task
-          *@apiErrorExample Error-Response:
-          * HTTP/1.1 400 BadRequest
-          * {
-          *   "status":"All workers busy. Try again later"
           * }
           * 
           * @apiError NotFound User with specified ID was not found
@@ -295,27 +381,49 @@ namespace HotelManagementSystem.Controllers
                         var receiver = await _taskDisposer.FindWorker(case_in_task);
                         var listener = await _taskDisposer.AttachListeningManager(case_in_task, receiver);
 
-                        if (receiver == null) return BadRequest(new { status = "All workers busy. Try again later" });
-
-                        var newTask = new Models.Entities.Storage.Task()
+                        if (receiver == null)
                         {
-                            TaskID = Guid.NewGuid(),
-                            Describe = value.Describe,
-                            Room = room,
-                            Issuer = user,
-                            Receiver = receiver,
-                            Listener = listener,
-                            Case = case_in_task,
-                            TimeOfCreation = DateTime.Now,
-                        };
+                            var newTask = new Models.Entities.Storage.Task()
+                            {
+                                TaskID = Guid.NewGuid(),
+                                Describe = value.Describe,
+                                Room = room,
+                                Issuer = user,
+                                Receiver = receiver,
+                                Listener = listener,
+                                Case = case_in_task,
+                                TimeOfCreation = DateTime.Now,
+                                Status = Status.Unassigned,
+                                Priority = Priority.Compulsory
+                            };
+                            user.IssuedTasks.Add(newTask);
 
-                        receiver.ReceivedTasks.Add(newTask);
-                        user.IssuedTasks.Add(newTask);
+                            _context.Entry(newTask).State = EntityState.Added;
+                            _context.Entry(user).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            var newTask = new Models.Entities.Storage.Task()
+                            {
+                                TaskID = Guid.NewGuid(),
+                                Describe = value.Describe,
+                                Room = room,
+                                Issuer = user,
+                                Receiver = receiver,
+                                Listener = listener,
+                                Case = case_in_task,
+                                TimeOfCreation = DateTime.Now,
+                                Status = Status.Assigned,
+                                Priority = Priority.Medium
+                            };
 
-                        _context.Entry(newTask).State = EntityState.Added;
-                        _context.Entry(user).State = EntityState.Modified;
-                        _context.Entry(receiver).State = EntityState.Modified;
+                            receiver.ReceivedTasks.Add(newTask);
+                            user.IssuedTasks.Add(newTask);
 
+                            _context.Entry(newTask).State = EntityState.Added;
+                            _context.Entry(user).State = EntityState.Modified;
+                            _context.Entry(receiver).State = EntityState.Modified;
+                        }
 
                         await _context.SaveChangesAsync();
                         safeTransaction.Commit();
@@ -393,6 +501,59 @@ namespace HotelManagementSystem.Controllers
         private bool TaskExists(Guid id)
         {
             return _context.Tasks.Any(e => e.TaskID == id);
+        }
+        public partial class Model
+        {
+            public Status status { get; set; }
+        }
+
+        /**
+      * @api {post} /Task/Status/{TaskID} UpdateStatus
+      * @apiVersion 0.1.5
+      * @apiName UpdateStatus
+      * @apiGroup Task
+      *
+      * @apiParam {GUID} TaskID Task identifier
+      * @apiParam {string} Status Task status identifier - Unassigned, Assigned, Done, Pending
+      * 
+      *@apiSuccess {String} status Task status changed
+      *@apiSuccessExample Success-Response:
+      * HTTP/1.1 200 OK
+       *       {
+       *       "status":"StatusChanged"
+       *       }
+       * 
+       * @apiError NotFound Task with specified ID was not found
+       * @apiErrorExample Error-Response:
+       * HTTP/1.1 404 NotFound
+       * {
+       *  "status":"notFound"
+       * }
+       * @apiError InvalidInput Status name is not correct
+         *@apiErrorExample Error-Response:
+         * HTTP/1.1 400 BadRequest
+         * {
+         *   "status":"InvalidStatus"
+         * }
+  */
+
+        [HttpPost("Status/{TaskID}")]
+        public async Task<IActionResult> UpdateStatus([FromRoute] Guid TaskID, [FromBody] Model model)
+        {
+            try
+            {
+                Models.Entities.Storage.Task task = await _context.LazyLoadTask(TaskID);
+                if (task == null) return NotFound(new { status = "TaskNotFound" });
+                task.Status = model.status;
+                _context.Entry(task).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok(new { status = "StatusChanged" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(new { status = "InvalidStatus" });
+            }
         }
 
 

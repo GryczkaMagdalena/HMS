@@ -92,9 +92,10 @@ namespace HotelManagementSystem.Models.Helpers
                 .Include(q => q.Receiver).Include(q => q.Room).ToListAsync();
         }
 
-        public static async Task<User> LazyLoadUserByEmail(this IdentityContext context,string email)
+        public static async Task<Customer> LazyLoadUserByEmail(this IdentityContext context,string email)
         {
-            return await context.Users.Include(p => p.Roles).FirstAsync(q => q.Email == email);
+            return await context.Customers.Include(p => p.Roles).Include(q=>q.Room).Include(q=>q.IssuedTasks)
+                .FirstAsync(q => q.Email == email);
         }
 
         public static async Task<Room> LazyLoadRoom (this IdentityContext context, Guid RoomID)
