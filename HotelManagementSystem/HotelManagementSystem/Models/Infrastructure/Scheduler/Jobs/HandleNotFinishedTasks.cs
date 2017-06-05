@@ -47,6 +47,9 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler.Jobs
                     {
                         pair.Value.ReceivedTasks.Add(pair.Key);
                         pair.Key.Receiver = pair.Value;
+                        var oldWorker = _context.LazyLoadWorker(pair.Key.ReceiverID).Result;
+                        oldWorker.ReceivedTasks.Remove(pair.Key);
+                        _context.Entry(oldWorker).State = EntityState.Modified;
                         _context.Entry(pair.Value).State = EntityState.Modified;
                         _context.Entry(pair.Key).State = EntityState.Modified;
                         worker.ReceivedTasks.Remove(pair.Key);
