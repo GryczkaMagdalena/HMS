@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using HotelManagementSystem.Models.Helpers;
 using HotelManagementSystem.Models.Entities.Storage;
 
@@ -18,7 +17,8 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler.Jobs
 
         public void Execute()
         {
-            foreach (var task in _context.LazyLoadTasks().Result.Where(q => q.Priority < Priority.Compulsory)) 
+            List<Task> tasks = _context.LazyLoadTasks().Result?.Where(q => q.Priority > Priority.Compulsory).ToList();
+            foreach (var task in tasks) 
             {
                 TimeSpan timeFromStart = DateTime.Now - task.TimeOfCreation;
                 if (timeFromStart > task.Case.EstimatedTime.Add(task.Case.EstimatedTime))

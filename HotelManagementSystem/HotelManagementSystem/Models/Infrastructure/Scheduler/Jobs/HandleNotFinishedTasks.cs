@@ -32,7 +32,7 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler.Jobs
                     List<KeyValuePair<Models.Entities.Storage.Task, Worker>> tasksToRemove =
                         new List<KeyValuePair<Models.Entities.Storage.Task, Worker>>();
 
-                    foreach (var unifinishedTask in worker.ReceivedTasks)
+                    foreach (var unifinishedTask in worker.ReceivedTasks?.Where(q=>q.Status==Entities.Storage.Status.Assigned))
                     {
                         var target = _context.Cases.Find(unifinishedTask.CaseID);
                         var newWorker = _taskDisposer.FindWorker(target).Result;

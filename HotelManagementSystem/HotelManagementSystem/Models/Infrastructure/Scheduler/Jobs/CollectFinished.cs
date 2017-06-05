@@ -18,7 +18,7 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler.Jobs
 
         public void Execute()
         {
-            List<Task> finishedTasks =  _context.LazyLoadTasks().Result.Where(q => q.Status == Status.Done).ToList();
+            List<Task> finishedTasks =  _context.LazyLoadTasks().Result?.Where(q => q.Status == Status.Done).ToList();
             foreach(var task in finishedTasks)
             {
                 var customer = _context.LazyLoadCustomer(task.IssuerID).Result;
