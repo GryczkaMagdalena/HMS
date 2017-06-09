@@ -1,7 +1,7 @@
 {
   "resolution": "main",
   "tree": {
-    "src": "C:\\Users\\msala\\Desktop\\HMS\\node_modules\\aurelia-dragula\\typings.json",
+    "src": "/Users/user/Desktop/projekty/HMS/node_modules/aurelia-dragula/typings.json",
     "raw": "npm:aurelia-dragula",
     "main": "./aurelia-dragula.d.ts",
     "version": "1.4.4",
