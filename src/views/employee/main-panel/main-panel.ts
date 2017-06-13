@@ -4,10 +4,11 @@ import {EmployeeTasksService} from '../../../services/employee-tasks-service';
 
 @inject(EmployeeTasksService)
 export class MainPanel {
-	tasks;
-	constructor(private employeeTasksService: EmployeeTasksService, private dragula: Dragula) {
-		employeeTasksService.getTasks()
-			.then(data => this.tasks = data);
-	}
+  tasks;
+
+  constructor(private employeeTasksService: EmployeeTasksService, public dragula: Dragula) {
+    employeeTasksService.getTasks()
+      .then(data => this.tasks = data);
+  }
 
 }
