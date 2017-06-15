@@ -47,6 +47,13 @@
             <h4>${task.case.title}</h4>
             <p>Pokój nr: ${task.room.number}</p>
             <div class="priority ${task.priority}"></div><span>Priorytet: ${task.priority}</span>
+            <div class="row">
+              <div class="col-xs-6 col-xs-offset-3">
+                <button class="btn btn-danger btn-block btn-large"
+                        disabled.bind="statusChanging"
+                        click.delegate="updateTaskStatus(task.taskID, 'Assigned')">Powtórz</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
