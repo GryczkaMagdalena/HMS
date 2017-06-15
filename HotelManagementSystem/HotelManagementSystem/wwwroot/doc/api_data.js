@@ -641,7 +641,7 @@ define({ "api": [
     "type": "post",
     "url": "/Auth/Token",
     "title": "Token",
-    "version": "0.1.1",
+    "version": "0.1.5",
     "name": "TokenLogin",
     "group": "Auth",
     "parameter": {
@@ -714,7 +714,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n\"firstName\":\"Abraham\",\n\"lastName\":\"Lincoln\",\n\"email\":\"president@usa.pl\",\n\"role\":[\"Worker\"]\n\"token\":\"blablabla121212\",\n\"expiration\":\"2017-05-07T20:49:48Z\"\n}",
+          "content": "HTTP/1.1 200 OK\n{\n\"user\":{\n     \"firstName\":\"Abraham\",\n     \"lastName\":\"Lincoln\",\n     \"email\":\"president@usa.pl\",\n     \"role\":[\"Worker\"]\n},\n\"token\":\"blablabla121212\",\n\"expiration\":\"2017-05-07T20:49:48Z\"\n}",
           "type": "json"
         }
       ]

@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using HotelManagementSystem.Models.Infrastructure.IdentityBase;
 using HotelManagementSystem.Models.Helpers;
 using HotelManagementSystem.Models.Abstract;
+using System.Security.Claims;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -88,10 +89,12 @@ namespace HotelManagementSystem.Controllers
        */
         // GET: api/Task
         [HttpGet]
+        [Authorize("Worker")]
         public async Task<IActionResult> List()
         {
-            List<Models.Entities.Storage.Task> tasks = await _context.LazyLoadTasks();
-
+            var email = this.User.FindFirstValue(ClaimTypes.Email);
+            var user = await _context.LazyLoadWorkerByEmail(email) as Worker;
+            List<Models.Entities.Storage.Task> tasks = user.ReceivedTasks.ToList();
             return Ok(tasks.Select(q => new
             {
                 TaskID = q.TaskID,

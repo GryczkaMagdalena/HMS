@@ -446,7 +446,7 @@ namespace HotelManagementSystem.Controllers
 
         /**
          * @api {post} /Auth/Token Token
-         * @apiVersion 0.1.1
+         * @apiVersion 0.1.5
          * @apiName TokenLogin
          * @apiGroup Auth
          *
@@ -462,10 +462,12 @@ namespace HotelManagementSystem.Controllers
          * @apiSuccessExample Success-Response:
          *     HTTP/1.1 200 OK
          *     {
-         *     "firstName":"Abraham",
-         *     "lastName":"Lincoln",
-         *     "email":"president@usa.pl",
-         *     "role":["Worker"]
+         *     "user":{
+         *          "firstName":"Abraham",
+         *          "lastName":"Lincoln",
+         *          "email":"president@usa.pl",
+         *          "role":["Worker"]
+         *     },
          *     "token":"blablabla121212",
          *     "expiration":"2017-05-07T20:49:48Z"
          *     }
