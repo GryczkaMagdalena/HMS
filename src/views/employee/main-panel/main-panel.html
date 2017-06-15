@@ -2,15 +2,52 @@
   <div class="row">
     <div class="col-xs-12 custom-box">
       <div class="row">
-        <div class="col-xs-4 ">
-            <dragula-and-drop direction.bind="dragDirection" drop-fn.call="drop(item, target, source, sibling, itemVM, siblingVM)"></dragula-and-drop>
-          <h3 class="text-center">TODO</h3>
+        <div class="col-sm-4 col-xs-12">
+          <h3 class="text-center">DO WYKONANIA</h3>
+          <hr>
+          <div class="task-wrapper" repeat.for="task of tasksTodo">
+            <h4>${task.case.title}</h4>
+            <p>Pokój nr: ${task.room.number}</p>
+            <p>Priorytet: ${task.priority}</p>
+            <div class="row">
+              <div class="col-xs-6 col-xs-offset-3">
+                <button class="btn btn-success btn-block btn-large"
+                        disabled.bind="statusChanging"
+                        click.delegate="updateTaskStatus(task.taskID, 'Pending')">Zacznij</button>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <div class="col-xs-4">
-          <h3 class="text-center">IN PROGRESS</h3>
+        <div class="col-sm-4 col-xs-12">
+          <h3 class="text-center">W TRAKCIE</h3>
+          <hr>
+          <div class="task-wrapper" repeat.for="task of tasksInProgress">
+            <h4>${task.case.title}</h4>
+            <p>Pokój nr: ${task.room.number}</p>
+            <p>Priorytet: ${task.priority}</p>
+            <div class="row">
+              <div class="col-xs-6">
+                <button class="btn btn-danger btn-block btn-large"
+                        disabled.bind="statusChanging"
+                        click.delegate="updateTaskStatus(task.taskID, 'Assigned')">Przerwij</button>
+              </div>
+              <div class="col-xs-6">
+                <button class="btn btn-success btn-block btn-large"
+                        disabled.bind="statusChanging"
+                        click.delegate="updateTaskStatus(task.taskID, 'Done')">Zakończ</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-xs-4">
-          <h3 class="text-center">DONE</h3>
+        <div class="col-sm-4 col-xs-12">
+          <h3 class="text-center">ZAKOŃCZONE</h3>
+          <hr>
+          <div class="task-wrapper" repeat.for="task of tasksDone">
+            <h4>${task.case.title}</h4>
+            <p>Pokój nr: ${task.room.number}</p>
+            <p>Priorytet: ${task.priority}</p>
+          </div>
         </div>
       </div>
     </div>
