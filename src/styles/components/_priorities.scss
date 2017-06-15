@@ -1,0 +1,24 @@
+.priority {
+  display: inline-block;
+  width: $spacing-smaller;
+  height: $spacing-smaller;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  margin-right: $spacing;
+  &.Emergency {
+    background-color: $color-emergency-priority;
+  }
+  &.Compulsory {
+    background-color: $color-compulsory-priority;
+  }
+  &.High {
+    background-color: $color-high-priority;
+  }
+  &.Medium {
+    background-color: $color-medium-priority;
+  }
+  &.Low {
+    background-color: $color-low-priority;
+  }
+}
