@@ -132,5 +132,69 @@ namespace HotelManagementSystem.Models.Infrastructure
             }
             return false;
         }
+
+        internal static async Task<bool> AddManagerShifts(IdentityContext context)
+        {
+            List<Manager> managers = await context.Managers
+               .Include(q => q.Shifts).ToListAsync();
+
+            if (!managers.Any(q => q.Shifts != null && q.Shifts.Any(p => p.StartTime > DateTime.Now && p.EndTime < DateTime.Now)))
+            {
+                var now = DateTime.Now;
+                for (int i = 0; i < managers.Count; i++)
+                {
+                    Manager manager = managers[i];
+                    int switcher = i % 3;
+                    switch (switcher)
+                    {
+                        case 0:
+                            for (int j = 0; j < 7; j++)
+                            {
+                                var startTime = now.AddDays(j);
+                                if (manager.Shifts == null) manager.Shifts = new List<Shift>();
+                                manager.Shifts.Add(new Shift()
+                                {
+                                    Break = false,
+                                    StartTime = RoundUp(startTime, TimeSpan.FromMinutes(30)),
+                                    EndTime = RoundUp(startTime, TimeSpan.FromMinutes(30)).AddHours(8),
+                                    ShiftID = Guid.NewGuid(),
+                                });
+                            }
+                            break;
+                        case 1:
+                            for (int j = 0; j < 7; j++)
+                            {
+                                var startTime = now.AddDays(j).AddHours(8);
+                                if (manager.Shifts == null) manager.Shifts = new List<Shift>();
+                                manager.Shifts.Add(new Shift()
+                                {
+                                    Break = false,
+                                    StartTime = RoundUp(startTime, TimeSpan.FromMinutes(30)),
+                                    EndTime = RoundUp(startTime, TimeSpan.FromMinutes(30)).AddHours(8),
+                                    ShiftID = Guid.NewGuid(),
+                                });
+                            }
+                            break;
+                        case 2:
+                            for (int j = 0; j < 7; j++)
+                            {
+                                var startTime = now.AddDays(j).AddHours(16);
+                                if (manager.Shifts == null) manager.Shifts = new List<Shift>();
+                                manager.Shifts.Add(new Shift()
+                                {
+                                    Break = false,
+                                    StartTime = RoundUp(startTime, TimeSpan.FromMinutes(30)),
+                                    EndTime = RoundUp(startTime, TimeSpan.FromMinutes(30)).AddHours(8),
+                                    ShiftID = Guid.NewGuid(),
+                                });
+                            }
+                            break;
+                    }
+                }
+                await context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

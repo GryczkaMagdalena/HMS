@@ -775,6 +775,62 @@
     "type": "",
     "url": "",
     "version": "0.0.0",
+    "filename": "HotelManagementSystem/obj/Release/netcoreapp1.1/PubTmp/Out/wwwroot/doc/main.js",
+    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_obj_Release_netcoreapp1_1_PubTmp_Out_wwwroot_doc_main_js",
+    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_obj_Release_netcoreapp1_1_PubTmp_Out_wwwroot_doc_main_js",
+    "name": ""
+  },
+  {
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "varname1",
+            "description": "<p>No type.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "varname2",
+            "description": "<p>With type.</p>"
+          }
+        ]
+      }
+    },
+    "type": "",
+    "url": "",
+    "version": "0.0.0",
+    "filename": "HotelManagementSystem/obj/Release/netcoreapp1.1/PubTmp/Out/wwwroot/doc/ping/main.js",
+    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_obj_Release_netcoreapp1_1_PubTmp_Out_wwwroot_doc_ping_main_js",
+    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_obj_Release_netcoreapp1_1_PubTmp_Out_wwwroot_doc_ping_main_js",
+    "name": ""
+  },
+  {
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "varname1",
+            "description": "<p>No type.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "varname2",
+            "description": "<p>With type.</p>"
+          }
+        ]
+      }
+    },
+    "type": "",
+    "url": "",
+    "version": "0.0.0",
     "filename": "HotelManagementSystem/wwwroot/doc/main.js",
     "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
     "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
@@ -2657,6 +2713,56 @@
   },
   {
     "type": "get",
+    "url": "/Worker/ManagerShifts",
+    "title": "ActualizeManagerShifts",
+    "version": "0.1.5",
+    "name": "ActualizeManagerShifts",
+    "group": "Worker",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>Shifts were updated</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n      {\n      \"status\":\"success\"\n      }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>Shifts are acutal - no need to update</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response",
+          "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"this action is not needed\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/WorkerController.cs",
+    "groupTitle": "Worker"
+  },
+  {
+    "type": "get",
     "url": "/Worker/Shifts",
     "title": "ActualizeShifts",
     "version": "0.1.3",
@@ -2718,7 +2824,7 @@
   {
     "type": "get",
     "url": "/Worker/{id}",
-    "title": "Read",
+    "title": "Tasks",
     "version": "0.1.3",
     "name": "Read",
     "group": "Worker",
@@ -2728,7 +2834,7 @@
   {
     "type": "get",
     "url": "/Worker/{id}",
-    "title": "Tasks",
+    "title": "Read",
     "version": "0.1.3",
     "name": "Read",
     "group": "Worker",

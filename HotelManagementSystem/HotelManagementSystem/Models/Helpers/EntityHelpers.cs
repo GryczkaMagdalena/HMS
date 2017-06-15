@@ -53,7 +53,11 @@ namespace HotelManagementSystem.Models.Helpers
                 Room = user.Room
             };
         }
-
+        public static async Task<List<Manager>> LazyLoadManagers(this IdentityContext context)
+        {
+            return await context.Managers.Include(q => q.Shifts).Include(q => q.ListenedTasks)
+                .ToListAsync();
+        }
         public static async Task<Worker> LazyLoadWorkerByEmail(this IdentityContext context, string email)
         {
             return await context.Workers.Include(q => q.Roles).Include(q => q.Shifts).Include(q => q.ReceivedTasks)

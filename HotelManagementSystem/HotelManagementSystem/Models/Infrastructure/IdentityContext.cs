@@ -44,6 +44,8 @@ namespace HotelManagementSystem.Models.Infrastructure
             builder.Entity<Worker>().HasMany(q => q.Shifts);
             base.OnModelCreating(builder);
         }
+
+      
     }
 
 }
