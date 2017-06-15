@@ -8,7 +8,7 @@
           <div class="task-wrapper" repeat.for="task of tasksTodo">
             <h4>${task.case.title}</h4>
             <p>Pokój nr: ${task.room.number}</p>
-            <p>Priorytet: ${task.priority}</p>
+            <div class="priority ${task.priority}"></div><span>Priorytet: ${task.priority}</span>
             <div class="row">
               <div class="col-xs-6 col-xs-offset-3">
                 <button class="btn btn-success btn-block btn-large"
@@ -25,7 +25,7 @@
           <div class="task-wrapper" repeat.for="task of tasksInProgress">
             <h4>${task.case.title}</h4>
             <p>Pokój nr: ${task.room.number}</p>
-            <p>Priorytet: ${task.priority}</p>
+            <div class="priority ${task.priority}"></div><span>Priorytet: ${task.priority}</span>
             <div class="row">
               <div class="col-xs-6">
                 <button class="btn btn-danger btn-block btn-large"
@@ -46,7 +46,7 @@
           <div class="task-wrapper" repeat.for="task of tasksDone">
             <h4>${task.case.title}</h4>
             <p>Pokój nr: ${task.room.number}</p>
-            <p>Priorytet: ${task.priority}</p>
+            <div class="priority ${task.priority}"></div><span>Priorytet: ${task.priority}</span>
           </div>
         </div>
       </div>
