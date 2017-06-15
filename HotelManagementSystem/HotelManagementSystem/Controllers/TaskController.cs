@@ -89,7 +89,7 @@ namespace HotelManagementSystem.Controllers
        */
         // GET: api/Task
         [HttpGet]
-        [Authorize("Worker")]
+        [Authorize(Roles ="Worker")]
         public async Task<IActionResult> List()
         {
             var email = this.User.FindFirstValue(ClaimTypes.Email);
