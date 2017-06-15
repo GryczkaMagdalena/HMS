@@ -31,6 +31,25 @@ export class TasksService {
         .then(() => this.loadHandlerService.setFree());
     })
   }
+
+  updateStatus(taskId, status) {
+    this.loadHandlerService.setBusy();
+    let statusObj = {
+      Status: status
+    };
+    return new Promise((resolve, reject) => {
+      this.httpFetch.fetch(`/api/Task/Status/${taskId}`, {
+        method: 'post',
+        body: JSON.stringify(statusObj)
+      })
+        .then(res => res.json())
+        .then(data => resolve(data))
+        .catch(err => {
+          err.json().then(status => reject(status));
+        })
+        .then(() => this.loadHandlerService.setFree());
+    })
+  }
 }
 
 

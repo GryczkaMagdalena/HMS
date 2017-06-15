@@ -1,0 +1,6 @@
+.task-wrapper {
+  background-color: transparentize($color-white, 0.25);
+  border-radius: $box-radius;
+  padding: $spacing-smaller/10 $spacing $spacing;
+  margin-bottom: $spacing-smaller;
+}
