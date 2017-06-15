@@ -35,6 +35,12 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler
                 MoveOldAssigned job = new MoveOldAssigned(context, userService);
                 job.Execute();
             }).ToRunNow().AndEvery(8).Minutes();
+
+            Schedule(() =>
+            {
+                AssignUnassigned job = new AssignUnassigned(context, userService);
+                job.Execute();
+            }).ToRunNow().AndEvery(30).Minutes();
         }
     }
 }
