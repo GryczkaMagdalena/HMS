@@ -74,7 +74,7 @@ namespace HotelManagementSystem.Models.Infrastructure
                 .Where(q => q.WorkerType == WorkerType.Cleaner || q.WorkerType == WorkerType.Technician)
                 .Include(q=>q.Shifts).ToListAsync();
 
-            if (!workers.Any(q=>q.Shifts!=null &&q.Shifts.Any(p=>p.StartTime>DateTime.Now || p.EndTime<DateTime.Now)))
+            if (!workers.Any(q=>q.Shifts!=null &&q.Shifts.Any(p=>p.StartTime>DateTime.Now && p.EndTime<DateTime.Now)))
             {
                 var now = DateTime.Now;
                 for (int i = 0; i < workers.Count; i++)
