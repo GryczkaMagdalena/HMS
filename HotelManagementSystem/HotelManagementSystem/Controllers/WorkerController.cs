@@ -151,5 +151,33 @@ namespace HotelManagementSystem.Controllers
             return BadRequest(new { status = "this action is not needed" });
         }
 
+        /**
+       * @api {get} /Worker/ManagerShifts ActualizeManagerShifts
+       * @apiVersion 0.1.5
+       * @apiName ActualizeManagerShifts
+       * @apiGroup Worker
+       *
+       * *@apiSuccess {String} status Shifts were updated
+       *@apiSuccessExample Success-Response:
+       * HTTP/1.1 200 OK
+        *       {
+        *       "status":"success"
+        *       }
+        * @apiError {String} status Shifts are acutal - no need to update
+        * @apiErrorExample Error-Response
+        * HTTP/1.1 400 BadRequest
+        * {
+        *    "status":"this action is not needed"
+        * }
+        * 
+        */
+        [HttpGet("managerShifts")]
+        [Authorize(Roles ="Administrator")]
+        public async Task<IActionResult> ActualizeManagerShifts()
+        {
+            var result = await DbInitializer.AddManagerShifts(_context);
+            if (result) return Ok(new { status = "success" });
+            return BadRequest(new { status = "this action is not needed" });
+        }
     }
 }

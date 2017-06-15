@@ -16,31 +16,31 @@ namespace HotelManagementSystem.Models.Infrastructure.Scheduler
             {
                 HandleNotFinishedTasks job = new HandleNotFinishedTasks(context, userService);
                 job.Execute();
-            }).ToRunNow().AndEvery(5).Minutes();
+            }).ToRunEvery(5).Minutes();
 
             Schedule(() =>
             {
                 UpdatePriority job = new UpdatePriority(context);
                 job.Execute();
-            }).ToRunNow().AndEvery(10).Minutes();
+            }).ToRunEvery(10).Minutes();
 
             Schedule(() =>
             {
                 CollectFinished job = new CollectFinished(context);
                 job.Execute();
-            }).ToRunNow().AndEvery(15).Minutes();
+            }).ToRunEvery(15).Minutes();
 
             Schedule(() =>
             {
                 MoveOldAssigned job = new MoveOldAssigned(context, userService);
                 job.Execute();
-            }).ToRunNow().AndEvery(8).Minutes();
+            }).ToRunEvery(8).Minutes();
 
             Schedule(() =>
             {
                 AssignUnassigned job = new AssignUnassigned(context, userService);
                 job.Execute();
-            }).ToRunNow().AndEvery(30).Minutes();
+            }).ToRunEvery(30).Minutes();
         }
     }
 }

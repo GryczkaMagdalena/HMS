@@ -79,10 +79,11 @@ namespace HotelManagementSystem.Models.Infrastructure
                     return worker.Shifts.First(q => q.StartTime < now && q.EndTime > now);
                 else
                     return null;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.Write(ex.ToString());
-                return null; 
+                return null;
             }
         }
         private bool CurrentlyInWork(Worker worker)
@@ -106,7 +107,7 @@ namespace HotelManagementSystem.Models.Infrastructure
         private List<Worker> FilterOnBreak(List<Worker> workers)
         {
             List<Worker> NotOnBreak = new List<Worker>();
-            foreach(var worker in workers)
+            foreach (var worker in workers)
             {
                 if (!CurrentlyHaveBreak(worker))
                 {
@@ -130,19 +131,63 @@ namespace HotelManagementSystem.Models.Infrastructure
             if (workersNotLeaving.Count == 0)
             {
                 targetWorkers = workersInWork.Where(p => p.ReceivedTasks != null).OrderBy(q => q.ReceivedTasks.Count).ToList();
-               targetWorkers.AddRange(workersNotLeaving.Where(q => q.ReceivedTasks == null));
+                targetWorkers.AddRange(workersNotLeaving.Where(q => q.ReceivedTasks == null));
             }
             else
             {
-               targetWorkers = workersNotLeaving.Where(p=>p.ReceivedTasks!=null).OrderBy(q => q.ReceivedTasks.Count).ToList();
-               targetWorkers.AddRange(workersNotLeaving.Where(q => q.ReceivedTasks == null));
+                targetWorkers = workersNotLeaving.Where(p => p.ReceivedTasks != null).OrderBy(q => q.ReceivedTasks.Count).ToList();
+                targetWorkers.AddRange(workersNotLeaving.Where(q => q.ReceivedTasks == null));
             }
             return targetWorkers.First();
         }
 
         public async Task<Manager> AttachListeningManager(Case toDo, Worker worker)
         {
-            return null;
+            List<Manager> targetManagers = await _context.LazyLoadManagers();
+            var managersInWork = GetManagersInWork(targetManagers);
+            if (managersInWork.Count == 0) return null;
+            return managersInWork.OrderBy(q => q.ListenedTasks.Count).First();
+        }
+
+        private Shift ManagerCurrentShift(Manager manager)
+        {
+            try
+            {
+                var now = DateTime.Now;
+                if (manager.Shifts != null)
+                    return manager.Shifts.First(q => q.StartTime < now && q.EndTime > now);
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.ToString());
+                return null;
+            }
+        }
+        private bool CurrentlyInWork(Manager manager)
+        {
+            var currentShift = ManagerCurrentShift(manager);
+            if (currentShift != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        private List<Manager> GetManagersInWork(List<Manager> targetManagers)
+        {
+            List<Manager> managersInWork = new List<Manager>();
+            foreach (var manager in targetManagers)
+            {
+                if (CurrentlyInWork(manager))
+                {
+                    managersInWork.Add(manager);
+                }
+            }
+            return managersInWork;
         }
     }
 }

@@ -99,11 +99,11 @@ namespace HotelManagementSystem.Controllers
             {
                 TaskID = q.TaskID,
                 Describe = q.Describe,
-                Room = q.Room,
+                Room = _context.Rooms.Find(q.RoomID),
                 Issuer = q.Issuer.ToJson(),
                 Receiver = q.Receiver.ToJson(),
                 Listener = q.Listener.ToJson(),
-                Case = q.Case,
+                Case = _context.Cases.Find(q.CaseID),
                 TimeOfCreation = q.TimeOfCreation,
                 Status = Enum.GetName(typeof(Status), q.Status),
                 Priority = Enum.GetName(typeof(Priority), q.Priority)
@@ -422,7 +422,11 @@ namespace HotelManagementSystem.Controllers
 
                             receiver.ReceivedTasks.Add(newTask);
                             user.IssuedTasks.Add(newTask);
-
+                            if (listener != null)
+                            {
+                                listener.ListenedTasks.Add(newTask);
+                                _context.Entry(listener).State = EntityState.Modified;
+                            }
                             _context.Entry(newTask).State = EntityState.Added;
                             _context.Entry(user).State = EntityState.Modified;
                             _context.Entry(receiver).State = EntityState.Modified;

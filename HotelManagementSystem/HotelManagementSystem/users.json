@@ -183,5 +183,34 @@
       "WorkerType": "Technician"
     }
 
+  ],
+  "Managers": [
+    {
+      "Login": "manager1",
+      "Password": "Man@g3r1",
+      "FirstName": "Pablo",
+      "LastName": "Picasso",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Manager",
+      "Email": "manager1@hms.com"
+    },
+    {
+      "Login": "manager2",
+      "Password": "Man@g3r2",
+      "FirstName": "Hesus",
+      "LastName": "Piccard",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Manager",
+      "Email": "manager2@hms.com"
+    },
+    {
+      "Login": "manager3",
+      "Password": "Man@g3r3",
+      "FirstName": "Sergio",
+      "LastName": "Cava",
+      "PhoneNumber": "123-456-778",
+      "RoleName": "Manager",
+      "Email": "manager3@hms.com"
+    }
   ]
 }
