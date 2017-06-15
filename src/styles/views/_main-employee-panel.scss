@@ -3,4 +3,8 @@
   border-radius: $box-radius;
   padding: $spacing-smaller/10 $spacing $spacing;
   margin-bottom: $spacing-smaller;
+
+  .actions-row {
+    margin-top: $spacing;
+  }
 }
