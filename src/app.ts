@@ -79,9 +79,9 @@ export class App {
       AuthorizeStep.auth.isEmployee = false;
 
       AuthorizeStep.auth.isAuthenticated = data.loggedIn;
-      if (data.workerType == 'None') {
+      if (data.workerType == 'customer') {
         AuthorizeStep.auth.isClient = true;
-      } else if (data.workerType == 'Technician' || data.workerType === 'Cleaner'){
+      } else if (data.workerType == 'worker'){
         AuthorizeStep.auth.isEmployee = true;
       }
     });
@@ -94,8 +94,8 @@ class AuthorizeStep {
 
   static auth = {
     isAuthenticated: !!sessionStorage.getItem('session_token'),
-    isClient: sessionStorage.getItem('worker_type') == 'None',
-    isEmployee: (sessionStorage.getItem('worker_type') == 'Cleaner') || (sessionStorage.getItem('worker_type') == 'Technician'),
+    isClient: sessionStorage.getItem('worker_type') == 'customer',
+    isEmployee: (sessionStorage.getItem('worker_type') == 'worker'),
   };
 
   run(navigationInstruction: NavigationInstruction, next: Next) {

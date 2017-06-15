@@ -3,3 +3,5 @@
 /// <reference path="globals/node/index.d.ts" />
 /// <reference path="globals/nprogress/index.d.ts" />
 /// <reference path="globals/selenium-webdriver/index.d.ts" />
+/// <reference path="modules/aurelia-dialog/index.d.ts" />
+/// <reference path="modules/aurelia-dragula/index.d.ts" />

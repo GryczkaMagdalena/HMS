@@ -1,0 +1,10 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "/Users/user/Desktop/projekty/HMS/node_modules/aurelia-dragula/typings.json",
+    "raw": "npm:aurelia-dragula",
+    "main": "./aurelia-dragula.d.ts",
+    "version": "1.4.4",
+    "name": "aurelia-dragula"
+  }
+}

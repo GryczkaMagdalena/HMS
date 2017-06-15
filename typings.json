@@ -1,7 +1,8 @@
 {
   "name": "hms",
   "dependencies": {
-    "aurelia-dialog": "github:aurelia/dialog"
+    "aurelia-dialog": "github:aurelia/dialog",
+    "aurelia-dragula": "npm:aurelia-dragula"
   },
   "globalDevDependencies": {
     "angular-protractor": "registry:dt/angular-protractor#1.5.0+20160425143459",
