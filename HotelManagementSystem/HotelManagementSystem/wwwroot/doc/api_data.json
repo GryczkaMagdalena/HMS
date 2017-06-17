@@ -2380,6 +2380,37 @@
   },
   {
     "type": "get",
+    "url": "/Task/CustomerTasks",
+    "title": "CustomerTasks",
+    "version": "0.1.5",
+    "name": "GetCustomerTasks",
+    "group": "Task",
+    "description": "<p>Gets all tasks issued by customer</p>",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "tasks",
+            "description": "<p>List of every issued task</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n                {\n                \"taskID\": \"4f48c274-d49a-4610-aed0-e6f6c828ebbb\",\n                \"describe\": \"Jesli chcialbys zglosic wymiane recznikow, wybierz te opcje\",\n                \"caseID\": \"1969c5c3-fad6-4c2c-8d1c-c104f314297c\",\n                \"roomID\": \"d89fcd07-efba-4ee0-aa10-242c872454d1\",\n                \"room\": {\n                    \"roomID\": \"d89fcd07-efba-4ee0-aa10-242c872454d1\",\n                    \"number\": \"1\",\n                    \"userID\": \"377dcd34-bbff-4bdd-afc8-5e760ef1f1fd\",\n                    \"occupied\": true\n                },\n                 \"status\": \"Assigned\"\n                }\n            ]",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/TaskController.cs",
+    "groupTitle": "Task"
+  },
+  {
+    "type": "get",
     "url": "/Task",
     "title": "List",
     "version": "0.1.5",
@@ -2804,6 +2835,43 @@
         {
           "title": "Error-Response",
           "content": "HTTP/1.1 400 BadRequest\n{\n   \"status\":\"this action is not needed\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "HotelManagementSystem/Controllers/WorkerController.cs",
+    "groupTitle": "Worker"
+  },
+  {
+    "type": "get",
+    "url": "/Worker/CurrentShift",
+    "title": "GetWorkerCurrentShift",
+    "version": "0.1.5",
+    "name": "CurrentShift",
+    "group": "Worker",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "current",
+            "description": "<p>True if shift is pending, false if future shift</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Shift",
+            "optional": false,
+            "field": "shift",
+            "description": "<p>Shift object with properties</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n           \"current\": true,\n           \"currentShift\": {\n                            \"shiftID\": \"0463d1c7-15ff-4311-9f0b-e79cedb888e7\",\n                            \"startTime\": \"2017-06-17T14:00:00\",\n                            \"endTime\": \"2017-06-17T22:00:00\",\n                            \"actualTime\": \"00:00:00\",\n                            \"break\": false\n            }\n        }",
           "type": "json"
         }
       ]

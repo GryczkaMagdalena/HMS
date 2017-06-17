@@ -89,10 +89,10 @@ namespace HotelManagementSystem.Controllers
        */
         // GET: api/Task
         [HttpGet]
-        [Authorize(Roles ="Worker")]
+        [Authorize(Roles = "Worker")]
         public async Task<IActionResult> List()
         {
-            var email = this.User.FindFirstValue(ClaimTypes.Email);
+            var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _context.LazyLoadWorkerByEmail(email) as Worker;
             List<Models.Entities.Storage.Task> tasks = user.ReceivedTasks.ToList();
             return Ok(tasks.Select(q => new
@@ -587,17 +587,63 @@ namespace HotelManagementSystem.Controllers
             try
             {
                 List<string> names = new List<string>();
-                foreach(var status in Enum.GetNames(typeof(Status)))
+                foreach (var status in Enum.GetNames(typeof(Status)))
                 {
                     names.Add(status);
                 }
-               
+
                 return Ok(names);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return NotFound(new { status = "InternalError" });
             }
+        }
+
+        /**
+          * @api {get} /Task/CustomerTasks CustomerTasks
+          * @apiVersion 0.1.5
+          * @apiName GetCustomerTasks
+          * @apiGroup Task
+          * @apiDescription
+          * Gets all tasks issued by customer
+          * @apiSuccess {Array} tasks List of every issued task 
+          * @apiSuccessExample Success-Response:
+          * HTTP/1.1 200 OK
+           *[
+                {
+                "taskID": "4f48c274-d49a-4610-aed0-e6f6c828ebbb",
+                "describe": "Jesli chcialbys zglosic wymiane recznikow, wybierz te opcje",
+                "caseID": "1969c5c3-fad6-4c2c-8d1c-c104f314297c",
+                "roomID": "d89fcd07-efba-4ee0-aa10-242c872454d1",
+                "room": {
+                    "roomID": "d89fcd07-efba-4ee0-aa10-242c872454d1",
+                    "number": "1",
+                    "userID": "377dcd34-bbff-4bdd-afc8-5e760ef1f1fd",
+                    "occupied": true
+                },
+                 "status": "Assigned"
+                }
+            ]
+    */
+
+        [HttpGet("CustomerTasks")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> CustomerTasks()
+        {
+            string email = User.FindFirstValue(ClaimTypes.Email);
+            Customer customer = await _context.LazyLoadUserByEmail(email);
+            var tasks = customer.IssuedTasks?.Select(q => new
+            {
+                taskID = q.TaskID,
+                describe=q.Describe,
+                caseID =q.CaseID,
+                roomID= q.RoomID,
+                room = q.Room,
+                status = Enum.GetName(typeof (Status),q.Status)
+            }).ToList();
+            return Ok(tasks);
         }
     }
 }

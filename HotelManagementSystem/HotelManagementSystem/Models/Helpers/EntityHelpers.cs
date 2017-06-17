@@ -117,7 +117,30 @@ namespace HotelManagementSystem.Models.Helpers
         {
             return await context.Rooms.Include(q => q.User).ToListAsync();
         }
+        public static Shift NextShift(this Worker worker)
+        {
+            try
+            {
+                Shift nextShift = null;
+                var now = DateTime.Now;
+                long minDate = long.MaxValue;
+                foreach (Shift shift in worker.Shifts)
+                {
+                    if (nextShift != null && shift.StartTime > DateTime.Now &&
+                        Math.Abs(nextShift.StartTime.Ticks - shift.StartTime.Ticks) < minDate)
+                    {
+                        minDate = Math.Abs(nextShift.StartTime.Ticks - shift.StartTime.Ticks);
+                        nextShift = shift;
+                    }
+                }
 
+                return nextShift;
+
+            }catch(Exception)
+            {
+                return null;
+            }
+        }
         public static Shift CurrentShift (this Worker worker)
         {
             try

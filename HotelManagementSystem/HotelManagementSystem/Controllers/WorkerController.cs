@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using HotelManagementSystem.Models.Helpers;
 using HotelManagementSystem.Models.Abstract;
 using System.Threading;
+using System.Security.Claims;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -178,6 +179,49 @@ namespace HotelManagementSystem.Controllers
             var result = await DbInitializer.AddManagerShifts(_context);
             if (result) return Ok(new { status = "success" });
             return BadRequest(new { status = "this action is not needed" });
+        }
+        /**
+      * @api {get} /Worker/CurrentShift GetWorkerCurrentShift
+      * @apiVersion 0.1.5
+      * @apiName CurrentShift
+      * @apiGroup Worker
+      *
+      * *@apiSuccess {Boolean} current True if shift is pending, false if future shift
+      * @apiSuccess {Shift} shift Shift object with properties
+      *@apiSuccessExample Success-Response:
+      * HTTP/1.1 200 OK
+       *{
+           "current": true,
+           "currentShift": {
+                            "shiftID": "0463d1c7-15ff-4311-9f0b-e79cedb888e7",
+                            "startTime": "2017-06-17T14:00:00",
+                            "endTime": "2017-06-17T22:00:00",
+                            "actualTime": "00:00:00",
+                            "break": false
+            }
+        }
+       */
+
+        [HttpGet("CurrentShift")]
+        [Authorize(Roles ="Worker")]
+        public async Task<IActionResult> GetWorkerShift()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            Worker worker = await _context.LazyLoadWorkerByEmail(email);
+            Shift currentShift = worker.CurrentShift();
+            if (currentShift != null)
+            {
+                return Ok(new {
+                    current=true,
+                    currentShift
+                });
+            }
+            currentShift = worker.NextShift();
+            return Ok(new {
+                current=false,
+                currentShift
+            });
+
         }
     }
 }
