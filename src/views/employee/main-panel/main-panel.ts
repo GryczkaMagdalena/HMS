@@ -14,6 +14,7 @@ export class MainPanel {
   constructor(private employeeTasksService: EmployeeTasksService, private tasksService: TasksService) {
     this.statusChanging = false;
     this.getTasks();
+    this.getShifts();
   }
 
   private filterTasksTodo(allTasks) {
@@ -51,4 +52,15 @@ export class MainPanel {
       .then(() => this.statusChanging = false);
   }
 
+  private getShifts() {
+    this.employeeTasksService.getShifts();
+  }
+
 }
+
+
+// 1. Czas zmiany na panelu workera + kontrolka czy aktualnie powinien pracować
+// ( zielone aktualna zmiana, niebieskie przyszła)
+// Używając metody GET z url /api/Worker/CurrentShift
+// Pobierzcie info czy zmiana jest aktualna, czy też jest to zmiana najbliższa,
+// wyświetlcie czas rozpoczęcia, zakończenia i aktualny czas może ?
