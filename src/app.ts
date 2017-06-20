@@ -57,6 +57,16 @@ export class App {
         }
       },
       {
+        route: 'client/cases/created-tasks',
+        moduleId: 'views/client/cases/created-tasks/created-tasks',
+        title: 'Created Tasks',
+        name: 'createdTasks',
+        settings: {
+          auth: true,
+          clientOnly: true,
+        }
+      },
+      {
         route: 'employee/main-panel',
         moduleId: 'views/employee/main-panel/main-panel',
         title: 'Employee Main Panel',

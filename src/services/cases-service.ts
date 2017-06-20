@@ -13,6 +13,24 @@ export class CasesService {
     this.cleanerCases = [];
   }
 
+  // 2. Taski zgłoszone przez klienta,
+  // gdzieś na panelu klienta korzystając z metody GET z url
+  // /api/Tasks/CustomerTasks
+  // dostaniecie okrojoną wersję tasków,
+  // wyświetlcie je w jakiejś liście pod nowym przyciskiem może
+  // (Zgłoszone sprawy?),
+  // Wyswietlcie tylko Description i Status
+
+  getCustomersTasks() {
+    this.loadHandlerService.setBusy();
+
+    return new Promise((resolve, reject) => {
+      this.httpFetch.fetch('/api/Tasks/CustomerTasks')
+        .then(response => console.log('response', response))
+        .then(() => this.loadHandlerService.setFree());
+    });
+  }
+
   getTechnicianCases() {
     this.loadHandlerService.setBusy();
 
