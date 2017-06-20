@@ -27,6 +27,7 @@ export class CasesService {
     return new Promise((resolve, reject) => {
       this.httpFetch.fetch('/api/Tasks/CustomerTasks')
         .then(response => console.log('response', response))
+        .catch(err => (reject(err)))
         .then(() => this.loadHandlerService.setFree());
     });
   }
