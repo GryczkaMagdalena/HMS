@@ -14,8 +14,4 @@ export class RulesList {
 		this.rule = this.rules.find(item => item.ruleID == ruleID).ruleID;
 		return true;
 	}
-
-	returnToMainPanel(){
-		this.router.navigateToRoute('base');
-	}
 }

@@ -38,8 +38,4 @@ export class TechnicalIssue {
         });
     }
   }
-
-  returnToMainPanel() {
-    this.router.navigateToRoute('base');
-  }
 }

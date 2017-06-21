@@ -38,8 +38,4 @@ export class RoomSupport {
         });
     }
   }
-
-  returnToMainPanel(){
-    this.router.navigateToRoute('base');
-  }
 }

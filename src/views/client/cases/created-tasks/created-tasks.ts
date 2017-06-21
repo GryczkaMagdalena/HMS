@@ -7,6 +7,9 @@ export class CreatedTasks {
   createdTasks;
 
   constructor(private casesService: CasesService) {
-    casesService.getCustomersTasks();
+    casesService.getCustomersTasks().then(res => {
+      this.createdTasks = res;
+      console.log('this.createdTasks', this.createdTasks);
+    });
   }
 }
