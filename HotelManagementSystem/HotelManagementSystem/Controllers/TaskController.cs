@@ -615,7 +615,12 @@ namespace HotelManagementSystem.Controllers
                 {
                 "taskID": "4f48c274-d49a-4610-aed0-e6f6c828ebbb",
                 "describe": "Jesli chcialbys zglosic wymiane recznikow, wybierz te opcje",
-                "caseID": "1969c5c3-fad6-4c2c-8d1c-c104f314297c",
+                "case": {
+                    "title":"Test Case",
+                    "description":"Desc",
+                    "estimatedTime":"00:01:00",
+                    "caseID":"01001010"
+            },
                 "roomID": "d89fcd07-efba-4ee0-aa10-242c872454d1",
                 "room": {
                     "roomID": "d89fcd07-efba-4ee0-aa10-242c872454d1",
@@ -637,8 +642,8 @@ namespace HotelManagementSystem.Controllers
             var tasks = customer.IssuedTasks?.Select(q => new
             {
                 taskID = q.TaskID,
-                describe=q.Describe,
-                caseID =q.CaseID,
+                describe = q.Describe,
+                Case = _context.Cases.Find(q.CaseID),
                 roomID= q.RoomID,
                 room = q.Room,
                 status = Enum.GetName(typeof (Status),q.Status)

@@ -775,65 +775,9 @@ define({ "api": [
     "type": "",
     "url": "",
     "version": "0.0.0",
-    "filename": "HotelManagementSystem/obj/Release/netcoreapp1.1/PubTmp/Out/wwwroot/doc/main.js",
-    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_obj_Release_netcoreapp1_1_PubTmp_Out_wwwroot_doc_main_js",
-    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_obj_Release_netcoreapp1_1_PubTmp_Out_wwwroot_doc_main_js",
-    "name": ""
-  },
-  {
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "optional": false,
-            "field": "varname1",
-            "description": "<p>No type.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "varname2",
-            "description": "<p>With type.</p>"
-          }
-        ]
-      }
-    },
-    "type": "",
-    "url": "",
-    "version": "0.0.0",
-    "filename": "HotelManagementSystem/obj/Release/netcoreapp1.1/PubTmp/Out/wwwroot/doc/ping/main.js",
-    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_obj_Release_netcoreapp1_1_PubTmp_Out_wwwroot_doc_ping_main_js",
-    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_obj_Release_netcoreapp1_1_PubTmp_Out_wwwroot_doc_ping_main_js",
-    "name": ""
-  },
-  {
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "optional": false,
-            "field": "varname1",
-            "description": "<p>No type.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "varname2",
-            "description": "<p>With type.</p>"
-          }
-        ]
-      }
-    },
-    "type": "",
-    "url": "",
-    "version": "0.0.0",
     "filename": "HotelManagementSystem/wwwroot/doc/main.js",
-    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
-    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "group": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
+    "groupTitle": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_main_js",
     "name": ""
   },
   {
@@ -860,8 +804,8 @@ define({ "api": [
     "url": "",
     "version": "0.0.0",
     "filename": "HotelManagementSystem/wwwroot/doc/ping/main.js",
-    "group": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
-    "groupTitle": "C__Users_tirur_Source_Repos_HotelManagementSystem_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
+    "group": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
+    "groupTitle": "C__Users_malody_Source_Repos_HMSRepo_HotelManagementSystem_HotelManagementSystem_wwwroot_doc_ping_main_js",
     "name": ""
   },
   {
@@ -2401,7 +2345,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n                {\n                \"taskID\": \"4f48c274-d49a-4610-aed0-e6f6c828ebbb\",\n                \"describe\": \"Jesli chcialbys zglosic wymiane recznikow, wybierz te opcje\",\n                \"caseID\": \"1969c5c3-fad6-4c2c-8d1c-c104f314297c\",\n                \"roomID\": \"d89fcd07-efba-4ee0-aa10-242c872454d1\",\n                \"room\": {\n                    \"roomID\": \"d89fcd07-efba-4ee0-aa10-242c872454d1\",\n                    \"number\": \"1\",\n                    \"userID\": \"377dcd34-bbff-4bdd-afc8-5e760ef1f1fd\",\n                    \"occupied\": true\n                },\n                 \"status\": \"Assigned\"\n                }\n            ]",
+          "content": "HTTP/1.1 200 OK\n[\n                {\n                \"taskID\": \"4f48c274-d49a-4610-aed0-e6f6c828ebbb\",\n                \"describe\": \"Jesli chcialbys zglosic wymiane recznikow, wybierz te opcje\",\n                \"case\": {\n                    \"title\":\"Test Case\",\n                    \"description\":\"Desc\",\n                    \"estimatedTime\":\"00:01:00\",\n                    \"caseID\":\"01001010\"\n            },\n                \"roomID\": \"d89fcd07-efba-4ee0-aa10-242c872454d1\",\n                \"room\": {\n                    \"roomID\": \"d89fcd07-efba-4ee0-aa10-242c872454d1\",\n                    \"number\": \"1\",\n                    \"userID\": \"377dcd34-bbff-4bdd-afc8-5e760ef1f1fd\",\n                    \"occupied\": true\n                },\n                 \"status\": \"Assigned\"\n                }\n            ]",
           "type": "json"
         }
       ]
@@ -2892,7 +2836,7 @@ define({ "api": [
   {
     "type": "get",
     "url": "/Worker/{id}",
-    "title": "Tasks",
+    "title": "Read",
     "version": "0.1.3",
     "name": "Read",
     "group": "Worker",
@@ -2902,7 +2846,7 @@ define({ "api": [
   {
     "type": "get",
     "url": "/Worker/{id}",
-    "title": "Read",
+    "title": "Tasks",
     "version": "0.1.3",
     "name": "Read",
     "group": "Worker",
