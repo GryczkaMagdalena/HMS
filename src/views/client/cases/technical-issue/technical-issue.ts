@@ -20,7 +20,6 @@ export class TechnicalIssue {
 
   selectCase(selectedCase) {
     this.selectedCase = selectedCase;
-    console.log('this.selectedCase ', this.selectedCase);
   }
 
   confirmDialog() {
@@ -28,10 +27,8 @@ export class TechnicalIssue {
       this.dialogService.open({viewModel: ConfirmDialogComponent, model: ''})
         .whenClosed(response => {
           if (!response.wasCancelled) {
-            console.log('good');
             this.tasksService.createTask(this.selectedCase)
               .then(response => {
-                console.log('response tuuu', response);
                 this.router.navigateToRoute('base');
               })
               .catch(err => {
@@ -40,9 +37,5 @@ export class TechnicalIssue {
           }
         });
     }
-  }
-
-  returnToMainPanel() {
-    this.router.navigateToRoute('base');
   }
 }

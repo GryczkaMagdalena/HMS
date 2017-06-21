@@ -13,6 +13,18 @@ export class CasesService {
     this.cleanerCases = [];
   }
 
+  getCustomersTasks() {
+    this.loadHandlerService.setBusy();
+
+    return new Promise((resolve, reject) => {
+      this.httpFetch.fetch('/api/Task/CustomerTasks')
+        .then(response => response.json())
+        .then(data => resolve(data))
+        .catch(err => reject(err))
+        .then(() => this.loadHandlerService.setFree());
+    });
+  }
+
   getTechnicianCases() {
     this.loadHandlerService.setBusy();
 
