@@ -90,7 +90,7 @@ export class MainPanel {
   private calculateTimeDifference(start, end) {
     let diff = end.diff(start);
     let duration = moment.duration(diff);
-    return (duration.hours() + ':' + duration.minutes());
+    return (duration.hours() + 'h:' + duration.minutes() + 'm');
   }
 
 }
