@@ -10,6 +10,8 @@
     "selenium-webdriver": "registry:dt/selenium-webdriver#2.44.0+20160317120654"
   },
   "globalDependencies": {
+    "moment": "registry:dt/moment#2.11.1+20161010105546",
+    "moment-timezone": "registry:dt/moment-timezone#0.2.5+20161208060822",
     "nprogress": "registry:dt/nprogress#0.0.0+20161119044246"
   }
 }

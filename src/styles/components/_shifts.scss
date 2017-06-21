@@ -1,0 +1,15 @@
+.shift {
+  display: inline-block;
+  width: $spacing-bigger;
+  height: $spacing-bigger;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  margin-right: $spacing;
+  &.current {
+    background-color: $color-green;
+  }
+  &.future {
+    background-color: $color-blue;
+  }
+}

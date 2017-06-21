@@ -1,5 +1,23 @@
 <template>
   <div class="row">
+
+    <div class="col-xs-12 col-sm-6 col-sm-offset-3 custom-box">
+      <h3 class="text-center">
+        <span class="shift ${shift.current ? 'current' : 'future'}" ></span>
+        INFORMACJE
+        <span class="text-right time-span pull-right">${currentTime}</span>
+      </h3>
+      <hr>
+      <div class="shift-info" show.bind="shift.current">
+        <p>Twoja zmiana trwa już: <span class="pull-right">${shiftDetails.actualDuration}</span></p>
+        <p>Do końca zmiany pozostało Ci: <span class="pull-right">${shiftDetails.leftWorkTime}</span></p>
+        <p>Planowany czas zakończenia zmiany: <span class="pull-right">${shiftDetails.endTime}</span></p>
+      </div>
+      <div class="shift-info text-center" show.bind="!shift.current">
+        <p>Aktualnie nie jesteś na zmianie. Odpoczywaj :)</p>
+      </div>
+    </div>
+
     <div class="col-xs-12 custom-box">
       <div class="row">
         <div class="col-sm-4 col-xs-12">
@@ -8,12 +26,14 @@
           <div class="task-wrapper" repeat.for="task of tasksTodo">
             <h4>${task.case.title}</h4>
             <p>Pokój nr: ${task.room.number}</p>
-            <div class="priority ${task.priority}"></div><span>Priorytet: ${task.priority}</span>
+            <div class="priority ${task.priority}"></div>
+            <span>Priorytet: ${task.priority}</span>
             <div class="row actions-row">
               <div class="col-xs-6 col-xs-offset-3">
                 <button class="btn btn-success btn-block btn-large"
                         disabled.bind="statusChanging"
-                        click.delegate="updateTaskStatus(task.taskID, 'Pending')">Zacznij</button>
+                        click.delegate="updateTaskStatus(task.taskID, 'Pending')">Zacznij
+                </button>
               </div>
             </div>
           </div>
@@ -25,17 +45,20 @@
           <div class="task-wrapper" repeat.for="task of tasksInProgress">
             <h4>${task.case.title}</h4>
             <p>Pokój nr: ${task.room.number}</p>
-            <div class="priority ${task.priority}"></div><span>Priorytet: ${task.priority}</span>
+            <div class="priority ${task.priority}"></div>
+            <span>Priorytet: ${task.priority}</span>
             <div class="row actions-row">
               <div class="col-xs-6">
                 <button class="btn btn-danger btn-block btn-large"
                         disabled.bind="statusChanging"
-                        click.delegate="updateTaskStatus(task.taskID, 'Assigned')">Przerwij</button>
+                        click.delegate="updateTaskStatus(task.taskID, 'Assigned')">Przerwij
+                </button>
               </div>
               <div class="col-xs-6">
                 <button class="btn btn-success btn-block btn-large"
                         disabled.bind="statusChanging"
-                        click.delegate="updateTaskStatus(task.taskID, 'Done')">Zakończ</button>
+                        click.delegate="updateTaskStatus(task.taskID, 'Done')">Zakończ
+                </button>
               </div>
             </div>
           </div>
@@ -46,17 +69,20 @@
           <div class="task-wrapper" repeat.for="task of tasksDone">
             <h4>${task.case.title}</h4>
             <p>Pokój nr: ${task.room.number}</p>
-            <div class="priority ${task.priority}"></div><span>Priorytet: ${task.priority}</span>
+            <div class="priority ${task.priority}"></div>
+            <span>Priorytet: ${task.priority}</span>
             <div class="row actions-row">
               <div class="col-xs-6 col-xs-offset-3">
                 <button class="btn btn-danger btn-block btn-large"
                         disabled.bind="statusChanging"
-                        click.delegate="updateTaskStatus(task.taskID, 'Assigned')">Powtórz</button>
+                        click.delegate="updateTaskStatus(task.taskID, 'Assigned')">Powtórz
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </template>
