@@ -7,8 +7,7 @@
       <div class="issues-list">
         <div class="list-group" repeat.for="task of createdTasks">
           <a class="list-group-item">
-            <h4 class="list-group-item-heading">${task.title}</h4>
-            <p class="list-group-item-text">Zadanie: ${task.description}</p>
+            <h4 class="list-group-item-heading">Zadanie: ${task.case.title}</h4>
             <p class="list-group-item-text">Status:
               ${task.status == 'Assigned' ? 'Czeka na wykonanie' : ''}
               ${task.status == 'Pending' ? 'Aktualnie wykonywane' : ''}
