@@ -26,15 +26,13 @@ export class EmployeeTasksService {
     });
   }
 
-  getShifts() {
+  getCurrentShift() {
     this.loadHandlerService.setBusy();
 
     return new Promise((resolve, reject) => {
       this.httpFetch.fetch('/api/Worker/CurrentShift')
         .then(response => response.json())
-        .then(data => {
-          console.log(data);
-        })
+        .then(data => resolve(data))
         .catch(err => reject(err))
         .then(() => {
           this.loadHandlerService.setFree();

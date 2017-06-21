@@ -1,6 +1,7 @@
 import {inject} from 'aurelia-framework';
 import {EmployeeTasksService} from '../../../services/employee-tasks-service';
 import {TasksService} from "../../../services/tasks-service";
+import * as moment from 'moment';
 
 @inject(EmployeeTasksService, TasksService)
 export class MainPanel {
@@ -11,10 +12,20 @@ export class MainPanel {
   tasksInProgress;
   tasksDone;
 
+  currentTime;
+  shift;
+
+  shiftDetails;
+
   constructor(private employeeTasksService: EmployeeTasksService, private tasksService: TasksService) {
+    this.shiftDetails = {};
     this.statusChanging = false;
     this.getTasks();
-    this.getShifts();
+    this.getCurrentShift();
+
+    this.updateTimeValues();
+    setInterval(() => this.updateTimeValues(), 60000);
+    setInterval(() => this.calculateShiftDuration(this.shift), 60000);
   }
 
   private filterTasksTodo(allTasks) {
@@ -41,6 +52,10 @@ export class MainPanel {
       });
   }
 
+  updateTimeValues() {
+    this.currentTime = moment().format("HH:mm");
+  }
+
   private getTasks() {
     this.employeeTasksService.getTasks()
       .then(data => {
@@ -52,15 +67,30 @@ export class MainPanel {
       .then(() => this.statusChanging = false);
   }
 
-  private getShifts() {
-    this.employeeTasksService.getShifts();
+  private getCurrentShift() {
+    this.employeeTasksService.getCurrentShift()
+      .then(res => {
+        this.shift = res;
+        this.calculateShiftDuration(this.shift)
+
+      });
+  }
+
+  private calculateShiftDuration(shift) {
+
+    if (shift) {
+      if (shift.current) {
+        this.shiftDetails.actualDuration = this.calculateTimeDifference(moment(shift.currentShift.startTime), moment());
+        this.shiftDetails.leftWorkTime = this.calculateTimeDifference(moment(), moment(shift.currentShift.endTime));
+        this.shiftDetails.endTime = moment(shift.currentShift.endTime).format('HH:mm');
+      }
+    }
+  }
+
+  private calculateTimeDifference(start, end) {
+    let diff = end.diff(start);
+    let duration = moment.duration(diff);
+    return (duration.hours() + ':' + duration.minutes());
   }
 
 }
-
-
-// 1. Czas zmiany na panelu workera + kontrolka czy aktualnie powinien pracować
-// ( zielone aktualna zmiana, niebieskie przyszła)
-// Używając metody GET z url /api/Worker/CurrentShift
-// Pobierzcie info czy zmiana jest aktualna, czy też jest to zmiana najbliższa,
-// wyświetlcie czas rozpoczęcia, zakończenia i aktualny czas może ?
